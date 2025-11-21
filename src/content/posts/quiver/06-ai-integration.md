@@ -1,10 +1,9 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/06-ai-integration"
+title: "Part 6: AI Integration with Claude"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/06-ai-integration"
 ---
-
-## Part 6: AI Integration with Claude
 
 *This is Part 6 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
 

@@ -1,10 +1,9 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/03-crud-interface"
+title: "Part 3: Building the Core CRUD Interface"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/03-crud-interface"
 ---
-
-## Part 3: Building the Core CRUD Interface
 
 *This is Part 3 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
 

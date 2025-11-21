@@ -1,10 +1,9 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/07-deployment-polish"
+title: "Part 7: Deployment & Production Polish"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/07-deployment-polish"
 ---
-
-## Part 7: Deployment & Production Polish
 
 *This is Part 7 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
 

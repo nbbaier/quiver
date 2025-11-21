@@ -60,10 +60,14 @@ files.forEach(filePath => {
       const titleMatch = frontmatter.match(/title:\s*"(.*)"/);
       const title = titleMatch ? titleMatch[1] : filename.replace('.md', '');
       
+      const seriesTitleMatch = frontmatter.match(/seriesTitle:\s*"(.*)"/);
+      const seriesTitle = seriesTitleMatch ? seriesTitleMatch[1] : series;
+
       const newSlug = relativePath.replace('.md', '');
       
       const newFrontmatter = `---
 title: "${title}"
+seriesTitle: "${seriesTitle}"
 slug: "${newSlug}"
 series: "${series}"
 ---`;
@@ -87,6 +91,7 @@ series: "${series}"
 
   const newContent = `---
 title: "${title.replace(/"/g, '\\"')}"
+seriesTitle: "${series.replace(/"/g, '\\"')}"
 slug: "${newSlug}"
 series: "${series}"
 ---

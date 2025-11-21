@@ -1,10 +1,9 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/05-offline-first"
+title: "Part 5: Offline-First Architecture"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/05-offline-first"
 ---
-
-## Part 5: Offline-First Architecture
 
 *This is Part 5 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
 

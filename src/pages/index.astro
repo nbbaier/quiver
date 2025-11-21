@@ -5,27 +5,22 @@ import { getCollection } from 'astro:content';
 const posts = await getCollection('posts');
 
 // Group posts by series
-const postsBySeries = posts.reduce((acc, post) => {
-  const series = post.data.series || 'Other';
-  if (!acc[series]) {
-    acc[series] = [];
+const seriesMap = posts.reduce((acc, post) => {
+  const seriesKey = post.data.series || 'Other';
+  if (!acc[seriesKey]) {
+    acc[seriesKey] = {
+      key: seriesKey,
+      title: post.data.seriesTitle || seriesKey,
+      posts: [],
+      count: 0
+    };
   }
-  acc[series].push(post);
+  acc[seriesKey].posts.push(post);
+  acc[seriesKey].count++;
   return acc;
-}, {} as Record<string, typeof posts>);
+}, {} as Record<string, { key: string, title: string, posts: any[], count: number }>);
 
-// Sort series names
-const sortedSeries = Object.keys(postsBySeries).sort();
-
-// Sort posts within each series
-Object.values(postsBySeries).forEach(seriesPosts => {
-  seriesPosts.sort((a, b) => {
-    // Sort by slug usually gives correct order (01, 02, etc)
-    const slugA = a.data.slug || a.id;
-    const slugB = b.data.slug || b.id;
-    return slugA.localeCompare(slugB);
-  });
-});
+const seriesList = Object.values(seriesMap).sort((a, b) => a.title.localeCompare(b.title));
 ---
 
 <Layout title="Dev Blog Series">
@@ -34,39 +29,34 @@ Object.values(postsBySeries).forEach(seriesPosts => {
 			Developer Guides
 		</h1>
 		<p class="text-xl text-gray-500 max-w-2xl mx-auto">
-			A collection of implementation guides and technical deep dives.
+			Select a series to start reading.
 		</p>
 	</div>
 
-	<div class="space-y-20">
-		{sortedSeries.map(series => (
-			<section>
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">
-					{series}
-				</h2>
-				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-1">
-					{postsBySeries[series].map((post) => (
-						<a 
-							href={`/posts/${post.data.slug || post.id.replace(/\.md$/, '')}`}
-							class="block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:border-blue-300 transition-all duration-200 group"
-						>
-							<div class="p-8">
-								<div class="flex items-center gap-2 mb-4 text-sm text-blue-600 font-semibold">
-									<span class="bg-blue-50 px-3 py-1 rounded-full group-hover:bg-blue-100 transition-colors">
-										{(post.data.slug || post.id).split('/').pop()?.match(/^\d+/) ? `Part ${parseInt((post.data.slug || post.id).split('/').pop()!.match(/^\d+/)![0])}` : 'Guide'}
-									</span>
-								</div>
-								<h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-									{post.data.title}
-								</h3>
-								<div class="text-gray-500 line-clamp-2 prose prose-sm">
-									<p>Read this chapter &rarr;</p>
-								</div>
-							</div>
-						</a>
-					))}
+	<div class="flex flex-col gap-8 max-w-3xl mx-auto">
+		{seriesList.map(series => (
+			<a 
+				href={`/series/${series.key.toLowerCase()}`}
+				class="block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200 group"
+			>
+				<div class="p-10">
+					<div class="flex items-center justify-between mb-6">
+						<span class="bg-blue-50 text-blue-700 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
+							Series
+						</span>
+						<span class="text-gray-500 font-medium">
+							{series.count} Parts
+						</span>
+					</div>
+					<h2 class="text-4xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+						{series.title}
+					</h2>
+					<div class="flex items-center text-gray-500 font-medium text-lg mt-6 group-hover:text-blue-600 transition-colors">
+						Start Reading 
+						<svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+					</div>
 				</div>
-			</section>
+			</a>
 		))}
 	</div>
 </Layout>

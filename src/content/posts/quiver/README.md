@@ -1,14 +1,15 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/README"
+title: "Series Overview"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/README"
 ---
 
 A 7-part blog series on building a production-ready Progressive Web App from scratch.
 
 ---
 
-## Series Overview
+
 
 This series walks through building **Quiver**, an offline-first idea capture app with AI-powered brainstorming. The goal isn't just to build an app—it's to learn patterns that apply to any modern web application: offline-first architecture, edge databases, type-safe queries, and AI integration.
 

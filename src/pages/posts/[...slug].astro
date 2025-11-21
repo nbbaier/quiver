@@ -12,21 +12,27 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+const seriesTitle = post.data.seriesTitle || post.data.series;
+const slug = post.data.slug || '';
+const seriesSlug = post.data.series ? post.data.series.toLowerCase() : '';
 ---
 
 <Layout title={post.data.title}>
   <article class="prose prose-lg prose-blue mx-auto prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-xl prose-pre:bg-gray-900 prose-pre:text-gray-50 shadow-none">
     <header class="mb-8 not-prose border-b border-gray-100 pb-8">
-      <a href="/" class="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Back to Series
-      </a>
-      <div class="mb-4">
-        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-200">
-          {post.data.series || 'Guide'}
+      <nav class="flex items-center text-sm text-gray-500 mb-6 gap-2">
+        <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
+        <span class="text-gray-300">/</span>
+        <a href={`/series/${seriesSlug}`} class="hover:text-blue-600 transition-colors">{seriesTitle}</a>
+      </nav>
+      
+      <div class="mb-3">
+        <span class="text-blue-600 font-medium text-lg block mb-1">
+          {seriesTitle}
         </span>
       </div>
-      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">{post.data.title}</h1>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">{post.data.title}</h1>
     </header>
     <Content />
   </article>

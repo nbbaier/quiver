@@ -1,10 +1,9 @@
 ---
-title: "Building Quiver: An Offline-First PWA in a Weekend"
-slug: "quiver/02-database-architecture"
+title: "Part 2: Database Architecture with Turso & Drizzle"
+seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
 series: "Quiver"
+slug: "quiver/02-database-architecture"
 ---
-
-## Part 2: Database Architecture with Turso & Drizzle
 
 *This is Part 2 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
 
