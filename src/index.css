@@ -237,3 +237,84 @@ body {
    border-radius: 8px;
    margin-bottom: 16px;
 }
+
+/* Install Prompt */
+.install-prompt {
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: white;
+   border-radius: 12px;
+   padding: 16px;
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+   z-index: 1000;
+   animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+   from {
+      transform: translateY(100%);
+      opacity: 0;
+   }
+   to {
+      transform: translateY(0);
+      opacity: 1;
+   }
+}
+
+.install-prompt-content p {
+   margin-bottom: 8px;
+}
+
+.install-prompt-actions {
+   display: flex;
+   gap: 12px;
+   margin-top: 12px;
+}
+
+.btn-install {
+   background-color: #0066cc;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
+}
+
+.btn-dismiss {
+   background-color: transparent;
+   color: #666;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+}
+
+/* iOS Instructions */
+.ios-install-instructions {
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: #333;
+   color: white;
+   border-radius: 12px;
+   padding: 16px;
+   z-index: 1000;
+}
+
+.ios-install-instructions .close-btn {
+   position: absolute;
+   top: 8px;
+   right: 12px;
+   background: none;
+   border: none;
+   color: white;
+   font-size: 24px;
+   cursor: pointer;
+}
+
+.ios-install-instructions p {
+   margin-bottom: 4px;
+}

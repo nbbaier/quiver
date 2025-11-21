@@ -1,5 +1,7 @@
 import { IdeaCard } from "@/components/IdeaCard";
 import { IdeaForm } from "@/components/IdeaForm";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
 import { useIdeas } from "@/hooks/useIdeas";
 
 function App() {
@@ -43,6 +45,10 @@ function App() {
 					{ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
 				</p>
 			</footer>
+
+			{/* PWA Install Prompts */}
+			<InstallPrompt />
+			<IOSInstallInstructions />
 		</div>
 	);
 }
