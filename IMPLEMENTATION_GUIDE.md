@@ -103,6 +103,14 @@ This guide assumes you understand:
 
 Set up a working Vite + React + TypeScript project with a proper folder structure. By the end, you'll have a running dev server displaying a basic UI.
 
+### Why This Stack?
+
+Before we dive in, let's understand why we're choosing these tools:
+
+- **Vite** is a build tool that's significantly faster than alternatives like Create React App. It uses native ES modules during development, which means your browser loads files directly without bundling. This makes hot module replacement (HMR) nearly instant.
+- **React** gives us a component-based architecture that makes building interactive UIs intuitive. We'll break our app into small, reusable pieces.
+- **TypeScript** adds type safety to JavaScript. It catches errors at compile time rather than runtime, which is especially valuable as your codebase grows.
+
 ### Steps
 
 #### 1.1 Create the Vite Project
@@ -110,39 +118,44 @@ Set up a working Vite + React + TypeScript project with a proper folder structur
 Open your terminal and run:
 
 ```bash
-bun create vite quiver -- --template react-ts
+bun create vite quiver --template react-ts
 cd quiver
-bun add
+bun install
 ```
 
-This creates a new React project with TypeScript support.
+**What's happening here:**
+- `bun create vite quiver` scaffolds a new project in a folder called `quiver`
+- `--template react-ts` tells Vite to use the React + TypeScript template
+- `bun install` downloads all the dependencies listed in `package.json`
 
 #### 1.2 Clean Up the Boilerplate
 
-Delete the default demo content. Remove these files:
+Vite includes demo content we don't need. Let's remove it:
 
 ```bash
 rm src/App.css
 rm src/assets/react.svg
 ```
 
+We're removing these because we'll write our own styles and won't need the React logo.
+
 #### 1.3 Set Up the Folder Structure
 
-Create the following directory structure inside `src/`:
+A well-organized folder structure makes your codebase easier to navigate as it grows. Create this structure inside `src/`:
 
 ```
 src/
-├── components/       # Reusable UI components
-│   └── ui/          # Basic UI elements (Button, Input, etc.)
-├── pages/           # Page-level components
-├── hooks/           # Custom React hooks
-├── lib/             # Utility functions and configurations
-├── db/              # Database schema and client
-├── api/             # API route handlers
-└── types/           # TypeScript type definitions
+├── components/       # Reusable UI components (buttons, cards, forms)
+│   └── ui/          # Generic UI primitives
+├── pages/           # Full-page components (if we add routing later)
+├── hooks/           # Custom React hooks for shared logic
+├── lib/             # Utility functions and service configurations
+├── db/              # Database schema and connection setup
+├── api/             # API-related code (not server routes in our case)
+└── types/           # TypeScript type definitions shared across the app
 ```
 
-Run these commands to create the folders:
+Run these commands:
 
 ```bash
 mkdir -p src/components/ui
@@ -154,21 +167,31 @@ mkdir -p src/api
 mkdir -p src/types
 ```
 
+**Why this structure?** Separating concerns into folders makes it easy to find code later. When you need to modify how ideas are stored, you look in `db/`. When you need to change the UI, you look in `components/`. This becomes invaluable as your app grows.
+
 #### 1.4 Create a Basic App Shell
 
-Replace the contents of `src/App.tsx`:
+Now let's write our first React component. Replace the contents of `src/App.tsx`:
 
 ```tsx
 // src/App.tsx
 import { useState } from "react";
 
 function App() {
+   // useState creates "reactive" variables that trigger re-renders when changed
+   // ideas: an array of strings to store our idea titles
+   // input: the current text in the input field
    const [ideas, setIdeas] = useState<string[]>([]);
    const [input, setInput] = useState("");
 
+   // This function adds a new idea to our list
    const addIdea = () => {
+      // Only add if there's actual content (not just whitespace)
       if (input.trim()) {
+         // Create a NEW array with the old ideas plus the new one
+         // We use spread (...) because React needs a new array reference to detect changes
          setIdeas([...ideas, input.trim()]);
+         // Clear the input field for the next idea
          setInput("");
       }
    };
@@ -178,11 +201,14 @@ function App() {
          <h1>Quiver</h1>
          <p>Capture your ideas</p>
 
+         {/* Input section: a text field and a button side by side */}
          <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
             <input
                type="text"
                value={input}
+               // Update state on every keystroke - this is "controlled input" pattern
                onChange={(e) => setInput(e.target.value)}
+               // Allow pressing Enter to submit (better UX)
                onKeyDown={(e) => e.key === "Enter" && addIdea()}
                placeholder="Enter an idea..."
                style={{ flex: 1, padding: "8px" }}
@@ -192,14 +218,18 @@ function App() {
             </button>
          </div>
 
+         {/* Idea list: map over the array to render each idea */}
          <ul>
             {ideas.map((idea, index) => (
+               // key helps React track which items changed (important for performance)
+               // Using index as key is okay here since we're not reordering items
                <li key={index} style={{ padding: "8px 0" }}>
                   {idea}
                </li>
             ))}
          </ul>
 
+         {/* Empty state: show helpful text when there are no ideas */}
          {ideas.length === 0 && (
             <p style={{ color: "#666" }}>No ideas yet. Add your first one!</p>
          )}
@@ -210,48 +240,69 @@ function App() {
 export default App;
 ```
 
+**Key React concepts demonstrated here:**
+
+1. **useState Hook**: Creates state variables that persist across re-renders. When you call `setIdeas()`, React re-renders the component with the new data.
+
+2. **Controlled Inputs**: The input's `value` is controlled by React state. Every keystroke updates state, which updates the input. This gives us full control over the input's behavior.
+
+3. **Conditional Rendering**: The `{ideas.length === 0 && ...}` pattern only renders the empty state message when the condition is true.
+
+4. **List Rendering**: The `map()` function transforms our data array into an array of JSX elements.
+
 #### 1.5 Update the Global Styles
 
 Replace the contents of `src/index.css`:
 
 ```css
 /* src/index.css */
+
+/* Reset: Remove browser default margins and use border-box sizing */
 * {
-   box-sizing: border-box;
+   box-sizing: border-box;  /* Makes width/height include padding and border */
    margin: 0;
    padding: 0;
 }
 
+/* Base body styles */
 body {
+   /* System font stack: uses the OS's native font for fast loading and familiar feel */
    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
       Ubuntu, Cantarell, sans-serif;
-   line-height: 1.6;
-   color: #333;
-   background-color: #f5f5f5;
+   line-height: 1.6;        /* Comfortable reading line height */
+   color: #333;             /* Soft black, easier on the eyes than pure black */
+   background-color: #f5f5f5; /* Light gray background */
 }
 
+/* Form element base styles */
 input,
 button {
-   font-size: 16px;
+   font-size: 16px;         /* Prevents iOS zoom on focus (< 16px triggers zoom) */
    border: 1px solid #ddd;
    border-radius: 4px;
 }
 
+/* Button styling */
 button {
    background-color: #0066cc;
    color: white;
    border: none;
-   cursor: pointer;
+   cursor: pointer;         /* Shows clickable hand cursor on hover */
 }
 
 button:hover {
-   background-color: #0052a3;
+   background-color: #0052a3; /* Darker on hover for feedback */
 }
 
 ul {
-   list-style: none;
+   list-style: none;        /* Remove bullet points */
 }
 ```
+
+**Why these specific choices?**
+- `font-size: 16px` on inputs prevents iOS Safari from zooming in when you tap the field
+- System font stack loads instantly (no network request) and looks native on each OS
+- `box-sizing: border-box` makes CSS layout math much more intuitive
 
 #### 1.6 Install Development Dependencies
 
@@ -333,6 +384,22 @@ git commit -m "Milestone 1: Project scaffolding complete"
 ### Objective
 
 Set up a cloud SQLite database with Turso, define your schema with Drizzle ORM, and verify you can read/write data. By the end, you'll have a working database with type-safe queries.
+
+### Why Turso & Drizzle?
+
+Before we dive in, let's understand why we chose this particular stack:
+
+**Why Turso (instead of PostgreSQL, MySQL, or Firebase)?**
+- **SQLite simplicity**: SQLite is the most deployed database in the world. It's simple, requires no server setup, and is perfect for personal apps
+- **Edge-ready**: Turso replicates your data globally, so queries are fast from anywhere
+- **Generous free tier**: 500 databases, 9GB storage, 1 billion row reads/month - more than enough for a personal app
+- **Offline potential**: SQLite's file-based nature works well with local-first architecture (we'll leverage this later)
+
+**Why Drizzle ORM (instead of Prisma, TypeORM, or raw SQL)?**
+- **Type safety**: Your IDE will catch database errors before you run the code
+- **SQL-like syntax**: If you know SQL, Drizzle feels familiar. No "magic" abstractions to learn
+- **Lightweight**: Drizzle adds minimal overhead compared to heavier ORMs like Prisma
+- **Great migrations**: Schema changes are versioned and reversible
 
 ### Concepts to Understand
 
@@ -427,19 +494,48 @@ bun add -d drizzle-kit dotenv
 
 #### 2.6 Create the Database Schema
 
+This is where we define the structure of our data. Think of a schema like a blueprint for a building - it defines what "shape" your data must have.
+
 Create `src/db/schema.ts`:
 
 ```ts
 // src/db/schema.ts
+// We import specific column types from Drizzle's SQLite module
+// Each type maps to a SQLite column type
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
+// sqliteTable() creates a table definition
+// First argument: the actual table name in the database ("ideas")
+// Second argument: an object defining all columns
 export const ideas = sqliteTable("ideas", {
+   // PRIMARY KEY: Every table needs a unique identifier for each row
+   // autoIncrement means the database automatically assigns 1, 2, 3, etc.
+   // This is the standard pattern for database IDs
    id: integer("id").primaryKey({ autoIncrement: true }),
+
+   // REQUIRED FIELD: .notNull() means this column cannot be empty
+   // Every idea must have a title - this is our main display text
    title: text("title").notNull(),
+
+   // OPTIONAL FIELD: No .notNull() means this can be null/undefined
+   // Users might want to add details later, so we don't require it upfront
    content: text("content"),
-   tags: text("tags"), // JSON string: ["tag1", "tag2"]
-   urls: text("urls"), // JSON string: ["url1", "url2"]
+
+   // JSON STORED AS TEXT: SQLite doesn't have native JSON/array types
+   // So we store arrays as JSON strings: '["tag1", "tag2"]'
+   // We'll parse these in our application code when reading
+   tags: text("tags"), // Will store: '["productivity", "app-idea"]'
+   urls: text("urls"), // Will store: '["https://example.com"]'
+
+   // BOOLEAN AS INTEGER: SQLite doesn't have a boolean type
+   // { mode: "boolean" } tells Drizzle to convert 0/1 to false/true
+   // "Archived" lets us hide ideas without permanently deleting them (soft delete)
    archived: integer("archived", { mode: "boolean" }).default(false),
+
+   // TIMESTAMPS: Track when records are created and modified
+   // { mode: "timestamp" } converts Unix timestamps to JavaScript Date objects
+   // .$defaultFn() runs a function to set default value on insert
+   // We use snake_case in the database ("created_at") but camelCase in JS
    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
@@ -448,32 +544,50 @@ export const ideas = sqliteTable("ideas", {
       .$defaultFn(() => new Date()),
 });
 
-// TypeScript types derived from the schema
+// TYPE INFERENCE: This is where Drizzle's type safety shines!
+// $inferSelect: The type of data you get back when reading from the database
+// $inferInsert: The type of data you need to provide when inserting
+// These types automatically update when you change the schema - no manual sync needed!
 export type Idea = typeof ideas.$inferSelect;
 export type NewIdea = typeof ideas.$inferInsert;
 ```
 
-**Understanding the schema**:
+**Why these specific design choices?**
 
--  `id`: Auto-incrementing primary key
--  `title`: Required text field for the idea title
--  `content`: Optional longer description
--  `tags` and `urls`: Stored as JSON strings (we'll parse them in code)
--  `archived`: Boolean to soft-delete ideas
--  `createdAt` / `updatedAt`: Timestamps for tracking
+| Column     | Why This Way?                                                                           |
+| ---------- | --------------------------------------------------------------------------------------- |
+| `id`       | Auto-increment is simple and works. UUIDs are overkill for a personal app               |
+| `title`    | Required because every idea needs at least a name                                       |
+| `content`  | Optional for quick capture - you can jot down a title now, elaborate later              |
+| `tags/urls`| JSON strings are a pragmatic choice. Arrays in SQLite require separate tables (complex) |
+| `archived` | Soft delete pattern - lets you "undo" deletions and keeps history                       |
+| `timestamps` | Essential for sorting ("newest first") and knowing when you had an idea               |
 
 #### 2.7 Create the Database Client
+
+The "client" is our connection to the database. Think of it like a phone line between your app and Turso's servers.
 
 Create `src/db/index.ts`:
 
 ```ts
 // src/db/index.ts
+
+// drizzle() wraps the raw database client with Drizzle's query builder
 import { drizzle } from "drizzle-orm/libsql";
+// createClient() establishes the actual network connection to Turso
 import { createClient } from "@libsql/client";
+// We import our schema so Drizzle knows our table structure
 import * as schema from "./schema";
 
-// For server-side usage (API routes)
+// CREATE THE LOW-LEVEL CONNECTION
+// createClient() needs two things:
+// 1. url: Where is the database? (Turso's server address)
+// 2. authToken: Proof that we're allowed to access it (like a password)
 const client = createClient({
+   // We check two places for credentials:
+   // - import.meta.env.VITE_*: Vite's way of accessing env vars in browser code
+   // - process.env.*: Node.js way (used when running scripts directly)
+   // The || operator means "use the first one that exists"
    url:
       import.meta.env.VITE_TURSO_DATABASE_URL ||
       process.env.TURSO_DATABASE_URL!,
@@ -481,44 +595,79 @@ const client = createClient({
       import.meta.env.VITE_TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
 });
 
+// WRAP WITH DRIZZLE
+// This gives us the nice query API: db.select().from(ideas)
+// Instead of raw SQL strings: "SELECT * FROM ideas"
+// Passing { schema } enables "relational queries" - more advanced feature for joins
 export const db = drizzle(client, { schema });
 ```
 
-Update your `.env` file to include Vite-prefixed variables (for client-side access during development):
+**Why two sets of environment variables?**
+
+This is a common source of confusion, so let's clarify:
+
+| Environment          | Variable Prefix | Why?                                                        |
+| -------------------- | --------------- | ----------------------------------------------------------- |
+| Browser (Vite dev)   | `VITE_`         | Vite only exposes vars starting with `VITE_` to the browser |
+| Node.js scripts      | No prefix       | Node reads `.env` directly via `dotenv`                     |
+
+Update your `.env` file to include both versions:
 
 ```bash
 # .env
+
+# These are for Node.js scripts (migrations, tests, server-side code)
 TURSO_DATABASE_URL=libsql://quiver-YOUR_USERNAME.turso.io
 TURSO_AUTH_TOKEN=your-auth-token-here
 
-# Vite needs VITE_ prefix for client-side access
+# These are the SAME values, but with VITE_ prefix for browser access
+# Yes, this duplication is annoying, but it's how Vite security works
+# (Vite won't accidentally expose non-VITE_ secrets to the browser)
 VITE_TURSO_DATABASE_URL=libsql://quiver-YOUR_USERNAME.turso.io
 VITE_TURSO_AUTH_TOKEN=your-auth-token-here
 ```
 
+> **Security note**: In a production multi-user app, you'd NEVER expose database credentials to the browser. You'd create API routes that run on the server. For a personal app, this direct approach is fine.
+
 #### 2.8 Configure Drizzle Kit
+
+Drizzle Kit is a separate CLI tool that handles database migrations. It needs its own config file to know where your schema is and how to connect to the database.
 
 Create `drizzle.config.ts` in your project root:
 
 ```ts
 // drizzle.config.ts
+// This file configures the drizzle-kit CLI (migrations, studio, etc.)
+// It's separate from your app code - only used during development
+
 import type { Config } from "drizzle-kit";
 import * as dotenv from "dotenv";
 
+// Load .env file so we can access TURSO_DATABASE_URL
+// This is needed because drizzle-kit runs as a Node script, not in Vite
 dotenv.config();
 
 export default {
+   // Where is your schema defined?
    schema: "./src/db/schema.ts",
+   // Where should migration files be saved?
    out: "./drizzle",
+   // What database type? "turso" tells Drizzle to use libSQL protocol
    dialect: "turso",
+   // Connection details (same as in our client)
    dbCredentials: {
       url: process.env.TURSO_DATABASE_URL!,
       authToken: process.env.TURSO_AUTH_TOKEN,
    },
 } satisfies Config;
+// "satisfies Config" gives us type checking without losing literal types
 ```
 
 #### 2.9 Generate and Run Migrations
+
+**What are migrations?**
+
+Migrations are version-controlled changes to your database schema. Instead of manually running `CREATE TABLE` SQL, Drizzle compares your schema.ts to the actual database and generates the necessary SQL.
 
 Generate the migration files:
 
@@ -526,13 +675,18 @@ Generate the migration files:
 bunx drizzle-kit generate
 ```
 
-This creates a `drizzle/` folder with SQL migration files.
+This creates a `drizzle/` folder with SQL files like `0000_create_ideas.sql`. You can inspect these to see exactly what SQL will run.
 
 Push the schema to your database:
 
 ```bash
 bunx drizzle-kit push
 ```
+
+**What's happening here?**
+1. Drizzle connects to your Turso database
+2. It compares your schema.ts to the current database state
+3. It runs any needed SQL commands (CREATE TABLE, etc.)
 
 You should see output confirming the `ideas` table was created.
 
@@ -555,36 +709,66 @@ Add these scripts to your `package.json`:
 
 #### 2.11 Test Database Connection
 
+Let's verify everything works by writing a test script. This is a pattern you'll use often: write a quick script to test a new feature before integrating it into your app.
+
 Create a temporary test file `src/db/test-connection.ts`:
 
 ```ts
 // src/db/test-connection.ts
+// A throwaway script to verify our database setup works
+// You can delete this file after confirming everything works
+
 import { db } from "./index";
 import { ideas } from "./schema";
+import { eq } from "drizzle-orm"; // Import the eq() helper for WHERE clauses
 
 async function testConnection() {
-   console.log("Testing database connection...");
+   console.log("Testing database connection...\n");
 
-   // Insert a test idea
+   // ============================================
+   // CREATE: Insert a new row into the ideas table
+   // ============================================
+   // db.insert(table).values(data) - creates an INSERT statement
+   // .returning() - tells the database to return the inserted row
+   // [newIdea] - destructure the array since returning() returns an array
    const [newIdea] = await db
       .insert(ideas)
       .values({
          title: "Test Idea",
          content: "This is a test to verify the database works!",
+         // Notice: we don't provide id, createdAt, updatedAt
+         // These are handled automatically by our schema defaults!
       })
       .returning();
 
-   console.log("Created idea:", newIdea);
+   console.log("✓ Created idea:", newIdea);
+   console.log("  (Notice the auto-generated id and timestamps)\n");
 
-   // Read it back
+   // ============================================
+   // READ: Fetch all rows from the ideas table
+   // ============================================
+   // db.select().from(table) - creates a SELECT * statement
+   // This returns an array of all matching rows
    const allIdeas = await db.select().from(ideas);
-   console.log("All ideas:", allIdeas);
+   console.log("✓ All ideas in database:", allIdeas);
+   console.log(`  (Found ${allIdeas.length} idea(s))\n`);
 
-   // Clean up
-   await db.delete(ideas).where(/* delete where id = newIdea.id */);
-   console.log("Test complete!");
+   // ============================================
+   // DELETE: Remove our test data to keep things clean
+   // ============================================
+   // db.delete(table).where(condition) - creates a DELETE statement
+   // eq(column, value) - creates a "column = value" condition
+   // This is Drizzle's type-safe way to write WHERE clauses
+   await db.delete(ideas).where(eq(ideas.id, newIdea.id));
+   console.log("✓ Cleaned up test data\n");
+
+   console.log("=".repeat(40));
+   console.log("SUCCESS! Database connection verified.");
+   console.log("=".repeat(40));
 }
 
+// Run the function and catch any errors
+// .catch(console.error) prints the full error if something goes wrong
 testConnection().catch(console.error);
 ```
 
@@ -593,6 +777,16 @@ Run the test with:
 ```bash
 bun run src/db/test-connection.ts
 ```
+
+**What to expect:**
+- You should see the created idea with an auto-generated `id`
+- `createdAt` and `updatedAt` should be set to the current time
+- The cleanup should remove the test idea
+
+**Troubleshooting if it fails:**
+- "Connection refused": Check your TURSO_DATABASE_URL in .env
+- "Unauthorized": Check your TURSO_AUTH_TOKEN in .env
+- "Table not found": Did you run `bunx drizzle-kit push`?
 
 > **Note**: Bun has native TypeScript support, so no additional tools are needed to run `.ts` files.
 
@@ -628,38 +822,83 @@ git commit -m "Milestone 2: Database setup with Turso and Drizzle"
 
 Build a complete Create-Read-Update-Delete (CRUD) interface for ideas. By the end, you'll be able to add, view, edit, and delete ideas that persist in your Turso database.
 
+### Why CRUD Matters
+
+CRUD isn't just an acronym - it's a mental model for how data flows through any application:
+
+| Operation | What It Does         | Example in Quiver              |
+| --------- | -------------------- | ------------------------------ |
+| **C**reate | Add new data        | User types an idea and saves   |
+| **R**ead   | Fetch existing data | App loads ideas from database  |
+| **U**pdate | Modify existing data| User edits an idea's title     |
+| **D**elete | Remove data         | User archives an old idea      |
+
+Every feature you'll build in your career involves some combination of these four operations.
+
 ### Architecture Overview
 
-Since we're building a client-side app (not a full-stack framework like Next.js), we'll call Turso directly from the browser. In production, you'd add an API layer for security, but for a personal app this direct approach works fine.
+We're organizing our code into **layers**, which is a pattern you'll see in professional codebases:
 
-> **Note**: For a production app with multiple users, you'd want to create API routes to protect your database credentials. We'll keep it simple for this MVP.
+```
+User Interface (React components)
+        ↓ calls
+Custom Hooks (useIdeas.ts - state management)
+        ↓ calls
+Library Functions (lib/ideas.ts - business logic)
+        ↓ calls
+Database Client (db/index.ts - Drizzle queries)
+        ↓ talks to
+Turso Cloud Database
+```
+
+**Why these layers?**
+- **Separation of concerns**: Each layer has one job
+- **Testability**: You can test each layer independently
+- **Reusability**: Library functions can be reused across components
+- **Maintainability**: Changes in one layer don't break others
+
+> **Note**: For a production multi-user app, you'd add an API layer between the frontend and database to protect credentials. For a personal app, this direct approach is simpler.
 
 ### Steps
 
 #### 3.1 Create Type Definitions
 
+**Why TypeScript interfaces?**
+
+TypeScript interfaces are like contracts that describe the shape of your data. They help you:
+- Catch bugs at compile time (not runtime)
+- Get autocomplete in your editor
+- Document what data your functions expect
+
 Create `src/types/idea.ts`:
 
 ```ts
 // src/types/idea.ts
+
+// This is what an Idea looks like AFTER we fetch it from the database
+// and parse the JSON fields. This is the "application" representation.
 export interface Idea {
    id: number;
    title: string;
-   content: string | null;
-   tags: string[]; // Parsed from JSON
-   urls: string[]; // Parsed from JSON
+   content: string | null; // null means "not set" (different from empty string)
+   tags: string[];         // Already parsed from JSON - ready to use as array
+   urls: string[];         // Already parsed from JSON
    archived: boolean;
    createdAt: Date;
    updatedAt: Date;
 }
 
+// This is what we need to CREATE a new idea
+// Notice: fewer required fields! id and timestamps are auto-generated
 export interface CreateIdeaInput {
-   title: string;
-   content?: string;
+   title: string;          // Required - every idea needs a title
+   content?: string;       // Optional (?) means we don't have to provide it
    tags?: string[];
    urls?: string[];
 }
 
+// This is what we can UPDATE on an existing idea
+// ALL fields are optional - we only send what changed
 export interface UpdateIdeaInput {
    title?: string;
    content?: string;
@@ -669,72 +908,110 @@ export interface UpdateIdeaInput {
 }
 ```
 
+**Pattern explained**: We have three types for the same "Idea" concept because different operations need different data:
+- Reading: We get everything (Idea)
+- Creating: We provide minimum required fields (CreateIdeaInput)
+- Updating: We only send changed fields (UpdateIdeaInput)
+
 #### 3.2 Create Database Helper Functions
+
+This file contains all our database operations. It sits between our React code and the raw Drizzle queries, providing a clean API.
 
 Create `src/lib/ideas.ts`:
 
 ```ts
 // src/lib/ideas.ts
+// This file is our "data access layer" - all database operations live here
+// Benefits: One place to add logging, caching, validation, etc.
+
 import { db } from "@/db";
 import { ideas } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm"; // Query helpers from Drizzle
 import type { Idea, CreateIdeaInput, UpdateIdeaInput } from "@/types/idea";
 
-// Helper to parse JSON fields from database
+// ============================================
+// HELPER FUNCTION: Transform database row to our app's Idea type
+// ============================================
+// Why do we need this? The database stores tags/urls as JSON strings,
+// but our app wants to work with actual arrays. This function does the conversion.
 function parseIdea(row: typeof ideas.$inferSelect): Idea {
    return {
       id: row.id,
       title: row.title,
       content: row.content,
+      // JSON.parse converts '["tag1", "tag2"]' back to an array
+      // The ternary (? :) handles null - if no tags, use empty array
       tags: row.tags ? JSON.parse(row.tags) : [],
       urls: row.urls ? JSON.parse(row.urls) : [],
+      // ?? is "nullish coalescing" - if archived is null/undefined, use false
       archived: row.archived ?? false,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
    };
 }
 
-// Get all non-archived ideas, newest first
+// ============================================
+// READ: Get all non-archived ideas, newest first
+// ============================================
 export async function getIdeas(): Promise<Idea[]> {
    const rows = await db
-      .select()
-      .from(ideas)
-      .where(eq(ideas.archived, false))
-      .orderBy(desc(ideas.createdAt));
+      .select()                              // SELECT * (all columns)
+      .from(ideas)                           // FROM ideas table
+      .where(eq(ideas.archived, false))      // WHERE archived = false
+      .orderBy(desc(ideas.createdAt));       // ORDER BY created_at DESC
 
+   // Transform each database row into our Idea type
    return rows.map(parseIdea);
 }
 
-// Get a single idea by ID
+// ============================================
+// READ: Get a single idea by ID
+// ============================================
 export async function getIdea(id: number): Promise<Idea | null> {
+   // Note: db.select() returns an array, even for single results
+   // We destructure [row] to get the first (and only) element
    const [row] = await db.select().from(ideas).where(eq(ideas.id, id));
+
+   // Return null if not found (row would be undefined)
    return row ? parseIdea(row) : null;
 }
 
-// Create a new idea
+// ============================================
+// CREATE: Add a new idea to the database
+// ============================================
 export async function createIdea(input: CreateIdeaInput): Promise<Idea> {
    const [row] = await db
       .insert(ideas)
       .values({
          title: input.title,
+         // Convert empty string to null for cleaner database storage
          content: input.content || null,
+         // JSON.stringify converts arrays to storable strings
+         // ['tag1', 'tag2'] becomes '["tag1","tag2"]'
          tags: input.tags ? JSON.stringify(input.tags) : null,
          urls: input.urls ? JSON.stringify(input.urls) : null,
+         // Note: id, createdAt, updatedAt, archived all use schema defaults
       })
-      .returning();
+      .returning(); // Return the created row (with auto-generated fields)
 
    return parseIdea(row);
 }
 
-// Update an existing idea
+// ============================================
+// UPDATE: Modify an existing idea
+// ============================================
 export async function updateIdea(
    id: number,
    input: UpdateIdeaInput
 ): Promise<Idea | null> {
+   // Build the update object dynamically
+   // We only include fields that were actually provided
    const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date(), // Always update the timestamp
    };
 
+   // "!== undefined" check is important!
+   // It allows setting a field to null/empty, which is different from "not provided"
    if (input.title !== undefined) updateData.title = input.title;
    if (input.content !== undefined) updateData.content = input.content;
    if (input.tags !== undefined) updateData.tags = JSON.stringify(input.tags);
@@ -750,74 +1027,120 @@ export async function updateIdea(
    return row ? parseIdea(row) : null;
 }
 
-// Soft delete (archive) an idea
+// ============================================
+// SOFT DELETE: Archive an idea (keeps data, just hides it)
+// ============================================
+// Why "soft delete"? Users can recover archived ideas. Hard deletes are permanent.
 export async function archiveIdea(id: number): Promise<boolean> {
    const result = await db
       .update(ideas)
       .set({ archived: true, updatedAt: new Date() })
       .where(eq(ideas.id, id));
 
+   // rowsAffected tells us if the update actually changed anything
    return result.rowsAffected > 0;
 }
 
-// Permanently delete an idea
+// ============================================
+// HARD DELETE: Permanently remove an idea
+// ============================================
+// Use with caution! This cannot be undone.
 export async function deleteIdea(id: number): Promise<boolean> {
    const result = await db.delete(ideas).where(eq(ideas.id, id));
    return result.rowsAffected > 0;
 }
 ```
 
+**Key patterns to notice:**
+- Each function has a single responsibility (SRP - Single Responsibility Principle)
+- Consistent return types: arrays for lists, `T | null` for single items
+- We always transform database rows through `parseIdea` for consistency
+
 #### 3.3 Create a Custom Hook for Ideas
+
+**What's a custom hook?**
+
+A custom hook is a function that starts with `use` and can call other React hooks. It's how we share stateful logic between components. Think of it as extracting a reusable piece of component behavior.
+
+**Why do we need this hook?**
+- Without it, our component would be cluttered with loading states, error handling, and database calls
+- If we need ideas in multiple components later, we can reuse this hook
+- It's easier to test business logic when it's separate from UI
 
 Create `src/hooks/useIdeas.ts`:
 
 ```ts
 // src/hooks/useIdeas.ts
+// A custom hook that manages all idea-related state and operations
+// This gives components a simple API: const { ideas, addIdea, ... } = useIdeas()
+
 import { useState, useEffect, useCallback } from "react";
 import type { Idea, CreateIdeaInput, UpdateIdeaInput } from "@/types/idea";
 import * as ideasLib from "@/lib/ideas";
 
 export function useIdeas() {
-   const [ideas, setIdeas] = useState<Idea[]>([]);
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState<string | null>(null);
+   // ============================================
+   // STATE: The data our hook manages
+   // ============================================
+   // Each useState creates a piece of state that persists across renders
 
-   // Fetch all ideas
+   const [ideas, setIdeas] = useState<Idea[]>([]);      // The list of ideas
+   const [loading, setLoading] = useState(true);         // Are we fetching data?
+   const [error, setError] = useState<string | null>(null); // Any error message
+
+   // ============================================
+   // FETCH: Load ideas from the database
+   // ============================================
+   // useCallback memoizes this function - it won't be recreated every render
+   // This is important because we use it as a useEffect dependency
    const fetchIdeas = useCallback(async () => {
       try {
-         setLoading(true);
-         setError(null);
+         setLoading(true);  // Show loading state
+         setError(null);    // Clear any previous errors
          const data = await ideasLib.getIdeas();
          setIdeas(data);
       } catch (err) {
+         // Type-safe error handling
          setError(err instanceof Error ? err.message : "Failed to fetch ideas");
       } finally {
+         // finally runs whether try succeeded or catch ran
          setLoading(false);
       }
-   }, []);
+   }, []); // Empty array = function never changes (has no dependencies)
 
-   // Initial fetch
+   // ============================================
+   // INITIAL LOAD: Fetch ideas when hook first mounts
+   // ============================================
+   // useEffect runs side effects (like data fetching) after render
    useEffect(() => {
       fetchIdeas();
-   }, [fetchIdeas]);
+   }, [fetchIdeas]); // Run when fetchIdeas changes (which is never, due to useCallback)
 
-   // Create a new idea
+   // ============================================
+   // CREATE: Add a new idea
+   // ============================================
    const addIdea = useCallback(async (input: CreateIdeaInput) => {
       try {
          const newIdea = await ideasLib.createIdea(input);
+         // "Optimistic update": Add to local state immediately
+         // [newIdea, ...prev] puts new idea at the START of the array (newest first)
          setIdeas((prev) => [newIdea, ...prev]);
          return newIdea;
       } catch (err) {
          setError(err instanceof Error ? err.message : "Failed to create idea");
-         throw err;
+         throw err; // Re-throw so the component can handle it (e.g., show a toast)
       }
    }, []);
 
-   // Update an idea
+   // ============================================
+   // UPDATE: Modify an existing idea
+   // ============================================
    const editIdea = useCallback(async (id: number, input: UpdateIdeaInput) => {
       try {
          const updated = await ideasLib.updateIdea(id, input);
          if (updated) {
+            // Replace the old idea with the updated one in our array
+            // .map creates a new array where we swap out the matching idea
             setIdeas((prev) =>
                prev.map((idea) => (idea.id === id ? updated : idea))
             );
@@ -829,10 +1152,14 @@ export function useIdeas() {
       }
    }, []);
 
-   // Archive (soft delete) an idea
+   // ============================================
+   // DELETE: Archive (soft delete) an idea
+   // ============================================
    const removeIdea = useCallback(async (id: number) => {
       try {
          await ideasLib.archiveIdea(id);
+         // Remove from local state by filtering out the archived idea
+         // .filter creates a new array with only items that pass the test
          setIdeas((prev) => prev.filter((idea) => idea.id !== id));
       } catch (err) {
          setError(
@@ -842,57 +1169,87 @@ export function useIdeas() {
       }
    }, []);
 
+   // ============================================
+   // RETURN: What components get when they call useIdeas()
+   // ============================================
    return {
-      ideas,
-      loading,
-      error,
-      addIdea,
-      editIdea,
-      removeIdea,
-      refreshIdeas: fetchIdeas,
+      ideas,                    // The array of ideas
+      loading,                  // Boolean: is data being fetched?
+      error,                    // String or null: any error message
+      addIdea,                  // Function: create a new idea
+      editIdea,                 // Function: update an existing idea
+      removeIdea,               // Function: archive an idea
+      refreshIdeas: fetchIdeas, // Function: re-fetch from database
    };
 }
 ```
 
+**Why useCallback everywhere?**
+
+Without `useCallback`, each function would be recreated on every render. This causes problems:
+1. Child components that receive these functions would re-render unnecessarily
+2. useEffect dependencies would constantly change, causing infinite loops
+
+`useCallback` says "keep the same function reference unless dependencies change."
+
 #### 3.4 Create the Idea Card Component
+
+Now we build the UI components that display our ideas. We'll start with `IdeaCard` - a component that shows a single idea and lets users edit or archive it.
+
+**Component design principle**: Each card handles its own editing state. When you click "Edit", only that card switches to edit mode - other cards stay unchanged. This is a common pattern for inline editing.
 
 Create `src/components/IdeaCard.tsx`:
 
 ```tsx
 // src/components/IdeaCard.tsx
+// A component that displays a single idea with edit/archive capabilities
+// This pattern is called "controlled component" - React controls the form state
+
 import { useState } from "react";
 import type { Idea, UpdateIdeaInput } from "@/types/idea";
 
+// TypeScript interface for props - this documents what the component expects
 interface IdeaCardProps {
-   idea: Idea;
-   onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>;
-   onDelete: (id: number) => Promise<void>;
+   idea: Idea;                                              // The idea to display
+   onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>; // Called when user saves edits
+   onDelete: (id: number) => Promise<void>;                 // Called when user archives
 }
 
+// Destructure props directly in the function signature (cleaner than props.idea)
 export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
-   const [isEditing, setIsEditing] = useState(false);
-   const [title, setTitle] = useState(idea.title);
-   const [content, setContent] = useState(idea.content || "");
-   const [isDeleting, setIsDeleting] = useState(false);
+   // ============================================
+   // LOCAL STATE: Only affects this card instance
+   // ============================================
+   const [isEditing, setIsEditing] = useState(false);  // Toggle edit mode
+   const [title, setTitle] = useState(idea.title);     // Editable copy of title
+   const [content, setContent] = useState(idea.content || ""); // Editable copy
+   const [isDeleting, setIsDeleting] = useState(false); // Show loading state
 
+   // ============================================
+   // EVENT HANDLERS
+   // ============================================
    const handleSave = async () => {
-      await onUpdate(idea.id, { title, content });
-      setIsEditing(false);
+      await onUpdate(idea.id, { title, content }); // Call parent's update function
+      setIsEditing(false);                         // Exit edit mode
    };
 
    const handleCancel = () => {
+      // Reset to original values (discard changes)
       setTitle(idea.title);
       setContent(idea.content || "");
       setIsEditing(false);
    };
 
    const handleDelete = async () => {
+      // window.confirm shows a browser dialog - simple but effective
       if (window.confirm("Archive this idea?")) {
-         setIsDeleting(true);
+         setIsDeleting(true);   // Show "Archiving..." state
          await onDelete(idea.id);
+         // Note: We don't setIsDeleting(false) because the card will be removed
       }
    };
 
+   // Helper function to format dates nicely
    const formatDate = (date: Date) => {
       return new Date(date).toLocaleDateString("en-US", {
          month: "short",
@@ -902,6 +1259,10 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
       });
    };
 
+   // ============================================
+   // CONDITIONAL RENDERING: Edit mode vs Display mode
+   // ============================================
+   // "Early return" pattern: if editing, return the edit form immediately
    if (isEditing) {
       return (
          <div className="idea-card editing">
@@ -931,6 +1292,7 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
       );
    }
 
+   // Default: Display mode (read-only view)
    return (
       <div className="idea-card">
          <div className="idea-header">
@@ -938,10 +1300,13 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
             <span className="idea-date">{formatDate(idea.createdAt)}</span>
          </div>
 
+         {/* Conditional rendering: only show if content exists */}
          {idea.content && <p className="idea-content">{idea.content}</p>}
 
+         {/* Conditional rendering: only show tags section if there are tags */}
          {idea.tags.length > 0 && (
             <div className="idea-tags">
+               {/* .map transforms array into list of elements */}
                {idea.tags.map((tag, i) => (
                   <span key={i} className="tag">
                      {tag}
@@ -957,7 +1322,7 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
             <button
                onClick={handleDelete}
                className="btn-delete"
-               disabled={isDeleting}
+               disabled={isDeleting} // Prevent double-clicks
             >
                {isDeleting ? "Archiving..." : "Archive"}
             </button>
@@ -968,6 +1333,8 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
 ```
 
 #### 3.5 Create the Idea Form Component
+
+The form is where users capture new ideas. We're using a UX pattern called "progressive disclosure" - the form starts simple (just a text input) and expands when focused to reveal additional fields. This reduces visual clutter while keeping advanced options accessible.
 
 Create `src/components/IdeaForm.tsx`:
 
@@ -1440,12 +1807,31 @@ git commit -m "Milestone 3: CRUD interface for ideas"
 
 Transform your web app into an installable Progressive Web App (PWA). By the end, users can install Quiver on their devices and it will feel like a native app.
 
+### Why Make It a PWA?
+
+PWAs give you the best of both worlds - web and native:
+
+| Feature                | Regular Website | Native App   | PWA          |
+| ---------------------- | --------------- | ------------ | ------------ |
+| Works offline          | No              | Yes          | Yes          |
+| Installable            | No              | Yes          | Yes          |
+| App store required     | N/A             | Yes          | No           |
+| Auto-updates           | Yes             | Manual       | Yes          |
+| Cross-platform         | Yes             | No (rebuild) | Yes          |
+| Push notifications     | No              | Yes          | Yes          |
+| Full-screen mode       | No              | Yes          | Yes          |
+
+For an idea capture app, PWA is perfect because:
+1. **Quick access**: Users can launch from home screen without opening a browser
+2. **Works offline**: Capture ideas even without internet (we'll add this in Milestone 5)
+3. **No app store**: Skip the approval process and fees
+
 ### Concepts to Understand
 
 -  **PWA (Progressive Web App)**: A web app that can be installed on devices and work offline
--  **Web App Manifest**: A JSON file that tells browsers about your app (name, icons, colors)
--  **Service Worker**: A script that runs in the background, enabling offline functionality
--  **Workbox**: A library that simplifies service worker creation (used by vite-plugin-pwa)
+-  **Web App Manifest**: A JSON file that tells browsers about your app (name, icons, colors, how to launch it)
+-  **Service Worker**: A script that runs in the background, enabling offline functionality and caching
+-  **Workbox**: A Google library that simplifies service worker creation (handles caching strategies for you)
 
 ### Steps
 
@@ -1485,6 +1871,8 @@ For development, you can create simple placeholder PNGs or use an online convert
 
 #### 4.3 Configure vite-plugin-pwa
 
+This is where we tell the browser "this website can be installed as an app." The plugin generates all the necessary files (manifest.json, service worker) automatically.
+
 Update `vite.config.ts`:
 
 ```ts
@@ -1498,17 +1886,38 @@ export default defineConfig({
    plugins: [
       react(),
       VitePWA({
+         // How should the service worker update?
+         // "autoUpdate" = check for updates automatically, install in background
+         // "prompt" = ask user before updating (good for complex apps)
          registerType: "autoUpdate",
+
+         // Extra files to include in the service worker precache
          includeAssets: ["icon.svg"],
+
+         // WEB APP MANIFEST: This tells browsers about your app
+         // When a user installs the PWA, this info is used
          manifest: {
+            // Full name shown in app launcher
             name: "Quiver - Idea Capture",
+            // Short name for home screen (12 chars max recommended)
             short_name: "Quiver",
+            // Description for app stores/installers
             description: "Capture and develop your ideas anywhere",
+            // Color of the title bar on mobile devices
             theme_color: "#0066cc",
+            // Background color of splash screen when app launches
             background_color: "#f5f5f5",
+            // "standalone" = no browser UI (looks like native app)
+            // "minimal-ui" = small browser controls
+            // "fullscreen" = takes entire screen (good for games)
             display: "standalone",
+            // What URLs this PWA controls (usually just "/")
             scope: "/",
+            // What URL to open when launched from home screen
             start_url: "/",
+
+            // ICONS: You need at least 192x192 and 512x512
+            // The browser picks the best size for each situation
             icons: [
                {
                   src: "pwa-192x192.png",
@@ -1521,6 +1930,8 @@ export default defineConfig({
                   type: "image/png",
                },
                {
+                  // "maskable" icons can be cropped into circles/shapes
+                  // by Android. Provide safe padding around your logo.
                   src: "pwa-512x512.png",
                   sizes: "512x512",
                   type: "image/png",
@@ -1528,7 +1939,11 @@ export default defineConfig({
                },
             ],
          },
+
+         // WORKBOX CONFIG: Controls the service worker behavior
          workbox: {
+            // Which files to cache for offline use
+            // This pattern caches your app shell (HTML, CSS, JS, images)
             globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
          },
       }),
@@ -1541,15 +1956,24 @@ export default defineConfig({
 });
 ```
 
-**Understanding the configuration**:
+**Key concepts explained:**
 
--  `registerType: 'autoUpdate'`: Service worker updates automatically when new version is available
--  `manifest`: Defines how the app appears when installed
--  `display: 'standalone'`: Hides the browser chrome for an app-like feel
--  `theme_color`: The color of the title bar on mobile
--  `workbox.globPatterns`: Which files to cache for offline use
+| Setting | What It Does | Why We Chose This |
+| ------- | ------------ | ----------------- |
+| `registerType: 'autoUpdate'` | Updates service worker silently | Users always get latest version without prompts |
+| `display: 'standalone'` | Hides browser chrome | Feels like a native app |
+| `theme_color` | Colors the mobile status bar | Brand consistency |
+| `globPatterns` | Files to precache | App loads instantly, even offline |
 
 #### 4.4 Add the Install Prompt Component
+
+Browsers have their own "Add to Home Screen" prompts, but they're easy to miss. We'll create a custom prompt that appears after the user has been using the app for a few seconds - proving they're engaged before asking them to install.
+
+**How PWA installation works:**
+1. Browser detects the app meets PWA criteria (HTTPS, manifest, service worker)
+2. Browser fires `beforeinstallprompt` event
+3. We catch this event and save it
+4. Later, we show our custom UI and call `event.prompt()` when user clicks "Install"
 
 Create `src/components/InstallPrompt.tsx`:
 
@@ -1929,16 +2353,34 @@ git commit -m "Milestone 4: PWA configuration with install prompts"
 
 Make your app work offline by implementing proper caching strategies and offline data storage. By the end, users can capture ideas without an internet connection, and the app will sync when back online.
 
+### Why Offline Support Matters
+
+Ideas don't wait for WiFi. You might have a breakthrough thought:
+- On the subway (no signal)
+- On a plane (no internet)
+- In a basement (weak connection)
+- When your ISP is down
+
+An idea capture app that requires internet is fundamentally broken. This milestone fixes that.
+
+**Our offline strategy:**
+1. **Cache the app itself**: Service worker stores HTML/CSS/JS so the app loads offline
+2. **Cache data locally**: IndexedDB stores ideas on the device
+3. **Queue offline changes**: Track what changed while offline
+4. **Sync when online**: Push queued changes to the server
+
 ### Concepts to Understand
 
--  **Caching Strategies**:
+-  **Caching Strategies** (how the service worker decides where to get data):
 
-   -  **CacheFirst**: Check cache first, fall back to network (good for static assets)
-   -  **NetworkFirst**: Try network first, fall back to cache (good for API data)
-   -  **StaleWhileRevalidate**: Return cached data immediately, update cache in background
+   | Strategy | How It Works | Best For |
+   | -------- | ------------ | -------- |
+   | **CacheFirst** | Check cache, only hit network if cache misses | Static assets (images, fonts) |
+   | **NetworkFirst** | Try network, fall back to cache on failure | API data you want fresh |
+   | **StaleWhileRevalidate** | Return cached immediately, update cache in background | Data that can be slightly stale |
 
--  **IndexedDB**: A browser database for storing data offline (more capable than localStorage)
--  **Background Sync**: Queue actions when offline, execute when back online
+-  **IndexedDB**: A browser database for storing data offline (more capable than localStorage - can store megabytes, supports queries)
+-  **Background Sync**: Queue actions when offline, execute when back online (browser handles retry)
 
 ### Steps
 
@@ -2029,7 +2471,14 @@ export default defineConfig({
 
 #### 5.2 Create an Offline Storage Layer with IndexedDB
 
-Install the idb library for easier IndexedDB access:
+IndexedDB is like having a database inside the browser. It's more powerful than localStorage:
+- Can store megabytes (not just 5MB)
+- Supports indexes for fast queries
+- Handles complex data structures (not just strings)
+
+We use the `idb` library which wraps IndexedDB's callback-based API with modern Promises.
+
+Install the idb library:
 
 ```bash
 bun add idb
@@ -2650,16 +3099,32 @@ git commit -m "Milestone 5: Offline support with IndexedDB and sync"
 
 Add AI-powered brainstorming that analyzes your ideas and suggests new directions. By the end, users can request AI-generated suggestions based on their captured ideas.
 
+### Why Add AI?
+
+Capturing ideas is only half the battle. The real value comes from:
+- **Finding patterns** you didn't see ("You keep coming back to productivity tools...")
+- **Making connections** between unrelated ideas ("Your cooking app idea + your habit tracker idea could combine into...")
+- **Expanding half-baked thoughts** into actionable plans
+- **Breaking creative blocks** when you're stuck
+
+We're using Claude 3.5 Haiku because:
+- **Fast**: Sub-second response times
+- **Cheap**: ~$0.25 per million input tokens
+- **Smart enough**: Haiku handles creative tasks well
+- **Streaming**: Shows text as it generates (feels responsive)
+
 ### Architecture Decision
 
 For a pure client-side Vite app without a server, we have two options:
 
-1. **Direct API calls from the browser** (simpler, what we'll do)
-2. **Serverless functions with Inngest** (more secure, better for production)
+| Approach | Security | Complexity | Best For |
+| -------- | -------- | ---------- | -------- |
+| **Direct browser calls** | API key exposed | Simple | Personal apps |
+| **Serverless functions** | API key hidden | More setup | Production apps |
 
 For this MVP, we'll call the Claude API directly from the browser. This exposes your API key in the client code, which is acceptable for a personal app but not for a public one.
 
-> **Production Note**: For a public app, you'd deploy serverless API routes (Vercel Functions, Cloudflare Workers) to keep your API key secure.
+> **Production Note**: For a public app, you'd deploy serverless API routes (Vercel Functions, Cloudflare Workers) to keep your API key secure. The AI service code would barely change - just move it to the server.
 
 ### Steps
 
@@ -2700,6 +3165,15 @@ bun add openai
 ```
 
 #### 6.4 Create the AI Service
+
+This is where the magic happens. We'll create functions that:
+1. Take the user's ideas as context
+2. Build a thoughtful prompt
+3. Stream Claude's response (so users see text appearing, not waiting for full response)
+
+**Streaming vs non-streaming:**
+- Non-streaming: Wait 2-3 seconds, then show all text at once (feels slow)
+- Streaming: Text appears word-by-word as it's generated (feels instant)
 
 Create `src/lib/ai.ts`:
 
