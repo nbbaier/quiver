@@ -39,6 +39,13 @@ export function IdeaCard({
 		}
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			onSelect?.();
+		}
+	};
+
 	const formatDate = (date: Date) => {
 		return new Date(date).toLocaleDateString("en-US", {
 			month: "short",
@@ -81,6 +88,9 @@ export function IdeaCard({
 		<div
 			className={`idea-card ${isSelected ? "selected" : ""}`}
 			onClick={onSelect}
+			onKeyDown={handleKeyDown}
+			role="button"
+			tabIndex={onSelect ? 0 : undefined}
 		>
 			<div className="idea-header">
 				<h3 className="idea-title">{idea.title}</h3>
@@ -117,6 +127,5 @@ export function IdeaCard({
 				</button>
 			</div>
 		</div>
-		// </div>
 	);
 }
