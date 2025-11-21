@@ -3,11 +3,19 @@ import type { Idea, UpdateIdeaInput } from "@/types/idea";
 
 interface IdeaCardProps {
 	idea: Idea;
+	isSelected?: boolean;
+	onSelect?: () => void;
 	onUpdate: (id: number, input: UpdateIdeaInput) => Promise<unknown>;
 	onDelete: (id: number) => Promise<void>;
 }
 
-export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
+export function IdeaCard({
+	idea,
+	isSelected,
+	onSelect,
+	onUpdate,
+	onDelete,
+}: IdeaCardProps) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [title, setTitle] = useState(idea.title);
 	const [content, setContent] = useState(idea.content || "");
@@ -70,7 +78,10 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
 	}
 
 	return (
-		<div className="idea-card">
+		<div
+			className={`idea-card ${isSelected ? "selected" : ""}`}
+			onClick={onSelect}
+		>
 			<div className="idea-header">
 				<h3 className="idea-title">{idea.title}</h3>
 				<span className="idea-date">{formatDate(idea.createdAt)}</span>
@@ -106,5 +117,6 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
 				</button>
 			</div>
 		</div>
+		// </div>
 	);
 }

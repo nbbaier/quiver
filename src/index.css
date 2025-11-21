@@ -345,3 +345,151 @@ body {
 body:has(.offline-indicator) .app-container {
    padding-top: 50px;
 }
+
+.idea-card.selected {
+   border: 2px solid #667eea;
+   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.idea-card {
+   cursor: pointer;
+   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Brainstorm Panel */
+.brainstorm-panel {
+   background: white;
+   border-radius: 8px;
+   padding: 16px;
+   margin-top: 24px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.brainstorm-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 16px;
+   flex-wrap: wrap;
+   gap: 12px;
+}
+
+.brainstorm-header h2 {
+   font-size: 1.25rem;
+   color: #333;
+   margin: 0;
+}
+
+.brainstorm-actions {
+   display: flex;
+   gap: 8px;
+   flex-wrap: wrap;
+}
+
+.btn-brainstorm {
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
+   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-brainstorm:hover:not(:disabled) {
+   transform: translateY(-1px);
+   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-brainstorm:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
+}
+
+.btn-expand {
+   background-color: #f0f0f0;
+   color: #333;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
+}
+
+.btn-clear {
+   background-color: transparent;
+   color: #666;
+   border: 1px solid #ddd;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
+}
+
+.brainstorm-result {
+   background-color: #f8f9fa;
+   border-radius: 6px;
+   padding: 16px;
+   max-height: 400px;
+   overflow-y: auto;
+}
+
+.brainstorm-result pre {
+   white-space: pre-wrap;
+   word-wrap: break-word;
+   font-family: inherit;
+   font-size: 0.9rem;
+   line-height: 1.6;
+   margin: 0;
+}
+
+.brainstorm-empty {
+   color: #666;
+   text-align: center;
+   padding: 24px;
+}
+
+.brainstorm-error {
+   background-color: #fff0f0;
+   color: #cc0000;
+   padding: 12px;
+   border-radius: 6px;
+   margin-bottom: 16px;
+}
+
+.brainstorm-loading {
+   display: flex;
+   justify-content: center;
+   padding: 20px;
+}
+
+.loading-dots {
+   display: flex;
+   gap: 8px;
+}
+
+.loading-dots span {
+   width: 10px;
+   height: 10px;
+   background-color: #667eea;
+   border-radius: 50%;
+   animation: bounce 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(1) {
+   animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+   animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+   0%,
+   80%,
+   100% {
+      transform: scale(0);
+   }
+   40% {
+      transform: scale(1);
+   }
+}

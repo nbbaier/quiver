@@ -1,9 +1,12 @@
+import { useState } from "react";
+import { BrainstormPanel } from "@/components/BrainstormPanel";
 import { IdeaCard } from "@/components/IdeaCard";
 import { IdeaForm } from "@/components/IdeaForm";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { useIdeas } from "@/hooks/useIdeas";
+import type { Idea } from "@/types/idea";
 
 function App() {
 	const {
@@ -16,6 +19,11 @@ function App() {
 		editIdea,
 		removeIdea,
 	} = useIdeas();
+	const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
+
+	const handleSelectIdea = (idea: Idea) => {
+		setSelectedIdea(selectedIdea?.id === idea.id ? null : idea);
+	};
 
 	return (
 		<>
@@ -45,12 +53,17 @@ function App() {
 								<IdeaCard
 									key={idea.id}
 									idea={idea}
+									isSelected={selectedIdea?.id === idea.id}
+									onSelect={() => handleSelectIdea(idea)}
 									onUpdate={editIdea}
 									onDelete={removeIdea}
 								/>
 							))}
 						</div>
 					)}
+
+					{/* AI Brainstorming Panel */}
+					<BrainstormPanel ideas={ideas} selectedIdea={selectedIdea} />
 				</main>
 
 				<footer className="app-footer">
