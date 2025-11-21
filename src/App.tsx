@@ -1,61 +1,50 @@
-import { useState } from "react";
+import { IdeaCard } from "@/components/IdeaCard";
+import { IdeaForm } from "@/components/IdeaForm";
+import { useIdeas } from "@/hooks/useIdeas";
 
-export default function App() {
-	// useState creates "reactive" variables that trigger re-renders when changed
-	// ideas: an array of strings to store our idea titles
-	// input: the current text in the input field
-	const [ideas, setIdeas] = useState<string[]>([]);
-	const [input, setInput] = useState("");
-
-	// This function adds a new idea to our list
-	const addIdea = () => {
-		// Only add if there's actual content (not just whitespace)
-		if (input.trim()) {
-			// Create a NEW array with the old ideas plus the new one
-			// We use spread (...) because React needs a new array reference to detect changes
-			setIdeas([...ideas, input.trim()]);
-			// Clear the input field for the next idea
-			setInput("");
-		}
-	};
+function App() {
+	const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
 
 	return (
-		<div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-			<h1>Quiver</h1>
-			<p>Capture your ideas</p>
+		<div className="app-container">
+			<header className="app-header">
+				<h1>Quiver</h1>
+				<p>Capture and develop your ideas</p>
+			</header>
 
-			{/* Input section: a text field and a button side by side */}
-			<div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-				<input
-					type="text"
-					value={input}
-					// Update state on every keystroke - this is "controlled input" pattern
-					onChange={(e) => setInput(e.target.value)}
-					// Allow pressing Enter to submit (better UX)
-					onKeyDown={(e) => e.key === "Enter" && addIdea()}
-					placeholder="Enter an idea..."
-					style={{ flex: 1, padding: "8px" }}
-				/>
-				<button type="button" onClick={addIdea} style={{ padding: "8px 16px" }}>
-					Add
-				</button>
-			</div>
+			<main className="app-main">
+				<IdeaForm onSubmit={addIdea} />
 
-			{/* Idea list: map over the array to render each idea */}
-			<ul>
-				{ideas.map((idea) => (
-					// key helps React track which items changed (important for performance)
-					// Using index as key is okay here since we're not reordering items
-					<li key={idea} style={{ padding: "8px 0" }}>
-						{idea}
-					</li>
-				))}
-			</ul>
+				{error && <div className="error-message">{error}</div>}
 
-			{/* Empty state: show helpful text when there are no ideas */}
-			{ideas.length === 0 && (
-				<p style={{ color: "#666" }}>No ideas yet. Add your first one!</p>
-			)}
+				{loading ? (
+					<div className="loading">Loading ideas...</div>
+				) : ideas.length === 0 ? (
+					<div className="empty-state">
+						<p>No ideas yet!</p>
+						<p>Start capturing your thoughts above.</p>
+					</div>
+				) : (
+					<div className="ideas-list">
+						{ideas.map((idea) => (
+							<IdeaCard
+								key={idea.id}
+								idea={idea}
+								onUpdate={editIdea}
+								onDelete={removeIdea}
+							/>
+						))}
+					</div>
+				)}
+			</main>
+
+			<footer className="app-footer">
+				<p>
+					{ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+				</p>
+			</footer>
 		</div>
 	);
 }
+
+export default App;
