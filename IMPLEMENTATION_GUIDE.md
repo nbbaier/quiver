@@ -34,9 +34,9 @@
 
 | Layer      | Technology          | Why                                                      |
 | ---------- | ------------------- | -------------------------------------------------------- |
+| Runtime    | Bun                 | Fast all-in-one JavaScript runtime, native TypeScript    |
 | Frontend   | Vite + React        | Fastest setup, excellent PWA tooling                     |
 | Database   | Turso + Drizzle ORM | SQLite simplicity, type-safe queries, generous free tier |
-| Async Jobs | Inngest             | Zero-config background tasks with built-in retry         |
 | AI         | Claude Haiku 4.5    | Best brainstorming quality for cost                      |
 | PWA        | vite-plugin-pwa     | Automatic service worker generation                      |
 | Hosting    | Vercel              | Free tier, seamless deployment                           |
@@ -55,14 +55,16 @@
 Install these before starting:
 
 ```bash
-# Node.js 18+ (check with: node --version)
-# Download from: https://nodejs.org/
-
-# npm 9+ (comes with Node.js, check with: npm --version)
+# Bun 1.0+ (check with: bun --version)
+# Install from: https://bun.sh
+# macOS/Linux: curl -fsSL https://bun.sh/install | bash
+# Windows: powershell -c "irm bun.sh/install.ps1 | iex"
 
 # Git (check with: git --version)
 # Download from: https://git-scm.com/
 ```
+
+> **Why Bun?** Bun is a fast all-in-one JavaScript runtime that replaces Node.js, npm, and npx. It's significantly faster for installing packages and running scripts.
 
 ### Required Accounts
 
@@ -80,7 +82,7 @@ This guide assumes you understand:
 
 -  Basic JavaScript/TypeScript syntax
 -  React fundamentals (components, state, props, hooks)
--  Command line basics (cd, npm commands)
+-  Command line basics (cd, bun commands)
 -  Basic SQL concepts (tables, queries)
 
 ### Recommended Setup
@@ -108,9 +110,9 @@ Set up a working Vite + React + TypeScript project with a proper folder structur
 Open your terminal and run:
 
 ```bash
-npm create vite@latest quiver -- --template react-ts
+bun create vite quiver -- --template react-ts
 cd quiver
-npm install
+bun add
 ```
 
 This creates a new React project with TypeScript support.
@@ -256,7 +258,7 @@ ul {
 Install additional tools you'll need:
 
 ```bash
-npm install -D @types/node
+bun add -d @types/node
 ```
 
 #### 1.7 Configure Path Aliases (Optional but Recommended)
@@ -298,7 +300,7 @@ Update `tsconfig.json` to add path mapping (add inside `compilerOptions`):
 Run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 **Expected behavior**:
@@ -414,8 +416,8 @@ echo ".env" >> .gitignore
 #### 2.5 Install Database Dependencies
 
 ```bash
-npm install drizzle-orm @libsql/client
-npm install -D drizzle-kit dotenv
+bun add drizzle-orm @libsql/client
+bun add -d drizzle-kit dotenv
 ```
 
 -  `drizzle-orm`: The ORM for writing queries
@@ -521,7 +523,7 @@ export default {
 Generate the migration files:
 
 ```bash
-npx drizzle-kit generate
+bunx drizzle-kit generate
 ```
 
 This creates a `drizzle/` folder with SQL migration files.
@@ -529,7 +531,7 @@ This creates a `drizzle/` folder with SQL migration files.
 Push the schema to your database:
 
 ```bash
-npx drizzle-kit push
+bunx drizzle-kit push
 ```
 
 You should see output confirming the `ideas` table was created.
@@ -589,16 +591,16 @@ testConnection().catch(console.error);
 Run the test with:
 
 ```bash
-npx tsx src/db/test-connection.ts
+bun run src/db/test-connection.ts
 ```
 
-> **Note**: Install tsx first if needed: `npm install -D tsx`
+> **Note**: Bun has native TypeScript support, so no additional tools are needed to run `.ts` files.
 
 ### Verification
 
 1. **Turso Dashboard**: Go to https://turso.tech/app and click on your `quiver` database. You should see the `ideas` table in the schema.
 
-2. **Drizzle Studio**: Run `npm run db:studio` and open the provided URL. You can browse your database visually.
+2. **Drizzle Studio**: Run `bun run db:studio` and open the provided URL. You can browse your database visually.
 
 3. **Test Script Output**: The test script should show:
    -  "Created idea:" with an ID and your test data
@@ -1385,7 +1387,7 @@ body {
 
 ### Verification
 
-1. **Start the dev server**: `npm run dev`
+1. **Start the dev server**: `bun run dev`
 
 2. **Test Create**:
 
@@ -1450,7 +1452,7 @@ Transform your web app into an installable Progressive Web App (PWA). By the end
 #### 4.1 Install the PWA Plugin
 
 ```bash
-npm install -D vite-plugin-pwa
+bun add -d vite-plugin-pwa
 ```
 
 #### 4.2 Generate PWA Icons
@@ -1876,8 +1878,8 @@ Ensure your `index.html` has proper meta tags:
 1. **Build and preview** the app:
 
    ```bash
-   npm run build
-   npm run preview
+   bun run build
+   bun run preview
    ```
 
 2. **Open Chrome DevTools** (F12) and go to the **Application** tab
@@ -2030,7 +2032,7 @@ export default defineConfig({
 Install the idb library for easier IndexedDB access:
 
 ```bash
-npm install idb
+bun add idb
 ```
 
 Create `src/lib/offline-storage.ts`:
@@ -2597,8 +2599,8 @@ Create `public/offline.html`:
 1. **Build and preview** the app:
 
    ```bash
-   npm run build
-   npm run preview
+   bun run build
+   bun run preview
    ```
 
 2. **Test offline mode**:
@@ -2620,7 +2622,7 @@ Create `public/offline.html`:
    -  Uncheck the "Offline" checkbox
    -  You should see "Syncing..." briefly
    -  The idea you created offline should now be in your database
-   -  Verify in Drizzle Studio: `npm run db:studio`
+   -  Verify in Drizzle Studio: `bun run db:studio`
 
 5. **Test IndexedDB storage**:
    -  In DevTools → Application → IndexedDB
@@ -2688,13 +2690,13 @@ VITE_ANTHROPIC_API_KEY=sk-ant-your-api-key-here
 #### 6.3 Install the Anthropic SDK
 
 ```bash
-npm install @anthropic-ai/sdk
+bun add @anthropic-ai/sdk
 ```
 
 For OpenAI alternative:
 
 ```bash
-npm install openai
+bun add openai
 ```
 
 #### 6.4 Create the AI Service
@@ -3315,7 +3317,7 @@ Add the selected style to `src/index.css`:
 
 ### Verification
 
-1. **Start the dev server**: `npm run dev`
+1. **Start the dev server**: `bun run dev`
 
 2. **Test API connection**:
 
@@ -3419,7 +3421,7 @@ dist
 3. Select your `quiver` repository from the list
 4. Vercel auto-detects Vite - accept the defaults:
    -  Framework Preset: Vite
-   -  Build Command: `npm run build`
+   -  Build Command: `bun run build`
    -  Output Directory: `dist`
 5. **Add Environment Variables** (Critical!):
    -  Click "Environment Variables"
@@ -3434,7 +3436,7 @@ dist
 Install the Vercel CLI:
 
 ```bash
-npm install -g vercel
+bun add -g vercel
 ```
 
 Deploy:
@@ -3494,10 +3496,10 @@ Before relying on production, verify everything works:
 
 ```bash
 # Build locally
-npm run build
+bun run build
 
 # Preview the production build
-npm run preview
+bun run preview
 ```
 
 Check for:
@@ -4236,7 +4238,7 @@ Cannot find name 'import.meta'
 **Solution**:
 
 ```bash
-npx drizzle-kit push
+bunx drizzle-kit push
 ```
 
 #### "LIBSQL_CLIENT_ERROR: Unauthorized"
@@ -4270,8 +4272,8 @@ CREATE INDEX IF NOT EXISTS idx_ideas_archived ON ideas(archived) WHERE archived 
 **Solution**: PWAs only work in production builds:
 
 ```bash
-npm run build
-npm run preview
+bun run build
+bun run preview
 ```
 
 #### Install prompt not showing
@@ -4356,7 +4358,7 @@ for await (const event of stream) {
 
 **Solution**: Check build logs. Common issues:
 
-1. TypeScript errors - fix locally first with `npm run build`
+1. TypeScript errors - fix locally first with `bun run build`
 2. Missing dependencies - check `package.json`
 3. Environment variables - ensure they're set in Vercel dashboard
 
@@ -4529,14 +4531,14 @@ This allows users to share URLs from their browser to your PWA via the native sh
 
 ```bash
 # Development
-npm run dev              # Start development server
-npm run build            # Build for production
-npm run preview          # Preview production build
+bun run dev              # Start development server
+bun run build            # Build for production
+bun run preview          # Preview production build
 
 # Database
-npm run db:generate      # Generate migrations
-npm run db:push          # Push schema to database
-npm run db:studio        # Open database GUI
+bun run db:generate      # Generate migrations
+bun run db:push          # Push schema to database
+bun run db:studio        # Open database GUI
 
 # Deployment
 vercel                   # Deploy to Vercel
@@ -4600,6 +4602,7 @@ quiver/
 
 ### Key Documentation Links
 
+-  **Bun**: https://bun.sh/docs
 -  **Vite**: https://vitejs.dev/guide/
 -  **vite-plugin-pwa**: https://vite-pwa-org.netlify.app/
 -  **Turso**: https://docs.turso.tech/
