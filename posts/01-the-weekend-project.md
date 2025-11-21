@@ -2,7 +2,7 @@
 
 ## Part 1: The Weekend Project
 
-*This is Part 1 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
+_This is Part 1 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
 
 ---
 
@@ -16,11 +16,11 @@ But this series isn't really about Quiver. It's about a particular way of buildi
 
 Quiver is deceptively simple on the surface:
 
-- **Capture ideas** with a title and optional details
-- **Tag and organize** your thoughts
-- **AI brainstorming** that analyzes your ideas and suggests new directions
-- **Works offline** and syncs when you're back online
-- **Installs like a native app** on any device
+-  **Capture ideas** with a title and optional details
+-  **Tag and organize** your thoughts
+-  **AI brainstorming** that analyzes your ideas and suggests new directions
+-  **Works offline** and syncs when you're back online
+-  **Installs like a native app** on any device
 
 Under the hood, we're doing something more interesting. We're building an application that:
 
@@ -63,10 +63,10 @@ Here's where it gets interesting.
 ```typescript
 // This is Drizzle. Notice how it reads like SQL?
 const recentIdeas = await db
-  .select()
-  .from(ideas)
-  .where(eq(ideas.archived, false))
-  .orderBy(desc(ideas.createdAt));
+   .select()
+   .from(ideas)
+   .where(eq(ideas.archived, false))
+   .orderBy(desc(ideas.createdAt));
 ```
 
 ### vite-plugin-pwa + Workbox
@@ -178,48 +178,48 @@ Replace the contents of `src/App.tsx` with a minimal shell:
 import { useState } from "react";
 
 function App() {
-  const [ideas, setIdeas] = useState<string[]>([]);
-  const [input, setInput] = useState("");
+   const [ideas, setIdeas] = useState<string[]>([]);
+   const [input, setInput] = useState("");
 
-  const addIdea = () => {
-    if (input.trim()) {
-      setIdeas([...ideas, input.trim()]);
-      setInput("");
-    }
-  };
+   const addIdea = () => {
+      if (input.trim()) {
+         setIdeas([...ideas, input.trim()]);
+         setInput("");
+      }
+   };
 
-  return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h1>Quiver</h1>
-      <p>Capture your ideas</p>
+   return (
+      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+         <h1>Quiver</h1>
+         <p>Capture your ideas</p>
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && addIdea()}
-          placeholder="Enter an idea..."
-          style={{ flex: 1, padding: "8px" }}
-        />
-        <button onClick={addIdea} style={{ padding: "8px 16px" }}>
-          Add
-        </button>
+         <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+            <input
+               type="text"
+               value={input}
+               onChange={(e) => setInput(e.target.value)}
+               onKeyDown={(e) => e.key === "Enter" && addIdea()}
+               placeholder="Enter an idea..."
+               style={{ flex: 1, padding: "8px" }}
+            />
+            <button onClick={addIdea} style={{ padding: "8px 16px" }}>
+               Add
+            </button>
+         </div>
+
+         <ul>
+            {ideas.map((idea, index) => (
+               <li key={index} style={{ padding: "8px 0" }}>
+                  {idea}
+               </li>
+            ))}
+         </ul>
+
+         {ideas.length === 0 && (
+            <p style={{ color: "#666" }}>No ideas yet. Add your first one!</p>
+         )}
       </div>
-
-      <ul>
-        {ideas.map((idea, index) => (
-          <li key={index} style={{ padding: "8px 0" }}>
-            {idea}
-          </li>
-        ))}
-      </ul>
-
-      {ideas.length === 0 && (
-        <p style={{ color: "#666" }}>No ideas yet. Add your first one!</p>
-      )}
-    </div>
-  );
+   );
 }
 
 export default App;
@@ -231,39 +231,39 @@ Replace `src/index.css`:
 
 ```css
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+   line-height: 1.6;
+   color: #333;
+   background-color: #f5f5f5;
 }
 
 input,
 button {
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+   font-size: 16px;
+   border: 1px solid #ddd;
+   border-radius: 4px;
 }
 
 button {
-  background-color: #0066cc;
-  color: white;
-  border: none;
-  cursor: pointer;
+   background-color: #0066cc;
+   color: white;
+   border: none;
+   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0052a3;
+   background-color: #0052a3;
 }
 
 ul {
-  list-style: none;
+   list-style: none;
 }
 ```
 
@@ -279,12 +279,12 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+   plugins: [react()],
+   resolve: {
+      alias: {
+         "@": path.resolve(__dirname, "./src"),
+      },
+   },
 });
 ```
 
@@ -292,12 +292,12 @@ And add to `tsconfig.json` under `compilerOptions`:
 
 ```json
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+   "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["./src/*"]
+      }
+   }
 }
 ```
 
@@ -319,9 +319,9 @@ bun run dev
 
 Open `http://localhost:5173` in your browser. You should see:
 
-- "Quiver" as the heading
-- A text input and "Add" button
-- An empty state message
+-  "Quiver" as the heading
+-  A text input and "Add" button
+-  An empty state message
 
 Type something, press Enter or click Add, and your idea appears in the list. Refresh the page and—they're gone. We haven't added persistence yet.
 
@@ -343,7 +343,7 @@ The complete series:
 
 ---
 
-*Commit your progress:*
+_Commit your progress:_
 
 ```bash
 git init

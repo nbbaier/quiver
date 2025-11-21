@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+
+// Group posts by series
+const postsBySeries = posts.reduce((acc, post) => {
+  const series = post.data.series || 'Other';
+  if (!acc[series]) {
+    acc[series] = [];
+  }
+  acc[series].push(post);
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+// Sort series names
+const sortedSeries = Object.keys(postsBySeries).sort();
+
+// Sort posts within each series
+Object.values(postsBySeries).forEach(seriesPosts => {
+  seriesPosts.sort((a, b) => {
+    // Sort by slug usually gives correct order (01, 02, etc)
+    const slugA = a.data.slug || a.id;
+    const slugB = b.data.slug || b.id;
+    return slugA.localeCompare(slugB);
+  });
+});
+---
+
+<Layout title="Dev Blog Series">
+	<div class="text-center mb-16">
+		<h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4">
+			Developer Guides
+		</h1>
+		<p class="text-xl text-gray-500 max-w-2xl mx-auto">
+			A collection of implementation guides and technical deep dives.
+		</p>
+	</div>
+
+	<div class="space-y-20">
+		{sortedSeries.map(series => (
+			<section>
+				<h2 class="text-3xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">
+					{series}
+				</h2>
+				<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-1">
+					{postsBySeries[series].map((post) => (
+						<a 
+							href={`/posts/${post.data.slug || post.id.replace(/\.md$/, '')}`}
+							class="block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:border-blue-300 transition-all duration-200 group"
+						>
+							<div class="p-8">
+								<div class="flex items-center gap-2 mb-4 text-sm text-blue-600 font-semibold">
+									<span class="bg-blue-50 px-3 py-1 rounded-full group-hover:bg-blue-100 transition-colors">
+										{(post.data.slug || post.id).split('/').pop()?.match(/^\d+/) ? `Part ${parseInt((post.data.slug || post.id).split('/').pop()!.match(/^\d+/)![0])}` : 'Guide'}
+									</span>
+								</div>
+								<h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+									{post.data.title}
+								</h3>
+								<div class="text-gray-500 line-clamp-2 prose prose-sm">
+									<p>Read this chapter &rarr;</p>
+								</div>
+							</div>
+						</a>
+					))}
+				</div>
+			</section>
+		))}
+	</div>
+</Layout>
