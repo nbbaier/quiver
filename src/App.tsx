@@ -2,54 +2,68 @@ import { IdeaCard } from "@/components/IdeaCard";
 import { IdeaForm } from "@/components/IdeaForm";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { useIdeas } from "@/hooks/useIdeas";
 
 function App() {
-	const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
+	const {
+		ideas,
+		loading,
+		error,
+		syncing,
+		isOnline,
+		addIdea,
+		editIdea,
+		removeIdea,
+	} = useIdeas();
 
 	return (
-		<div className="app-container">
-			<header className="app-header">
-				<h1>Quiver</h1>
-				<p>Capture and develop your ideas</p>
-			</header>
+		<>
+			<OfflineIndicator isOnline={isOnline} syncing={syncing} />
 
-			<main className="app-main">
-				<IdeaForm onSubmit={addIdea} />
+			<div className="app-container">
+				<header className="app-header">
+					<h1>Quiver</h1>
+					<p>Capture and develop your ideas</p>
+				</header>
 
-				{error && <div className="error-message">{error}</div>}
+				<main className="app-main">
+					<IdeaForm onSubmit={addIdea} />
 
-				{loading ? (
-					<div className="loading">Loading ideas...</div>
-				) : ideas.length === 0 ? (
-					<div className="empty-state">
-						<p>No ideas yet!</p>
-						<p>Start capturing your thoughts above.</p>
-					</div>
-				) : (
-					<div className="ideas-list">
-						{ideas.map((idea) => (
-							<IdeaCard
-								key={idea.id}
-								idea={idea}
-								onUpdate={editIdea}
-								onDelete={removeIdea}
-							/>
-						))}
-					</div>
-				)}
-			</main>
+					{error && <div className="error-message">{error}</div>}
 
-			<footer className="app-footer">
-				<p>
-					{ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
-				</p>
-			</footer>
+					{loading ? (
+						<div className="loading">Loading ideas...</div>
+					) : ideas.length === 0 ? (
+						<div className="empty-state">
+							<p>No ideas yet!</p>
+							<p>Start capturing your thoughts above.</p>
+						</div>
+					) : (
+						<div className="ideas-list">
+							{ideas.map((idea) => (
+								<IdeaCard
+									key={idea.id}
+									idea={idea}
+									onUpdate={editIdea}
+									onDelete={removeIdea}
+								/>
+							))}
+						</div>
+					)}
+				</main>
 
-			{/* PWA Install Prompts */}
-			<InstallPrompt />
-			<IOSInstallInstructions />
-		</div>
+				<footer className="app-footer">
+					<p>
+						{ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+						{!isOnline && " (offline)"}
+					</p>
+				</footer>
+
+				<InstallPrompt />
+				<IOSInstallInstructions />
+			</div>
+		</>
 	);
 }
 

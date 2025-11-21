@@ -318,3 +318,30 @@ body {
 .ios-install-instructions p {
    margin-bottom: 4px;
 }
+
+/* Offline Indicator */
+.offline-indicator {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   padding: 8px 16px;
+   text-align: center;
+   font-size: 0.875rem;
+   z-index: 1001;
+}
+
+.offline-indicator.offline {
+   background-color: #ff6b6b;
+   color: white;
+}
+
+.offline-indicator.syncing {
+   background-color: #ffd93d;
+   color: #333;
+}
+
+/* Push content down when indicator is showing */
+body:has(.offline-indicator) .app-container {
+   padding-top: 50px;
+}

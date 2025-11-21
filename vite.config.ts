@@ -39,6 +39,33 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+				runtimeCaching: [
+					{
+						// Cache API calls to Turso
+						urlPattern: /^https:\/\/.*\.turso\.io\/.*/i,
+						handler: "NetworkFirst",
+						options: {
+							cacheName: "api-cache",
+							expiration: {
+								maxEntries: 100,
+								maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+							},
+							networkTimeoutSeconds: 10,
+						},
+					},
+					{
+						// Cache Google Fonts
+						urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+						handler: "CacheFirst",
+						options: {
+							cacheName: "google-fonts-cache",
+							expiration: {
+								maxEntries: 10,
+								maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+							},
+						},
+					},
+				],
 			},
 		}),
 	],
