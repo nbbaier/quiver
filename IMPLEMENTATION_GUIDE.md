@@ -15,9 +15,9 @@
 7. [Milestone 5: Offline Support & Caching](#milestone-5-offline-support--caching)
 8. [Milestone 6: AI Brainstorming Integration](#milestone-6-ai-brainstorming-integration)
 9. [Milestone 7: Deployment to Vercel](#milestone-7-deployment-to-vercel)
-10. [Milestone 8: Testing & Polish](#milestone-8-testing--polish)
-11. [Troubleshooting Guide](#troubleshooting-guide)
-12. [Next Steps: Browser Extension](#next-steps-browser-extension)
+10.   [Milestone 8: Testing & Polish](#milestone-8-testing--polish)
+11.   [Troubleshooting Guide](#troubleshooting-guide)
+12.   [Next Steps: Browser Extension](#next-steps-browser-extension)
 
 ---
 
@@ -25,26 +25,26 @@
 
 **Quiver** is an offline-first Progressive Web App (PWA) for capturing and developing ideas. You'll build an app that:
 
-- **Works offline**: Capture ideas anywhere, even without internet
-- **Installs like a native app**: Add to home screen on mobile and desktop
-- **Syncs automatically**: Data flows to the cloud when connected
-- **AI-powered brainstorming**: Get creative suggestions from Claude AI
+-  **Works offline**: Capture ideas anywhere, even without internet
+-  **Installs like a native app**: Add to home screen on mobile and desktop
+-  **Syncs automatically**: Data flows to the cloud when connected
+-  **AI-powered brainstorming**: Get creative suggestions from Claude AI
 
 ### Tech Stack Overview
 
-| Layer | Technology | Why |
-|-------|------------|-----|
-| Frontend | Vite + React | Fastest setup, excellent PWA tooling |
-| Database | Turso + Drizzle ORM | SQLite simplicity, type-safe queries, generous free tier |
-| Async Jobs | Inngest | Zero-config background tasks with built-in retry |
-| AI | Claude Haiku 4.5 | Best brainstorming quality for cost |
-| PWA | vite-plugin-pwa | Automatic service worker generation |
-| Hosting | Vercel | Free tier, seamless deployment |
+| Layer      | Technology          | Why                                                      |
+| ---------- | ------------------- | -------------------------------------------------------- |
+| Frontend   | Vite + React        | Fastest setup, excellent PWA tooling                     |
+| Database   | Turso + Drizzle ORM | SQLite simplicity, type-safe queries, generous free tier |
+| Async Jobs | Inngest             | Zero-config background tasks with built-in retry         |
+| AI         | Claude Haiku 4.5    | Best brainstorming quality for cost                      |
+| PWA        | vite-plugin-pwa     | Automatic service worker generation                      |
+| Hosting    | Vercel              | Free tier, seamless deployment                           |
 
 ### Time & Cost Estimate
 
-- **Development time**: 12-16 hours (one weekend)
-- **Monthly cost**: ~$2.70 (Claude API only; everything else is free tier)
+-  **Development time**: 12-16 hours (one weekend)
+-  **Monthly cost**: ~$2.70 (Claude API only; everything else is free tier)
 
 ---
 
@@ -78,18 +78,18 @@ Create free accounts on these services:
 
 This guide assumes you understand:
 
-- Basic JavaScript/TypeScript syntax
-- React fundamentals (components, state, props, hooks)
-- Command line basics (cd, npm commands)
-- Basic SQL concepts (tables, queries)
+-  Basic JavaScript/TypeScript syntax
+-  React fundamentals (components, state, props, hooks)
+-  Command line basics (cd, npm commands)
+-  Basic SQL concepts (tables, queries)
 
 ### Recommended Setup
 
-- **Code Editor**: VS Code with the following extensions:
-  - ESLint
-  - Prettier
-  - TypeScript and JavaScript Language Features
-- **Browser**: Chrome (best PWA DevTools support)
+-  **Code Editor**: VS Code with the following extensions:
+   -  ESLint
+   -  Prettier
+   -  TypeScript and JavaScript Language Features
+-  **Browser**: Chrome (best PWA DevTools support)
 
 ---
 
@@ -158,54 +158,54 @@ Replace the contents of `src/App.tsx`:
 
 ```tsx
 // src/App.tsx
-import { useState } from 'react'
+import { useState } from "react";
 
 function App() {
-  const [ideas, setIdeas] = useState<string[]>([])
-  const [input, setInput] = useState('')
+   const [ideas, setIdeas] = useState<string[]>([]);
+   const [input, setInput] = useState("");
 
-  const addIdea = () => {
-    if (input.trim()) {
-      setIdeas([...ideas, input.trim()])
-      setInput('')
-    }
-  }
+   const addIdea = () => {
+      if (input.trim()) {
+         setIdeas([...ideas, input.trim()]);
+         setInput("");
+      }
+   };
 
-  return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1>Quiver</h1>
-      <p>Capture your ideas</p>
+   return (
+      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+         <h1>Quiver</h1>
+         <p>Capture your ideas</p>
 
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && addIdea()}
-          placeholder="Enter an idea..."
-          style={{ flex: 1, padding: '8px' }}
-        />
-        <button onClick={addIdea} style={{ padding: '8px 16px' }}>
-          Add
-        </button>
+         <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+            <input
+               type="text"
+               value={input}
+               onChange={(e) => setInput(e.target.value)}
+               onKeyDown={(e) => e.key === "Enter" && addIdea()}
+               placeholder="Enter an idea..."
+               style={{ flex: 1, padding: "8px" }}
+            />
+            <button onClick={addIdea} style={{ padding: "8px 16px" }}>
+               Add
+            </button>
+         </div>
+
+         <ul>
+            {ideas.map((idea, index) => (
+               <li key={index} style={{ padding: "8px 0" }}>
+                  {idea}
+               </li>
+            ))}
+         </ul>
+
+         {ideas.length === 0 && (
+            <p style={{ color: "#666" }}>No ideas yet. Add your first one!</p>
+         )}
       </div>
-
-      <ul>
-        {ideas.map((idea, index) => (
-          <li key={index} style={{ padding: '8px 0' }}>
-            {idea}
-          </li>
-        ))}
-      </ul>
-
-      {ideas.length === 0 && (
-        <p style={{ color: '#666' }}>No ideas yet. Add your first one!</p>
-      )}
-    </div>
-  )
+   );
 }
 
-export default App
+export default App;
 ```
 
 #### 1.5 Update the Global Styles
@@ -215,38 +215,39 @@ Replace the contents of `src/index.css`:
 ```css
 /* src/index.css */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+   line-height: 1.6;
+   color: #333;
+   background-color: #f5f5f5;
 }
 
-input, button {
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+input,
+button {
+   font-size: 16px;
+   border: 1px solid #ddd;
+   border-radius: 4px;
 }
 
 button {
-  background-color: #0066cc;
-  color: white;
-  border: none;
-  cursor: pointer;
+   background-color: #0066cc;
+   color: white;
+   border: none;
+   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0052a3;
+   background-color: #0052a3;
 }
 
 ul {
-  list-style: none;
+   list-style: none;
 }
 ```
 
@@ -264,31 +265,31 @@ Update `vite.config.ts` to enable cleaner imports:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-})
+   plugins: [react()],
+   resolve: {
+      alias: {
+         "@": path.resolve(__dirname, "./src"),
+      },
+   },
+});
 ```
 
 Update `tsconfig.json` to add path mapping (add inside `compilerOptions`):
 
 ```json
 {
-  "compilerOptions": {
-    // ... existing options
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+   "compilerOptions": {
+      // ... existing options
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["./src/*"]
+      }
+   }
 }
 ```
 
@@ -301,6 +302,7 @@ npm run dev
 ```
 
 **Expected behavior**:
+
 1. Terminal shows: `Local: http://localhost:5173/`
 2. Open that URL in your browser
 3. You see "Quiver" as the heading
@@ -313,6 +315,7 @@ npm run dev
 ---
 
 **Commit your progress**:
+
 ```bash
 git init
 git add .
@@ -331,26 +334,29 @@ Set up a cloud SQLite database with Turso, define your schema with Drizzle ORM, 
 
 ### Concepts to Understand
 
-- **Turso**: A distributed SQLite database. Think of it as "SQLite in the cloud" with automatic replication.
-- **Drizzle ORM**: A TypeScript-first database toolkit. It generates SQL queries from TypeScript code and provides full type safety.
-- **Schema**: The structure of your database tables (what columns exist, their types, constraints).
-- **Migration**: A script that modifies your database schema in a controlled, versioned way.
+-  **Turso**: A distributed SQLite database. Think of it as "SQLite in the cloud" with automatic replication.
+-  **Drizzle ORM**: A TypeScript-first database toolkit. It generates SQL queries from TypeScript code and provides full type safety.
+-  **Schema**: The structure of your database tables (what columns exist, their types, constraints).
+-  **Migration**: A script that modifies your database schema in a controlled, versioned way.
 
 ### Steps
 
 #### 2.1 Install and Set Up Turso CLI
 
 **On macOS:**
+
 ```bash
 brew install tursodatabase/tap/turso
 ```
 
 **On Linux:**
+
 ```bash
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
 **On Windows (WSL):**
+
 ```bash
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
@@ -364,6 +370,7 @@ turso auth signup
 This opens your browser. Sign up with GitHub (recommended) or email.
 
 After signup, verify authentication:
+
 ```bash
 turso auth whoami
 ```
@@ -411,10 +418,10 @@ npm install drizzle-orm @libsql/client
 npm install -D drizzle-kit dotenv
 ```
 
-- `drizzle-orm`: The ORM for writing queries
-- `@libsql/client`: The Turso database client
-- `drizzle-kit`: CLI tools for migrations
-- `dotenv`: Loads environment variables from `.env`
+-  `drizzle-orm`: The ORM for writing queries
+-  `@libsql/client`: The Turso database client
+-  `drizzle-kit`: CLI tools for migrations
+-  `dotenv`: Loads environment variables from `.env`
 
 #### 2.6 Create the Database Schema
 
@@ -422,35 +429,36 @@ Create `src/db/schema.ts`:
 
 ```ts
 // src/db/schema.ts
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-export const ideas = sqliteTable('ideas', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  title: text('title').notNull(),
-  content: text('content'),
-  tags: text('tags'), // JSON string: ["tag1", "tag2"]
-  urls: text('urls'), // JSON string: ["url1", "url2"]
-  archived: integer('archived', { mode: 'boolean' }).default(false),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
-})
+export const ideas = sqliteTable("ideas", {
+   id: integer("id").primaryKey({ autoIncrement: true }),
+   title: text("title").notNull(),
+   content: text("content"),
+   tags: text("tags"), // JSON string: ["tag1", "tag2"]
+   urls: text("urls"), // JSON string: ["url1", "url2"]
+   archived: integer("archived", { mode: "boolean" }).default(false),
+   createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+   updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+});
 
 // TypeScript types derived from the schema
-export type Idea = typeof ideas.$inferSelect
-export type NewIdea = typeof ideas.$inferInsert
+export type Idea = typeof ideas.$inferSelect;
+export type NewIdea = typeof ideas.$inferInsert;
 ```
 
 **Understanding the schema**:
-- `id`: Auto-incrementing primary key
-- `title`: Required text field for the idea title
-- `content`: Optional longer description
-- `tags` and `urls`: Stored as JSON strings (we'll parse them in code)
-- `archived`: Boolean to soft-delete ideas
-- `createdAt` / `updatedAt`: Timestamps for tracking
+
+-  `id`: Auto-incrementing primary key
+-  `title`: Required text field for the idea title
+-  `content`: Optional longer description
+-  `tags` and `urls`: Stored as JSON strings (we'll parse them in code)
+-  `archived`: Boolean to soft-delete ideas
+-  `createdAt` / `updatedAt`: Timestamps for tracking
 
 #### 2.7 Create the Database Client
 
@@ -458,17 +466,20 @@ Create `src/db/index.ts`:
 
 ```ts
 // src/db/index.ts
-import { drizzle } from 'drizzle-orm/libsql'
-import { createClient } from '@libsql/client'
-import * as schema from './schema'
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import * as schema from "./schema";
 
 // For server-side usage (API routes)
 const client = createClient({
-  url: import.meta.env.VITE_TURSO_DATABASE_URL || process.env.TURSO_DATABASE_URL!,
-  authToken: import.meta.env.VITE_TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
-})
+   url:
+      import.meta.env.VITE_TURSO_DATABASE_URL ||
+      process.env.TURSO_DATABASE_URL!,
+   authToken:
+      import.meta.env.VITE_TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
+});
 
-export const db = drizzle(client, { schema })
+export const db = drizzle(client, { schema });
 ```
 
 Update your `.env` file to include Vite-prefixed variables (for client-side access during development):
@@ -489,20 +500,20 @@ Create `drizzle.config.ts` in your project root:
 
 ```ts
 // drizzle.config.ts
-import type { Config } from 'drizzle-kit'
-import * as dotenv from 'dotenv'
+import type { Config } from "drizzle-kit";
+import * as dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 export default {
-  schema: './src/db/schema.ts',
-  out: './drizzle',
-  dialect: 'turso',
-  dbCredentials: {
-    url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  },
-} satisfies Config
+   schema: "./src/db/schema.ts",
+   out: "./drizzle",
+   dialect: "turso",
+   dbCredentials: {
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+   },
+} satisfies Config;
 ```
 
 #### 2.9 Generate and Run Migrations
@@ -529,14 +540,14 @@ Add these scripts to your `package.json`:
 
 ```json
 {
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
-  }
+   "scripts": {
+      "dev": "vite",
+      "build": "tsc -b && vite build",
+      "preview": "vite preview",
+      "db:generate": "drizzle-kit generate",
+      "db:push": "drizzle-kit push",
+      "db:studio": "drizzle-kit studio"
+   }
 }
 ```
 
@@ -546,33 +557,33 @@ Create a temporary test file `src/db/test-connection.ts`:
 
 ```ts
 // src/db/test-connection.ts
-import { db } from './index'
-import { ideas } from './schema'
+import { db } from "./index";
+import { ideas } from "./schema";
 
 async function testConnection() {
-  console.log('Testing database connection...')
+   console.log("Testing database connection...");
 
-  // Insert a test idea
-  const [newIdea] = await db
-    .insert(ideas)
-    .values({
-      title: 'Test Idea',
-      content: 'This is a test to verify the database works!',
-    })
-    .returning()
+   // Insert a test idea
+   const [newIdea] = await db
+      .insert(ideas)
+      .values({
+         title: "Test Idea",
+         content: "This is a test to verify the database works!",
+      })
+      .returning();
 
-  console.log('Created idea:', newIdea)
+   console.log("Created idea:", newIdea);
 
-  // Read it back
-  const allIdeas = await db.select().from(ideas)
-  console.log('All ideas:', allIdeas)
+   // Read it back
+   const allIdeas = await db.select().from(ideas);
+   console.log("All ideas:", allIdeas);
 
-  // Clean up
-  await db.delete(ideas).where(/* delete where id = newIdea.id */)
-  console.log('Test complete!')
+   // Clean up
+   await db.delete(ideas).where(/* delete where id = newIdea.id */);
+   console.log("Test complete!");
 }
 
-testConnection().catch(console.error)
+testConnection().catch(console.error);
 ```
 
 Run the test with:
@@ -590,15 +601,16 @@ npx tsx src/db/test-connection.ts
 2. **Drizzle Studio**: Run `npm run db:studio` and open the provided URL. You can browse your database visually.
 
 3. **Test Script Output**: The test script should show:
-   - "Created idea:" with an ID and your test data
-   - "All ideas:" with an array containing your idea
-   - "Test complete!"
+   -  "Created idea:" with an ID and your test data
+   -  "All ideas:" with an array containing your idea
+   -  "Test complete!"
 
 **Checkpoint**: You now have a working cloud database with type-safe access!
 
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 2: Database setup with Turso and Drizzle"
@@ -629,29 +641,29 @@ Create `src/types/idea.ts`:
 ```ts
 // src/types/idea.ts
 export interface Idea {
-  id: number
-  title: string
-  content: string | null
-  tags: string[] // Parsed from JSON
-  urls: string[] // Parsed from JSON
-  archived: boolean
-  createdAt: Date
-  updatedAt: Date
+   id: number;
+   title: string;
+   content: string | null;
+   tags: string[]; // Parsed from JSON
+   urls: string[]; // Parsed from JSON
+   archived: boolean;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export interface CreateIdeaInput {
-  title: string
-  content?: string
-  tags?: string[]
-  urls?: string[]
+   title: string;
+   content?: string;
+   tags?: string[];
+   urls?: string[];
 }
 
 export interface UpdateIdeaInput {
-  title?: string
-  content?: string
-  tags?: string[]
-  urls?: string[]
-  archived?: boolean
+   title?: string;
+   content?: string;
+   tags?: string[];
+   urls?: string[];
+   archived?: boolean;
 }
 ```
 
@@ -661,92 +673,95 @@ Create `src/lib/ideas.ts`:
 
 ```ts
 // src/lib/ideas.ts
-import { db } from '@/db'
-import { ideas } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
-import type { Idea, CreateIdeaInput, UpdateIdeaInput } from '@/types/idea'
+import { db } from "@/db";
+import { ideas } from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
+import type { Idea, CreateIdeaInput, UpdateIdeaInput } from "@/types/idea";
 
 // Helper to parse JSON fields from database
 function parseIdea(row: typeof ideas.$inferSelect): Idea {
-  return {
-    id: row.id,
-    title: row.title,
-    content: row.content,
-    tags: row.tags ? JSON.parse(row.tags) : [],
-    urls: row.urls ? JSON.parse(row.urls) : [],
-    archived: row.archived ?? false,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-  }
+   return {
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      tags: row.tags ? JSON.parse(row.tags) : [],
+      urls: row.urls ? JSON.parse(row.urls) : [],
+      archived: row.archived ?? false,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+   };
 }
 
 // Get all non-archived ideas, newest first
 export async function getIdeas(): Promise<Idea[]> {
-  const rows = await db
-    .select()
-    .from(ideas)
-    .where(eq(ideas.archived, false))
-    .orderBy(desc(ideas.createdAt))
+   const rows = await db
+      .select()
+      .from(ideas)
+      .where(eq(ideas.archived, false))
+      .orderBy(desc(ideas.createdAt));
 
-  return rows.map(parseIdea)
+   return rows.map(parseIdea);
 }
 
 // Get a single idea by ID
 export async function getIdea(id: number): Promise<Idea | null> {
-  const [row] = await db.select().from(ideas).where(eq(ideas.id, id))
-  return row ? parseIdea(row) : null
+   const [row] = await db.select().from(ideas).where(eq(ideas.id, id));
+   return row ? parseIdea(row) : null;
 }
 
 // Create a new idea
 export async function createIdea(input: CreateIdeaInput): Promise<Idea> {
-  const [row] = await db
-    .insert(ideas)
-    .values({
-      title: input.title,
-      content: input.content || null,
-      tags: input.tags ? JSON.stringify(input.tags) : null,
-      urls: input.urls ? JSON.stringify(input.urls) : null,
-    })
-    .returning()
+   const [row] = await db
+      .insert(ideas)
+      .values({
+         title: input.title,
+         content: input.content || null,
+         tags: input.tags ? JSON.stringify(input.tags) : null,
+         urls: input.urls ? JSON.stringify(input.urls) : null,
+      })
+      .returning();
 
-  return parseIdea(row)
+   return parseIdea(row);
 }
 
 // Update an existing idea
-export async function updateIdea(id: number, input: UpdateIdeaInput): Promise<Idea | null> {
-  const updateData: Record<string, unknown> = {
-    updatedAt: new Date(),
-  }
+export async function updateIdea(
+   id: number,
+   input: UpdateIdeaInput
+): Promise<Idea | null> {
+   const updateData: Record<string, unknown> = {
+      updatedAt: new Date(),
+   };
 
-  if (input.title !== undefined) updateData.title = input.title
-  if (input.content !== undefined) updateData.content = input.content
-  if (input.tags !== undefined) updateData.tags = JSON.stringify(input.tags)
-  if (input.urls !== undefined) updateData.urls = JSON.stringify(input.urls)
-  if (input.archived !== undefined) updateData.archived = input.archived
+   if (input.title !== undefined) updateData.title = input.title;
+   if (input.content !== undefined) updateData.content = input.content;
+   if (input.tags !== undefined) updateData.tags = JSON.stringify(input.tags);
+   if (input.urls !== undefined) updateData.urls = JSON.stringify(input.urls);
+   if (input.archived !== undefined) updateData.archived = input.archived;
 
-  const [row] = await db
-    .update(ideas)
-    .set(updateData)
-    .where(eq(ideas.id, id))
-    .returning()
+   const [row] = await db
+      .update(ideas)
+      .set(updateData)
+      .where(eq(ideas.id, id))
+      .returning();
 
-  return row ? parseIdea(row) : null
+   return row ? parseIdea(row) : null;
 }
 
 // Soft delete (archive) an idea
 export async function archiveIdea(id: number): Promise<boolean> {
-  const result = await db
-    .update(ideas)
-    .set({ archived: true, updatedAt: new Date() })
-    .where(eq(ideas.id, id))
+   const result = await db
+      .update(ideas)
+      .set({ archived: true, updatedAt: new Date() })
+      .where(eq(ideas.id, id));
 
-  return result.rowsAffected > 0
+   return result.rowsAffected > 0;
 }
 
 // Permanently delete an idea
 export async function deleteIdea(id: number): Promise<boolean> {
-  const result = await db.delete(ideas).where(eq(ideas.id, id))
-  return result.rowsAffected > 0
+   const result = await db.delete(ideas).where(eq(ideas.id, id));
+   return result.rowsAffected > 0;
 }
 ```
 
@@ -756,82 +771,84 @@ Create `src/hooks/useIdeas.ts`:
 
 ```ts
 // src/hooks/useIdeas.ts
-import { useState, useEffect, useCallback } from 'react'
-import type { Idea, CreateIdeaInput, UpdateIdeaInput } from '@/types/idea'
-import * as ideasLib from '@/lib/ideas'
+import { useState, useEffect, useCallback } from "react";
+import type { Idea, CreateIdeaInput, UpdateIdeaInput } from "@/types/idea";
+import * as ideasLib from "@/lib/ideas";
 
 export function useIdeas() {
-  const [ideas, setIdeas] = useState<Idea[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+   const [ideas, setIdeas] = useState<Idea[]>([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
 
-  // Fetch all ideas
-  const fetchIdeas = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const data = await ideasLib.getIdeas()
-      setIdeas(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch ideas')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  // Initial fetch
-  useEffect(() => {
-    fetchIdeas()
-  }, [fetchIdeas])
-
-  // Create a new idea
-  const addIdea = useCallback(async (input: CreateIdeaInput) => {
-    try {
-      const newIdea = await ideasLib.createIdea(input)
-      setIdeas((prev) => [newIdea, ...prev])
-      return newIdea
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create idea')
-      throw err
-    }
-  }, [])
-
-  // Update an idea
-  const editIdea = useCallback(async (id: number, input: UpdateIdeaInput) => {
-    try {
-      const updated = await ideasLib.updateIdea(id, input)
-      if (updated) {
-        setIdeas((prev) =>
-          prev.map((idea) => (idea.id === id ? updated : idea))
-        )
+   // Fetch all ideas
+   const fetchIdeas = useCallback(async () => {
+      try {
+         setLoading(true);
+         setError(null);
+         const data = await ideasLib.getIdeas();
+         setIdeas(data);
+      } catch (err) {
+         setError(err instanceof Error ? err.message : "Failed to fetch ideas");
+      } finally {
+         setLoading(false);
       }
-      return updated
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update idea')
-      throw err
-    }
-  }, [])
+   }, []);
 
-  // Archive (soft delete) an idea
-  const removeIdea = useCallback(async (id: number) => {
-    try {
-      await ideasLib.archiveIdea(id)
-      setIdeas((prev) => prev.filter((idea) => idea.id !== id))
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to archive idea')
-      throw err
-    }
-  }, [])
+   // Initial fetch
+   useEffect(() => {
+      fetchIdeas();
+   }, [fetchIdeas]);
 
-  return {
-    ideas,
-    loading,
-    error,
-    addIdea,
-    editIdea,
-    removeIdea,
-    refreshIdeas: fetchIdeas,
-  }
+   // Create a new idea
+   const addIdea = useCallback(async (input: CreateIdeaInput) => {
+      try {
+         const newIdea = await ideasLib.createIdea(input);
+         setIdeas((prev) => [newIdea, ...prev]);
+         return newIdea;
+      } catch (err) {
+         setError(err instanceof Error ? err.message : "Failed to create idea");
+         throw err;
+      }
+   }, []);
+
+   // Update an idea
+   const editIdea = useCallback(async (id: number, input: UpdateIdeaInput) => {
+      try {
+         const updated = await ideasLib.updateIdea(id, input);
+         if (updated) {
+            setIdeas((prev) =>
+               prev.map((idea) => (idea.id === id ? updated : idea))
+            );
+         }
+         return updated;
+      } catch (err) {
+         setError(err instanceof Error ? err.message : "Failed to update idea");
+         throw err;
+      }
+   }, []);
+
+   // Archive (soft delete) an idea
+   const removeIdea = useCallback(async (id: number) => {
+      try {
+         await ideasLib.archiveIdea(id);
+         setIdeas((prev) => prev.filter((idea) => idea.id !== id));
+      } catch (err) {
+         setError(
+            err instanceof Error ? err.message : "Failed to archive idea"
+         );
+         throw err;
+      }
+   }, []);
+
+   return {
+      ideas,
+      loading,
+      error,
+      addIdea,
+      editIdea,
+      removeIdea,
+      refreshIdeas: fetchIdeas,
+   };
 }
 ```
 
@@ -841,110 +858,110 @@ Create `src/components/IdeaCard.tsx`:
 
 ```tsx
 // src/components/IdeaCard.tsx
-import { useState } from 'react'
-import type { Idea, UpdateIdeaInput } from '@/types/idea'
+import { useState } from "react";
+import type { Idea, UpdateIdeaInput } from "@/types/idea";
 
 interface IdeaCardProps {
-  idea: Idea
-  onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>
-  onDelete: (id: number) => Promise<void>
+   idea: Idea;
+   onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>;
+   onDelete: (id: number) => Promise<void>;
 }
 
 export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [title, setTitle] = useState(idea.title)
-  const [content, setContent] = useState(idea.content || '')
-  const [isDeleting, setIsDeleting] = useState(false)
+   const [isEditing, setIsEditing] = useState(false);
+   const [title, setTitle] = useState(idea.title);
+   const [content, setContent] = useState(idea.content || "");
+   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleSave = async () => {
-    await onUpdate(idea.id, { title, content })
-    setIsEditing(false)
-  }
+   const handleSave = async () => {
+      await onUpdate(idea.id, { title, content });
+      setIsEditing(false);
+   };
 
-  const handleCancel = () => {
-    setTitle(idea.title)
-    setContent(idea.content || '')
-    setIsEditing(false)
-  }
+   const handleCancel = () => {
+      setTitle(idea.title);
+      setContent(idea.content || "");
+      setIsEditing(false);
+   };
 
-  const handleDelete = async () => {
-    if (window.confirm('Archive this idea?')) {
-      setIsDeleting(true)
-      await onDelete(idea.id)
-    }
-  }
+   const handleDelete = async () => {
+      if (window.confirm("Archive this idea?")) {
+         setIsDeleting(true);
+         await onDelete(idea.id);
+      }
+   };
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
+   const formatDate = (date: Date) => {
+      return new Date(date).toLocaleDateString("en-US", {
+         month: "short",
+         day: "numeric",
+         hour: "2-digit",
+         minute: "2-digit",
+      });
+   };
 
-  if (isEditing) {
-    return (
-      <div className="idea-card editing">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="idea-title-input"
-          placeholder="Idea title..."
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="idea-content-input"
-          placeholder="Add more details..."
-          rows={3}
-        />
-        <div className="idea-actions">
-          <button onClick={handleSave} className="btn-save">
-            Save
-          </button>
-          <button onClick={handleCancel} className="btn-cancel">
-            Cancel
-          </button>
-        </div>
+   if (isEditing) {
+      return (
+         <div className="idea-card editing">
+            <input
+               type="text"
+               value={title}
+               onChange={(e) => setTitle(e.target.value)}
+               className="idea-title-input"
+               placeholder="Idea title..."
+            />
+            <textarea
+               value={content}
+               onChange={(e) => setContent(e.target.value)}
+               className="idea-content-input"
+               placeholder="Add more details..."
+               rows={3}
+            />
+            <div className="idea-actions">
+               <button onClick={handleSave} className="btn-save">
+                  Save
+               </button>
+               <button onClick={handleCancel} className="btn-cancel">
+                  Cancel
+               </button>
+            </div>
+         </div>
+      );
+   }
+
+   return (
+      <div className="idea-card">
+         <div className="idea-header">
+            <h3 className="idea-title">{idea.title}</h3>
+            <span className="idea-date">{formatDate(idea.createdAt)}</span>
+         </div>
+
+         {idea.content && <p className="idea-content">{idea.content}</p>}
+
+         {idea.tags.length > 0 && (
+            <div className="idea-tags">
+               {idea.tags.map((tag, i) => (
+                  <span key={i} className="tag">
+                     {tag}
+                  </span>
+               ))}
+            </div>
+         )}
+
+         <div className="idea-actions">
+            <button onClick={() => setIsEditing(true)} className="btn-edit">
+               Edit
+            </button>
+            <button
+               onClick={handleDelete}
+               className="btn-delete"
+               disabled={isDeleting}
+            >
+               {isDeleting ? "Archiving..." : "Archive"}
+            </button>
+         </div>
       </div>
-    )
-  }
-
-  return (
-    <div className="idea-card">
-      <div className="idea-header">
-        <h3 className="idea-title">{idea.title}</h3>
-        <span className="idea-date">{formatDate(idea.createdAt)}</span>
-      </div>
-
-      {idea.content && <p className="idea-content">{idea.content}</p>}
-
-      {idea.tags.length > 0 && (
-        <div className="idea-tags">
-          {idea.tags.map((tag, i) => (
-            <span key={i} className="tag">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="idea-actions">
-        <button onClick={() => setIsEditing(true)} className="btn-edit">
-          Edit
-        </button>
-        <button
-          onClick={handleDelete}
-          className="btn-delete"
-          disabled={isDeleting}
-        >
-          {isDeleting ? 'Archiving...' : 'Archive'}
-        </button>
-      </div>
-    </div>
-  )
+   );
 }
 ```
 
@@ -954,106 +971,109 @@ Create `src/components/IdeaForm.tsx`:
 
 ```tsx
 // src/components/IdeaForm.tsx
-import { useState } from 'react'
-import type { CreateIdeaInput } from '@/types/idea'
+import { useState } from "react";
+import type { CreateIdeaInput } from "@/types/idea";
 
 interface IdeaFormProps {
-  onSubmit: (input: CreateIdeaInput) => Promise<void>
+   onSubmit: (input: CreateIdeaInput) => Promise<void>;
 }
 
 export function IdeaForm({ onSubmit }: IdeaFormProps) {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [tagInput, setTagInput] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
+   const [title, setTitle] = useState("");
+   const [content, setContent] = useState("");
+   const [tagInput, setTagInput] = useState("");
+   const [isSubmitting, setIsSubmitting] = useState(false);
+   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!title.trim()) return
+   const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!title.trim()) return;
 
-    setIsSubmitting(true)
-    try {
-      const tags = tagInput
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean)
+      setIsSubmitting(true);
+      try {
+         const tags = tagInput
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
 
-      await onSubmit({
-        title: title.trim(),
-        content: content.trim() || undefined,
-        tags: tags.length > 0 ? tags : undefined,
-      })
+         await onSubmit({
+            title: title.trim(),
+            content: content.trim() || undefined,
+            tags: tags.length > 0 ? tags : undefined,
+         });
 
-      // Reset form
-      setTitle('')
-      setContent('')
-      setTagInput('')
-      setIsExpanded(false)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+         // Reset form
+         setTitle("");
+         setContent("");
+         setTagInput("");
+         setIsExpanded(false);
+      } finally {
+         setIsSubmitting(false);
+      }
+   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Submit on Cmd/Ctrl + Enter
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      handleSubmit(e)
-    }
-  }
+   const handleKeyDown = (e: React.KeyboardEvent) => {
+      // Submit on Cmd/Ctrl + Enter
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+         handleSubmit(e);
+      }
+   };
 
-  return (
-    <form onSubmit={handleSubmit} className="idea-form">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        onFocus={() => setIsExpanded(true)}
-        onKeyDown={handleKeyDown}
-        placeholder="Capture an idea..."
-        className="idea-input-main"
-        disabled={isSubmitting}
-      />
-
-      {isExpanded && (
-        <>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Add more details (optional)..."
-            className="idea-input-content"
-            rows={3}
-            disabled={isSubmitting}
-          />
-
-          <input
+   return (
+      <form onSubmit={handleSubmit} className="idea-form">
+         <input
             type="text"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onFocus={() => setIsExpanded(true)}
             onKeyDown={handleKeyDown}
-            placeholder="Tags (comma-separated)..."
-            className="idea-input-tags"
+            placeholder="Capture an idea..."
+            className="idea-input-main"
             disabled={isSubmitting}
-          />
+         />
 
-          <div className="form-actions">
-            <button type="submit" disabled={!title.trim() || isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save Idea'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsExpanded(false)}
-              className="btn-collapse"
-            >
-              Collapse
-            </button>
-            <span className="form-hint">Ctrl+Enter to save</span>
-          </div>
-        </>
-      )}
-    </form>
-  )
+         {isExpanded && (
+            <>
+               <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Add more details (optional)..."
+                  className="idea-input-content"
+                  rows={3}
+                  disabled={isSubmitting}
+               />
+
+               <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Tags (comma-separated)..."
+                  className="idea-input-tags"
+                  disabled={isSubmitting}
+               />
+
+               <div className="form-actions">
+                  <button
+                     type="submit"
+                     disabled={!title.trim() || isSubmitting}
+                  >
+                     {isSubmitting ? "Saving..." : "Save Idea"}
+                  </button>
+                  <button
+                     type="button"
+                     onClick={() => setIsExpanded(false)}
+                     className="btn-collapse"
+                  >
+                     Collapse
+                  </button>
+                  <span className="form-hint">Ctrl+Enter to save</span>
+               </div>
+            </>
+         )}
+      </form>
+   );
 }
 ```
 
@@ -1063,54 +1083,56 @@ Replace `src/App.tsx`:
 
 ```tsx
 // src/App.tsx
-import { useIdeas } from '@/hooks/useIdeas'
-import { IdeaForm } from '@/components/IdeaForm'
-import { IdeaCard } from '@/components/IdeaCard'
+import { useIdeas } from "@/hooks/useIdeas";
+import { IdeaForm } from "@/components/IdeaForm";
+import { IdeaCard } from "@/components/IdeaCard";
 
 function App() {
-  const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas()
+   const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
 
-  return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>Quiver</h1>
-        <p>Capture and develop your ideas</p>
-      </header>
+   return (
+      <div className="app-container">
+         <header className="app-header">
+            <h1>Quiver</h1>
+            <p>Capture and develop your ideas</p>
+         </header>
 
-      <main className="app-main">
-        <IdeaForm onSubmit={addIdea} />
+         <main className="app-main">
+            <IdeaForm onSubmit={addIdea} />
 
-        {error && <div className="error-message">{error}</div>}
+            {error && <div className="error-message">{error}</div>}
 
-        {loading ? (
-          <div className="loading">Loading ideas...</div>
-        ) : ideas.length === 0 ? (
-          <div className="empty-state">
-            <p>No ideas yet!</p>
-            <p>Start capturing your thoughts above.</p>
-          </div>
-        ) : (
-          <div className="ideas-list">
-            {ideas.map((idea) => (
-              <IdeaCard
-                key={idea.id}
-                idea={idea}
-                onUpdate={editIdea}
-                onDelete={removeIdea}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+            {loading ? (
+               <div className="loading">Loading ideas...</div>
+            ) : ideas.length === 0 ? (
+               <div className="empty-state">
+                  <p>No ideas yet!</p>
+                  <p>Start capturing your thoughts above.</p>
+               </div>
+            ) : (
+               <div className="ideas-list">
+                  {ideas.map((idea) => (
+                     <IdeaCard
+                        key={idea.id}
+                        idea={idea}
+                        onUpdate={editIdea}
+                        onDelete={removeIdea}
+                     />
+                  ))}
+               </div>
+            )}
+         </main>
 
-      <footer className="app-footer">
-        <p>{ideas.length} idea{ideas.length !== 1 ? 's' : ''} captured</p>
-      </footer>
-    </div>
-  )
+         <footer className="app-footer">
+            <p>
+               {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+            </p>
+         </footer>
+      </div>
+   );
 }
 
-export default App
+export default App;
 ```
 
 #### 3.7 Add Styles for the CRUD Interface
@@ -1120,244 +1142,244 @@ Replace `src/index.css`:
 ```css
 /* src/index.css */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+   line-height: 1.6;
+   color: #333;
+   background-color: #f5f5f5;
 }
 
 /* Layout */
 .app-container {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+   max-width: 640px;
+   margin: 0 auto;
+   padding: 20px;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
 }
 
 .app-header {
-  text-align: center;
-  margin-bottom: 24px;
+   text-align: center;
+   margin-bottom: 24px;
 }
 
 .app-header h1 {
-  font-size: 2rem;
-  color: #0066cc;
+   font-size: 2rem;
+   color: #0066cc;
 }
 
 .app-header p {
-  color: #666;
+   color: #666;
 }
 
 .app-main {
-  flex: 1;
+   flex: 1;
 }
 
 .app-footer {
-  text-align: center;
-  padding: 20px;
-  color: #999;
-  font-size: 0.875rem;
+   text-align: center;
+   padding: 20px;
+   color: #999;
+   font-size: 0.875rem;
 }
 
 /* Form styles */
 .idea-form {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   background: white;
+   border-radius: 8px;
+   padding: 16px;
+   margin-bottom: 24px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .idea-input-main,
 .idea-input-content,
 .idea-input-tags {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-bottom: 12px;
+   width: 100%;
+   padding: 12px;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+   font-size: 16px;
+   margin-bottom: 12px;
 }
 
 .idea-input-main {
-  font-weight: 500;
+   font-weight: 500;
 }
 
 .idea-input-content {
-  resize: vertical;
-  min-height: 80px;
+   resize: vertical;
+   min-height: 80px;
 }
 
 .form-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+   display: flex;
+   align-items: center;
+   gap: 12px;
 }
 
 .form-actions button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-size: 14px;
 }
 
-.form-actions button[type='submit'] {
-  background-color: #0066cc;
-  color: white;
+.form-actions button[type="submit"] {
+   background-color: #0066cc;
+   color: white;
 }
 
-.form-actions button[type='submit']:hover:not(:disabled) {
-  background-color: #0052a3;
+.form-actions button[type="submit"]:hover:not(:disabled) {
+   background-color: #0052a3;
 }
 
-.form-actions button[type='submit']:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.form-actions button[type="submit"]:disabled {
+   background-color: #ccc;
+   cursor: not-allowed;
 }
 
 .btn-collapse {
-  background-color: #f0f0f0;
-  color: #666;
+   background-color: #f0f0f0;
+   color: #666;
 }
 
 .form-hint {
-  color: #999;
-  font-size: 0.75rem;
-  margin-left: auto;
+   color: #999;
+   font-size: 0.75rem;
+   margin-left: auto;
 }
 
 /* Idea card styles */
 .ideas-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
 }
 
 .idea-card {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   background: white;
+   border-radius: 8px;
+   padding: 16px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .idea-card.editing {
-  border: 2px solid #0066cc;
+   border: 2px solid #0066cc;
 }
 
 .idea-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   margin-bottom: 8px;
 }
 
 .idea-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
+   font-size: 1.1rem;
+   font-weight: 600;
+   color: #333;
 }
 
 .idea-date {
-  font-size: 0.75rem;
-  color: #999;
-  white-space: nowrap;
+   font-size: 0.75rem;
+   color: #999;
+   white-space: nowrap;
 }
 
 .idea-content {
-  color: #666;
-  margin-bottom: 12px;
+   color: #666;
+   margin-bottom: 12px;
 }
 
 .idea-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 8px;
+   margin-bottom: 12px;
 }
 
 .tag {
-  background-color: #e8f4fc;
-  color: #0066cc;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
+   background-color: #e8f4fc;
+   color: #0066cc;
+   padding: 2px 8px;
+   border-radius: 12px;
+   font-size: 0.75rem;
 }
 
 .idea-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
+   display: flex;
+   gap: 8px;
+   margin-top: 12px;
 }
 
 .idea-actions button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.875rem;
+   padding: 6px 12px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-size: 0.875rem;
 }
 
 .btn-edit {
-  background-color: #f0f0f0;
-  color: #333;
+   background-color: #f0f0f0;
+   color: #333;
 }
 
 .btn-delete {
-  background-color: #fff0f0;
-  color: #cc0000;
+   background-color: #fff0f0;
+   color: #cc0000;
 }
 
 .btn-save {
-  background-color: #0066cc;
-  color: white;
+   background-color: #0066cc;
+   color: white;
 }
 
 .btn-cancel {
-  background-color: #f0f0f0;
-  color: #666;
+   background-color: #f0f0f0;
+   color: #666;
 }
 
 .idea-title-input,
 .idea-content-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-bottom: 8px;
+   width: 100%;
+   padding: 8px;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+   font-size: 16px;
+   margin-bottom: 8px;
 }
 
 /* State styles */
 .loading,
 .empty-state,
 .error-message {
-  text-align: center;
-  padding: 40px;
+   text-align: center;
+   padding: 40px;
 }
 
 .loading {
-  color: #666;
+   color: #666;
 }
 
 .empty-state {
-  color: #999;
+   color: #999;
 }
 
 .error-message {
-  background-color: #fff0f0;
-  color: #cc0000;
-  border-radius: 8px;
-  margin-bottom: 16px;
+   background-color: #fff0f0;
+   color: #cc0000;
+   border-radius: 8px;
+   margin-bottom: 16px;
 }
 ```
 
@@ -1366,28 +1388,32 @@ body {
 1. **Start the dev server**: `npm run dev`
 
 2. **Test Create**:
-   - Click the input field - it should expand to show more fields
-   - Enter a title like "My first idea"
-   - Optionally add content and tags (comma-separated)
-   - Click "Save Idea" or press Ctrl+Enter
-   - The idea should appear in the list below
+
+   -  Click the input field - it should expand to show more fields
+   -  Enter a title like "My first idea"
+   -  Optionally add content and tags (comma-separated)
+   -  Click "Save Idea" or press Ctrl+Enter
+   -  The idea should appear in the list below
 
 3. **Test Read**:
-   - Refresh the page
-   - Your ideas should still be there (loaded from Turso)
-   - Ideas should be sorted newest first
+
+   -  Refresh the page
+   -  Your ideas should still be there (loaded from Turso)
+   -  Ideas should be sorted newest first
 
 4. **Test Update**:
-   - Click "Edit" on an idea
-   - Change the title or content
-   - Click "Save"
-   - The changes should persist after refresh
+
+   -  Click "Edit" on an idea
+   -  Change the title or content
+   -  Click "Save"
+   -  The changes should persist after refresh
 
 5. **Test Delete (Archive)**:
-   - Click "Archive" on an idea
-   - Confirm the dialog
-   - The idea disappears from the list
-   - It's still in the database (just archived)
+
+   -  Click "Archive" on an idea
+   -  Confirm the dialog
+   -  The idea disappears from the list
+   -  It's still in the database (just archived)
 
 6. **Check the footer**: Should show the correct count of ideas
 
@@ -1396,6 +1422,7 @@ body {
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 3: CRUD interface for ideas"
@@ -1413,10 +1440,10 @@ Transform your web app into an installable Progressive Web App (PWA). By the end
 
 ### Concepts to Understand
 
-- **PWA (Progressive Web App)**: A web app that can be installed on devices and work offline
-- **Web App Manifest**: A JSON file that tells browsers about your app (name, icons, colors)
-- **Service Worker**: A script that runs in the background, enabling offline functionality
-- **Workbox**: A library that simplifies service worker creation (used by vite-plugin-pwa)
+-  **PWA (Progressive Web App)**: A web app that can be installed on devices and work offline
+-  **Web App Manifest**: A JSON file that tells browsers about your app (name, icons, colors)
+-  **Service Worker**: A script that runs in the background, enabling offline functionality
+-  **Workbox**: A library that simplifies service worker creation (used by vite-plugin-pwa)
 
 ### Steps
 
@@ -1460,64 +1487,65 @@ Update `vite.config.ts`:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
-      manifest: {
-        name: 'Quiver - Idea Capture',
-        short_name: 'Quiver',
-        description: 'Capture and develop your ideas anywhere',
-        theme_color: '#0066cc',
-        background_color: '#f5f5f5',
-        display: 'standalone',
-        scope: '/',
-        start_url: '/',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
+   plugins: [
+      react(),
+      VitePWA({
+         registerType: "autoUpdate",
+         includeAssets: ["icon.svg"],
+         manifest: {
+            name: "Quiver - Idea Capture",
+            short_name: "Quiver",
+            description: "Capture and develop your ideas anywhere",
+            theme_color: "#0066cc",
+            background_color: "#f5f5f5",
+            display: "standalone",
+            scope: "/",
+            start_url: "/",
+            icons: [
+               {
+                  src: "pwa-192x192.png",
+                  sizes: "192x192",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+                  purpose: "maskable",
+               },
+            ],
+         },
+         workbox: {
+            globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+         },
+      }),
+   ],
+   resolve: {
+      alias: {
+         "@": path.resolve(__dirname, "./src"),
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-      },
-    }),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-})
+   },
+});
 ```
 
 **Understanding the configuration**:
-- `registerType: 'autoUpdate'`: Service worker updates automatically when new version is available
-- `manifest`: Defines how the app appears when installed
-- `display: 'standalone'`: Hides the browser chrome for an app-like feel
-- `theme_color`: The color of the title bar on mobile
-- `workbox.globPatterns`: Which files to cache for offline use
+
+-  `registerType: 'autoUpdate'`: Service worker updates automatically when new version is available
+-  `manifest`: Defines how the app appears when installed
+-  `display: 'standalone'`: Hides the browser chrome for an app-like feel
+-  `theme_color`: The color of the title bar on mobile
+-  `workbox.globPatterns`: Which files to cache for offline use
 
 #### 4.4 Add the Install Prompt Component
 
@@ -1525,81 +1553,84 @@ Create `src/components/InstallPrompt.tsx`:
 
 ```tsx
 // src/components/InstallPrompt.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+   prompt(): Promise<void>;
+   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 export function InstallPrompt() {
-  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [isInstalled, setIsInstalled] = useState(false)
-  const [showPrompt, setShowPrompt] = useState(false)
+   const [installPrompt, setInstallPrompt] =
+      useState<BeforeInstallPromptEvent | null>(null);
+   const [isInstalled, setIsInstalled] = useState(false);
+   const [showPrompt, setShowPrompt] = useState(false);
 
-  useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true)
-      return
-    }
+   useEffect(() => {
+      // Check if already installed
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+         setIsInstalled(true);
+         return;
+      }
 
-    // Listen for the install prompt
-    const handleBeforeInstall = (e: Event) => {
-      e.preventDefault()
-      setInstallPrompt(e as BeforeInstallPromptEvent)
-      // Show our custom prompt after a delay
-      setTimeout(() => setShowPrompt(true), 3000)
-    }
+      // Listen for the install prompt
+      const handleBeforeInstall = (e: Event) => {
+         e.preventDefault();
+         setInstallPrompt(e as BeforeInstallPromptEvent);
+         // Show our custom prompt after a delay
+         setTimeout(() => setShowPrompt(true), 3000);
+      };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall)
+      window.addEventListener("beforeinstallprompt", handleBeforeInstall);
 
-    // Listen for successful install
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true)
-      setShowPrompt(false)
-    })
+      // Listen for successful install
+      window.addEventListener("appinstalled", () => {
+         setIsInstalled(true);
+         setShowPrompt(false);
+      });
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
-    }
-  }, [])
+      return () => {
+         window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      };
+   }, []);
 
-  const handleInstall = async () => {
-    if (!installPrompt) return
+   const handleInstall = async () => {
+      if (!installPrompt) return;
 
-    await installPrompt.prompt()
-    const { outcome } = await installPrompt.userChoice
+      await installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
 
-    if (outcome === 'accepted') {
-      setIsInstalled(true)
-    }
-    setShowPrompt(false)
-  }
+      if (outcome === "accepted") {
+         setIsInstalled(true);
+      }
+      setShowPrompt(false);
+   };
 
-  const handleDismiss = () => {
-    setShowPrompt(false)
-  }
+   const handleDismiss = () => {
+      setShowPrompt(false);
+   };
 
-  // Don't show if already installed or no prompt available
-  if (isInstalled || !showPrompt) return null
+   // Don't show if already installed or no prompt available
+   if (isInstalled || !showPrompt) return null;
 
-  return (
-    <div className="install-prompt">
-      <div className="install-prompt-content">
-        <p><strong>Install Quiver</strong></p>
-        <p>Add to your home screen for quick access</p>
-        <div className="install-prompt-actions">
-          <button onClick={handleInstall} className="btn-install">
-            Install
-          </button>
-          <button onClick={handleDismiss} className="btn-dismiss">
-            Not now
-          </button>
-        </div>
+   return (
+      <div className="install-prompt">
+         <div className="install-prompt-content">
+            <p>
+               <strong>Install Quiver</strong>
+            </p>
+            <p>Add to your home screen for quick access</p>
+            <div className="install-prompt-actions">
+               <button onClick={handleInstall} className="btn-install">
+                  Install
+               </button>
+               <button onClick={handleDismiss} className="btn-dismiss">
+                  Not now
+               </button>
+            </div>
+         </div>
       </div>
-    </div>
-  )
+   );
 }
 ```
 
@@ -1609,34 +1640,43 @@ iOS doesn't support the install prompt API, so we need manual instructions:
 
 ```tsx
 // src/components/IOSInstallInstructions.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 
 export function IOSInstallInstructions() {
-  const [show, setShow] = useState(false)
+   const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    // Detect iOS Safari (not in standalone mode)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+   useEffect(() => {
+      // Detect iOS Safari (not in standalone mode)
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isStandalone = window.matchMedia(
+         "(display-mode: standalone)"
+      ).matches;
+      const isSafari =
+         /Safari/.test(navigator.userAgent) &&
+         !/Chrome/.test(navigator.userAgent);
 
-    if (isIOS && isSafari && !isStandalone) {
-      // Show after a delay
-      setTimeout(() => setShow(true), 5000)
-    }
-  }, [])
+      if (isIOS && isSafari && !isStandalone) {
+         // Show after a delay
+         setTimeout(() => setShow(true), 5000);
+      }
+   }, []);
 
-  if (!show) return null
+   if (!show) return null;
 
-  return (
-    <div className="ios-install-instructions">
-      <button className="close-btn" onClick={() => setShow(false)}>×</button>
-      <p><strong>Install Quiver</strong></p>
-      <p>
-        Tap the share button <span className="share-icon">⬆️</span> then "Add to Home Screen"
-      </p>
-    </div>
-  )
+   return (
+      <div className="ios-install-instructions">
+         <button className="close-btn" onClick={() => setShow(false)}>
+            ×
+         </button>
+         <p>
+            <strong>Install Quiver</strong>
+         </p>
+         <p>
+            Tap the share button <span className="share-icon">⬆️</span> then
+            "Add to Home Screen"
+         </p>
+      </div>
+   );
 }
 ```
 
@@ -1649,87 +1689,87 @@ Add these styles to `src/index.css`:
 
 /* Install Prompt */
 .install-prompt {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  animation: slideUp 0.3s ease-out;
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: white;
+   border-radius: 12px;
+   padding: 16px;
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+   z-index: 1000;
+   animation: slideUp 0.3s ease-out;
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+   from {
+      transform: translateY(100%);
+      opacity: 0;
+   }
+   to {
+      transform: translateY(0);
+      opacity: 1;
+   }
 }
 
 .install-prompt-content p {
-  margin-bottom: 8px;
+   margin-bottom: 8px;
 }
 
 .install-prompt-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
+   display: flex;
+   gap: 12px;
+   margin-top: 12px;
 }
 
 .btn-install {
-  background-color: #0066cc;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
+   background-color: #0066cc;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
 }
 
 .btn-dismiss {
-  background-color: transparent;
-  color: #666;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
+   background-color: transparent;
+   color: #666;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
 }
 
 /* iOS Instructions */
 .ios-install-instructions {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: #333;
-  color: white;
-  border-radius: 12px;
-  padding: 16px;
-  z-index: 1000;
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: #333;
+   color: white;
+   border-radius: 12px;
+   padding: 16px;
+   z-index: 1000;
 }
 
 .ios-install-instructions .close-btn {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
+   position: absolute;
+   top: 8px;
+   right: 12px;
+   background: none;
+   border: none;
+   color: white;
+   font-size: 24px;
+   cursor: pointer;
 }
 
 .ios-install-instructions p {
-  margin-bottom: 4px;
+   margin-bottom: 4px;
 }
 
 .share-icon {
-  display: inline-block;
+   display: inline-block;
 }
 ```
 
@@ -1739,60 +1779,62 @@ Update `src/App.tsx` to include the install prompts:
 
 ```tsx
 // src/App.tsx
-import { useIdeas } from '@/hooks/useIdeas'
-import { IdeaForm } from '@/components/IdeaForm'
-import { IdeaCard } from '@/components/IdeaCard'
-import { InstallPrompt } from '@/components/InstallPrompt'
-import { IOSInstallInstructions } from '@/components/IOSInstallInstructions'
+import { useIdeas } from "@/hooks/useIdeas";
+import { IdeaForm } from "@/components/IdeaForm";
+import { IdeaCard } from "@/components/IdeaCard";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
 
 function App() {
-  const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas()
+   const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
 
-  return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>Quiver</h1>
-        <p>Capture and develop your ideas</p>
-      </header>
+   return (
+      <div className="app-container">
+         <header className="app-header">
+            <h1>Quiver</h1>
+            <p>Capture and develop your ideas</p>
+         </header>
 
-      <main className="app-main">
-        <IdeaForm onSubmit={addIdea} />
+         <main className="app-main">
+            <IdeaForm onSubmit={addIdea} />
 
-        {error && <div className="error-message">{error}</div>}
+            {error && <div className="error-message">{error}</div>}
 
-        {loading ? (
-          <div className="loading">Loading ideas...</div>
-        ) : ideas.length === 0 ? (
-          <div className="empty-state">
-            <p>No ideas yet!</p>
-            <p>Start capturing your thoughts above.</p>
-          </div>
-        ) : (
-          <div className="ideas-list">
-            {ideas.map((idea) => (
-              <IdeaCard
-                key={idea.id}
-                idea={idea}
-                onUpdate={editIdea}
-                onDelete={removeIdea}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+            {loading ? (
+               <div className="loading">Loading ideas...</div>
+            ) : ideas.length === 0 ? (
+               <div className="empty-state">
+                  <p>No ideas yet!</p>
+                  <p>Start capturing your thoughts above.</p>
+               </div>
+            ) : (
+               <div className="ideas-list">
+                  {ideas.map((idea) => (
+                     <IdeaCard
+                        key={idea.id}
+                        idea={idea}
+                        onUpdate={editIdea}
+                        onDelete={removeIdea}
+                     />
+                  ))}
+               </div>
+            )}
+         </main>
 
-      <footer className="app-footer">
-        <p>{ideas.length} idea{ideas.length !== 1 ? 's' : ''} captured</p>
-      </footer>
+         <footer className="app-footer">
+            <p>
+               {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+            </p>
+         </footer>
 
-      {/* PWA Install Prompts */}
-      <InstallPrompt />
-      <IOSInstallInstructions />
-    </div>
-  )
+         {/* PWA Install Prompts */}
+         <InstallPrompt />
+         <IOSInstallInstructions />
+      </div>
+   );
 }
 
-export default App
+export default App;
 ```
 
 #### 4.8 Update index.html
@@ -1800,24 +1842,30 @@ export default App
 Ensure your `index.html` has proper meta tags:
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0066cc" />
-    <meta name="description" content="Capture and develop your ideas anywhere" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Quiver" />
-    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
-    <title>Quiver</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+   <head>
+      <meta charset="UTF-8" />
+      <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      />
+      <meta name="theme-color" content="#0066cc" />
+      <meta
+         name="description"
+         content="Capture and develop your ideas anywhere"
+      />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="Quiver" />
+      <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+      <title>Quiver</title>
+   </head>
+   <body>
+      <div id="root"></div>
+      <script type="module" src="/src/main.tsx"></script>
+   </body>
 </html>
 ```
 
@@ -1826,6 +1874,7 @@ Ensure your `index.html` has proper meta tags:
 **Important**: PWA features only work in production builds, not in development mode!
 
 1. **Build and preview** the app:
+
    ```bash
    npm run build
    npm run preview
@@ -1834,31 +1883,35 @@ Ensure your `index.html` has proper meta tags:
 2. **Open Chrome DevTools** (F12) and go to the **Application** tab
 
 3. **Check the Manifest**:
-   - Click "Manifest" in the sidebar
-   - You should see your app name, icons, and colors
-   - All icons should be valid (no errors)
+
+   -  Click "Manifest" in the sidebar
+   -  You should see your app name, icons, and colors
+   -  All icons should be valid (no errors)
 
 4. **Check the Service Worker**:
-   - Click "Service Workers" in the sidebar
-   - You should see a service worker registered
-   - Status should be "activated and running"
+
+   -  Click "Service Workers" in the sidebar
+   -  You should see a service worker registered
+   -  Status should be "activated and running"
 
 5. **Test Installation**:
-   - In the browser address bar, you should see an install icon
-   - Click it to install the app
-   - The app should open in its own window without browser chrome
+
+   -  In the browser address bar, you should see an install icon
+   -  Click it to install the app
+   -  The app should open in its own window without browser chrome
 
 6. **Test on Mobile** (optional but recommended):
-   - Deploy to Vercel (see Milestone 7) or use ngrok
-   - Open on your phone
-   - Android: You should see an "Add to Home Screen" banner
-   - iOS: Use Safari's share menu → "Add to Home Screen"
+   -  Deploy to Vercel (see Milestone 7) or use ngrok
+   -  Open on your phone
+   -  Android: You should see an "Add to Home Screen" banner
+   -  iOS: Use Safari's share menu → "Add to Home Screen"
 
 **Checkpoint**: Your app is now installable as a PWA!
 
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 4: PWA configuration with install prompts"
@@ -1876,13 +1929,14 @@ Make your app work offline by implementing proper caching strategies and offline
 
 ### Concepts to Understand
 
-- **Caching Strategies**:
-  - **CacheFirst**: Check cache first, fall back to network (good for static assets)
-  - **NetworkFirst**: Try network first, fall back to cache (good for API data)
-  - **StaleWhileRevalidate**: Return cached data immediately, update cache in background
+-  **Caching Strategies**:
 
-- **IndexedDB**: A browser database for storing data offline (more capable than localStorage)
-- **Background Sync**: Queue actions when offline, execute when back online
+   -  **CacheFirst**: Check cache first, fall back to network (good for static assets)
+   -  **NetworkFirst**: Try network first, fall back to cache (good for API data)
+   -  **StaleWhileRevalidate**: Return cached data immediately, update cache in background
+
+-  **IndexedDB**: A browser database for storing data offline (more capable than localStorage)
+-  **Background Sync**: Queue actions when offline, execute when back online
 
 ### Steps
 
@@ -1892,83 +1946,83 @@ Update the `vite.config.ts` to add runtime caching strategies:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
-      manifest: {
-        name: 'Quiver - Idea Capture',
-        short_name: 'Quiver',
-        description: 'Capture and develop your ideas anywhere',
-        theme_color: '#0066cc',
-        background_color: '#f5f5f5',
-        display: 'standalone',
-        scope: '/',
-        start_url: '/',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
+   plugins: [
+      react(),
+      VitePWA({
+         registerType: "autoUpdate",
+         includeAssets: ["icon.svg"],
+         manifest: {
+            name: "Quiver - Idea Capture",
+            short_name: "Quiver",
+            description: "Capture and develop your ideas anywhere",
+            theme_color: "#0066cc",
+            background_color: "#f5f5f5",
+            display: "standalone",
+            scope: "/",
+            start_url: "/",
+            icons: [
+               {
+                  src: "pwa-192x192.png",
+                  sizes: "192x192",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+                  purpose: "maskable",
+               },
+            ],
+         },
+         workbox: {
+            globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+            runtimeCaching: [
+               {
+                  // Cache API calls to Turso
+                  urlPattern: /^https:\/\/.*\.turso\.io\/.*/i,
+                  handler: "NetworkFirst",
+                  options: {
+                     cacheName: "api-cache",
+                     expiration: {
+                        maxEntries: 100,
+                        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                     },
+                     networkTimeoutSeconds: 10,
+                  },
+               },
+               {
+                  // Cache Google Fonts
+                  urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                  handler: "CacheFirst",
+                  options: {
+                     cacheName: "google-fonts-cache",
+                     expiration: {
+                        maxEntries: 10,
+                        maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                     },
+                  },
+               },
+            ],
+         },
+      }),
+   ],
+   resolve: {
+      alias: {
+         "@": path.resolve(__dirname, "./src"),
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        runtimeCaching: [
-          {
-            // Cache API calls to Turso
-            urlPattern: /^https:\/\/.*\.turso\.io\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
-              },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            // Cache Google Fonts
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-            },
-          },
-        ],
-      },
-    }),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-})
+   },
+});
 ```
 
 #### 5.2 Create an Offline Storage Layer with IndexedDB
@@ -1983,106 +2037,103 @@ Create `src/lib/offline-storage.ts`:
 
 ```ts
 // src/lib/offline-storage.ts
-import { openDB, DBSchema, IDBPDatabase } from 'idb'
-import type { Idea, CreateIdeaInput } from '@/types/idea'
+import { openDB, DBSchema, IDBPDatabase } from "idb";
+import type { Idea, CreateIdeaInput } from "@/types/idea";
 
 interface QuiverDB extends DBSchema {
-  ideas: {
-    key: number
-    value: Idea
-    indexes: { 'by-created': Date }
-  }
-  pendingActions: {
-    key: number
-    value: {
-      id: number
-      type: 'create' | 'update' | 'delete'
-      data: CreateIdeaInput | Partial<Idea> | number
-      timestamp: Date
-    }
-  }
+   ideas: {
+      key: number;
+      value: Idea;
+      indexes: { "by-created": Date };
+   };
+   pendingActions: {
+      key: number;
+      value: {
+         id: number;
+         type: "create" | "update" | "delete";
+         data: CreateIdeaInput | Partial<Idea> | number;
+         timestamp: Date;
+      };
+   };
 }
 
-let dbPromise: Promise<IDBPDatabase<QuiverDB>> | null = null
+let dbPromise: Promise<IDBPDatabase<QuiverDB>> | null = null;
 
 function getDB() {
-  if (!dbPromise) {
-    dbPromise = openDB<QuiverDB>('quiver-db', 1, {
-      upgrade(db) {
-        // Ideas store for cached data
-        const ideasStore = db.createObjectStore('ideas', { keyPath: 'id' })
-        ideasStore.createIndex('by-created', 'createdAt')
+   if (!dbPromise) {
+      dbPromise = openDB<QuiverDB>("quiver-db", 1, {
+         upgrade(db) {
+            // Ideas store for cached data
+            const ideasStore = db.createObjectStore("ideas", { keyPath: "id" });
+            ideasStore.createIndex("by-created", "createdAt");
 
-        // Pending actions for offline sync
-        db.createObjectStore('pendingActions', {
-          keyPath: 'id',
-          autoIncrement: true,
-        })
-      },
-    })
-  }
-  return dbPromise
+            // Pending actions for offline sync
+            db.createObjectStore("pendingActions", {
+               keyPath: "id",
+               autoIncrement: true,
+            });
+         },
+      });
+   }
+   return dbPromise;
 }
 
 // Cache ideas locally
 export async function cacheIdeas(ideas: Idea[]): Promise<void> {
-  const db = await getDB()
-  const tx = db.transaction('ideas', 'readwrite')
-  await Promise.all([
-    ...ideas.map((idea) => tx.store.put(idea)),
-    tx.done,
-  ])
+   const db = await getDB();
+   const tx = db.transaction("ideas", "readwrite");
+   await Promise.all([...ideas.map((idea) => tx.store.put(idea)), tx.done]);
 }
 
 // Get cached ideas
 export async function getCachedIdeas(): Promise<Idea[]> {
-  const db = await getDB()
-  const ideas = await db.getAllFromIndex('ideas', 'by-created')
-  return ideas.reverse() // Newest first
+   const db = await getDB();
+   const ideas = await db.getAllFromIndex("ideas", "by-created");
+   return ideas.reverse(); // Newest first
 }
 
 // Cache a single idea
 export async function cacheIdea(idea: Idea): Promise<void> {
-  const db = await getDB()
-  await db.put('ideas', idea)
+   const db = await getDB();
+   await db.put("ideas", idea);
 }
 
 // Remove a cached idea
 export async function removeCachedIdea(id: number): Promise<void> {
-  const db = await getDB()
-  await db.delete('ideas', id)
+   const db = await getDB();
+   await db.delete("ideas", id);
 }
 
 // Queue an action for later sync
 export async function queueAction(
-  type: 'create' | 'update' | 'delete',
-  data: CreateIdeaInput | Partial<Idea> | number
+   type: "create" | "update" | "delete",
+   data: CreateIdeaInput | Partial<Idea> | number
 ): Promise<void> {
-  const db = await getDB()
-  await db.add('pendingActions', {
-    id: Date.now(), // Temporary ID
-    type,
-    data,
-    timestamp: new Date(),
-  })
+   const db = await getDB();
+   await db.add("pendingActions", {
+      id: Date.now(), // Temporary ID
+      type,
+      data,
+      timestamp: new Date(),
+   });
 }
 
 // Get all pending actions
 export async function getPendingActions() {
-  const db = await getDB()
-  return db.getAll('pendingActions')
+   const db = await getDB();
+   return db.getAll("pendingActions");
 }
 
 // Clear a pending action after sync
 export async function clearPendingAction(id: number): Promise<void> {
-  const db = await getDB()
-  await db.delete('pendingActions', id)
+   const db = await getDB();
+   await db.delete("pendingActions", id);
 }
 
 // Clear all pending actions
 export async function clearAllPendingActions(): Promise<void> {
-  const db = await getDB()
-  await db.clear('pendingActions')
+   const db = await getDB();
+   await db.clear("pendingActions");
 }
 ```
 
@@ -2092,36 +2143,36 @@ Create `src/hooks/useOnlineStatus.ts`:
 
 ```ts
 // src/hooks/useOnlineStatus.ts
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from "react";
 
 export function useOnlineStatus() {
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
-  const [wasOffline, setWasOffline] = useState(false)
+   const [isOnline, setIsOnline] = useState(navigator.onLine);
+   const [wasOffline, setWasOffline] = useState(false);
 
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true)
-      if (wasOffline) {
-        // Trigger sync when coming back online
-        window.dispatchEvent(new CustomEvent('app-back-online'))
-      }
-    }
+   useEffect(() => {
+      const handleOnline = () => {
+         setIsOnline(true);
+         if (wasOffline) {
+            // Trigger sync when coming back online
+            window.dispatchEvent(new CustomEvent("app-back-online"));
+         }
+      };
 
-    const handleOffline = () => {
-      setIsOnline(false)
-      setWasOffline(true)
-    }
+      const handleOffline = () => {
+         setIsOnline(false);
+         setWasOffline(true);
+      };
 
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
 
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [wasOffline])
+      return () => {
+         window.removeEventListener("online", handleOnline);
+         window.removeEventListener("offline", handleOffline);
+      };
+   }, [wasOffline]);
 
-  return { isOnline, wasOffline }
+   return { isOnline, wasOffline };
 }
 ```
 
@@ -2131,193 +2182,208 @@ Update `src/hooks/useIdeas.ts`:
 
 ```ts
 // src/hooks/useIdeas.ts
-import { useState, useEffect, useCallback } from 'react'
-import type { Idea, CreateIdeaInput, UpdateIdeaInput } from '@/types/idea'
-import * as ideasLib from '@/lib/ideas'
-import * as offlineStorage from '@/lib/offline-storage'
-import { useOnlineStatus } from './useOnlineStatus'
+import { useState, useEffect, useCallback } from "react";
+import type { Idea, CreateIdeaInput, UpdateIdeaInput } from "@/types/idea";
+import * as ideasLib from "@/lib/ideas";
+import * as offlineStorage from "@/lib/offline-storage";
+import { useOnlineStatus } from "./useOnlineStatus";
 
 export function useIdeas() {
-  const [ideas, setIdeas] = useState<Idea[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [syncing, setSyncing] = useState(false)
-  const { isOnline } = useOnlineStatus()
+   const [ideas, setIdeas] = useState<Idea[]>([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
+   const [syncing, setSyncing] = useState(false);
+   const { isOnline } = useOnlineStatus();
 
-  // Sync pending actions when back online
-  const syncPendingActions = useCallback(async () => {
-    if (!isOnline) return
+   // Sync pending actions when back online
+   const syncPendingActions = useCallback(async () => {
+      if (!isOnline) return;
 
-    setSyncing(true)
-    try {
-      const pendingActions = await offlineStorage.getPendingActions()
-
-      for (const action of pendingActions) {
-        try {
-          if (action.type === 'create') {
-            await ideasLib.createIdea(action.data as CreateIdeaInput)
-          } else if (action.type === 'update') {
-            const updateData = action.data as Partial<Idea> & { id: number }
-            await ideasLib.updateIdea(updateData.id, updateData)
-          } else if (action.type === 'delete') {
-            await ideasLib.archiveIdea(action.data as number)
-          }
-          await offlineStorage.clearPendingAction(action.id)
-        } catch (err) {
-          console.error('Failed to sync action:', action, err)
-        }
-      }
-
-      // Refresh from server after sync
-      await fetchIdeas()
-    } finally {
-      setSyncing(false)
-    }
-  }, [isOnline])
-
-  // Listen for back-online event
-  useEffect(() => {
-    const handleBackOnline = () => {
-      syncPendingActions()
-    }
-
-    window.addEventListener('app-back-online', handleBackOnline)
-    return () => window.removeEventListener('app-back-online', handleBackOnline)
-  }, [syncPendingActions])
-
-  // Fetch ideas (from server if online, from cache if offline)
-  const fetchIdeas = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      if (isOnline) {
-        // Fetch from server and cache
-        const data = await ideasLib.getIdeas()
-        setIdeas(data)
-        await offlineStorage.cacheIdeas(data)
-      } else {
-        // Load from cache
-        const cachedData = await offlineStorage.getCachedIdeas()
-        setIdeas(cachedData)
-      }
-    } catch (err) {
-      // Fall back to cache on error
+      setSyncing(true);
       try {
-        const cachedData = await offlineStorage.getCachedIdeas()
-        setIdeas(cachedData)
-        setError('Using cached data (offline)')
-      } catch {
-        setError(err instanceof Error ? err.message : 'Failed to fetch ideas')
+         const pendingActions = await offlineStorage.getPendingActions();
+
+         for (const action of pendingActions) {
+            try {
+               if (action.type === "create") {
+                  await ideasLib.createIdea(action.data as CreateIdeaInput);
+               } else if (action.type === "update") {
+                  const updateData = action.data as Partial<Idea> & {
+                     id: number;
+                  };
+                  await ideasLib.updateIdea(updateData.id, updateData);
+               } else if (action.type === "delete") {
+                  await ideasLib.archiveIdea(action.data as number);
+               }
+               await offlineStorage.clearPendingAction(action.id);
+            } catch (err) {
+               console.error("Failed to sync action:", action, err);
+            }
+         }
+
+         // Refresh from server after sync
+         await fetchIdeas();
+      } finally {
+         setSyncing(false);
       }
-    } finally {
-      setLoading(false)
-    }
-  }, [isOnline])
+   }, [isOnline]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchIdeas()
-  }, [fetchIdeas])
+   // Listen for back-online event
+   useEffect(() => {
+      const handleBackOnline = () => {
+         syncPendingActions();
+      };
 
-  // Create a new idea (with offline support)
-  const addIdea = useCallback(
-    async (input: CreateIdeaInput) => {
+      window.addEventListener("app-back-online", handleBackOnline);
+      return () =>
+         window.removeEventListener("app-back-online", handleBackOnline);
+   }, [syncPendingActions]);
+
+   // Fetch ideas (from server if online, from cache if offline)
+   const fetchIdeas = useCallback(async () => {
       try {
-        if (isOnline) {
-          const newIdea = await ideasLib.createIdea(input)
-          setIdeas((prev) => [newIdea, ...prev])
-          await offlineStorage.cacheIdea(newIdea)
-          return newIdea
-        } else {
-          // Create optimistic local idea
-          const tempIdea: Idea = {
-            id: Date.now(), // Temporary ID
-            title: input.title,
-            content: input.content || null,
-            tags: input.tags || [],
-            urls: input.urls || [],
-            archived: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          }
-          setIdeas((prev) => [tempIdea, ...prev])
-          await offlineStorage.cacheIdea(tempIdea)
-          await offlineStorage.queueAction('create', input)
-          return tempIdea
-        }
+         setLoading(true);
+         setError(null);
+
+         if (isOnline) {
+            // Fetch from server and cache
+            const data = await ideasLib.getIdeas();
+            setIdeas(data);
+            await offlineStorage.cacheIdeas(data);
+         } else {
+            // Load from cache
+            const cachedData = await offlineStorage.getCachedIdeas();
+            setIdeas(cachedData);
+         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to create idea')
-        throw err
+         // Fall back to cache on error
+         try {
+            const cachedData = await offlineStorage.getCachedIdeas();
+            setIdeas(cachedData);
+            setError("Using cached data (offline)");
+         } catch {
+            setError(
+               err instanceof Error ? err.message : "Failed to fetch ideas"
+            );
+         }
+      } finally {
+         setLoading(false);
       }
-    },
-    [isOnline]
-  )
+   }, [isOnline]);
 
-  // Update an idea (with offline support)
-  const editIdea = useCallback(
-    async (id: number, input: UpdateIdeaInput) => {
-      try {
-        if (isOnline) {
-          const updated = await ideasLib.updateIdea(id, input)
-          if (updated) {
-            setIdeas((prev) =>
-              prev.map((idea) => (idea.id === id ? updated : idea))
-            )
-            await offlineStorage.cacheIdea(updated)
-          }
-          return updated
-        } else {
-          // Optimistic update
-          const updatedIdea = ideas.find((i) => i.id === id)
-          if (updatedIdea) {
-            const newIdea = { ...updatedIdea, ...input, updatedAt: new Date() }
-            setIdeas((prev) =>
-              prev.map((idea) => (idea.id === id ? newIdea : idea))
-            )
-            await offlineStorage.cacheIdea(newIdea as Idea)
-            await offlineStorage.queueAction('update', { id, ...input })
-          }
-          return updatedIdea
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to update idea')
-        throw err
-      }
-    },
-    [isOnline, ideas]
-  )
+   // Initial fetch
+   useEffect(() => {
+      fetchIdeas();
+   }, [fetchIdeas]);
 
-  // Archive an idea (with offline support)
-  const removeIdea = useCallback(
-    async (id: number) => {
-      try {
-        if (isOnline) {
-          await ideasLib.archiveIdea(id)
-        } else {
-          await offlineStorage.queueAction('delete', id)
-        }
-        setIdeas((prev) => prev.filter((idea) => idea.id !== id))
-        await offlineStorage.removeCachedIdea(id)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to archive idea')
-        throw err
-      }
-    },
-    [isOnline]
-  )
+   // Create a new idea (with offline support)
+   const addIdea = useCallback(
+      async (input: CreateIdeaInput) => {
+         try {
+            if (isOnline) {
+               const newIdea = await ideasLib.createIdea(input);
+               setIdeas((prev) => [newIdea, ...prev]);
+               await offlineStorage.cacheIdea(newIdea);
+               return newIdea;
+            } else {
+               // Create optimistic local idea
+               const tempIdea: Idea = {
+                  id: Date.now(), // Temporary ID
+                  title: input.title,
+                  content: input.content || null,
+                  tags: input.tags || [],
+                  urls: input.urls || [],
+                  archived: false,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+               };
+               setIdeas((prev) => [tempIdea, ...prev]);
+               await offlineStorage.cacheIdea(tempIdea);
+               await offlineStorage.queueAction("create", input);
+               return tempIdea;
+            }
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to create idea"
+            );
+            throw err;
+         }
+      },
+      [isOnline]
+   );
 
-  return {
-    ideas,
-    loading,
-    error,
-    syncing,
-    isOnline,
-    addIdea,
-    editIdea,
-    removeIdea,
-    refreshIdeas: fetchIdeas,
-  }
+   // Update an idea (with offline support)
+   const editIdea = useCallback(
+      async (id: number, input: UpdateIdeaInput) => {
+         try {
+            if (isOnline) {
+               const updated = await ideasLib.updateIdea(id, input);
+               if (updated) {
+                  setIdeas((prev) =>
+                     prev.map((idea) => (idea.id === id ? updated : idea))
+                  );
+                  await offlineStorage.cacheIdea(updated);
+               }
+               return updated;
+            } else {
+               // Optimistic update
+               const updatedIdea = ideas.find((i) => i.id === id);
+               if (updatedIdea) {
+                  const newIdea = {
+                     ...updatedIdea,
+                     ...input,
+                     updatedAt: new Date(),
+                  };
+                  setIdeas((prev) =>
+                     prev.map((idea) => (idea.id === id ? newIdea : idea))
+                  );
+                  await offlineStorage.cacheIdea(newIdea as Idea);
+                  await offlineStorage.queueAction("update", { id, ...input });
+               }
+               return updatedIdea;
+            }
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to update idea"
+            );
+            throw err;
+         }
+      },
+      [isOnline, ideas]
+   );
+
+   // Archive an idea (with offline support)
+   const removeIdea = useCallback(
+      async (id: number) => {
+         try {
+            if (isOnline) {
+               await ideasLib.archiveIdea(id);
+            } else {
+               await offlineStorage.queueAction("delete", id);
+            }
+            setIdeas((prev) => prev.filter((idea) => idea.id !== id));
+            await offlineStorage.removeCachedIdea(id);
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to archive idea"
+            );
+            throw err;
+         }
+      },
+      [isOnline]
+   );
+
+   return {
+      ideas,
+      loading,
+      error,
+      syncing,
+      isOnline,
+      addIdea,
+      editIdea,
+      removeIdea,
+      refreshIdeas: fetchIdeas,
+   };
 }
 ```
 
@@ -2328,22 +2394,22 @@ Create `src/components/OfflineIndicator.tsx`:
 ```tsx
 // src/components/OfflineIndicator.tsx
 interface OfflineIndicatorProps {
-  isOnline: boolean
-  syncing: boolean
+   isOnline: boolean;
+   syncing: boolean;
 }
 
 export function OfflineIndicator({ isOnline, syncing }: OfflineIndicatorProps) {
-  if (isOnline && !syncing) return null
+   if (isOnline && !syncing) return null;
 
-  return (
-    <div className={`offline-indicator ${syncing ? 'syncing' : 'offline'}`}>
-      {syncing ? (
-        <span>Syncing...</span>
-      ) : (
-        <span>You're offline. Changes will sync when connected.</span>
-      )}
-    </div>
-  )
+   return (
+      <div className={`offline-indicator ${syncing ? "syncing" : "offline"}`}>
+         {syncing ? (
+            <span>Syncing...</span>
+         ) : (
+            <span>You're offline. Changes will sync when connected.</span>
+         )}
+      </div>
+   );
 }
 ```
 
@@ -2356,29 +2422,29 @@ Add to `src/index.css`:
 
 /* Offline Indicator */
 .offline-indicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 16px;
-  text-align: center;
-  font-size: 0.875rem;
-  z-index: 1001;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   padding: 8px 16px;
+   text-align: center;
+   font-size: 0.875rem;
+   z-index: 1001;
 }
 
 .offline-indicator.offline {
-  background-color: #ff6b6b;
-  color: white;
+   background-color: #ff6b6b;
+   color: white;
 }
 
 .offline-indicator.syncing {
-  background-color: #ffd93d;
-  color: #333;
+   background-color: #ffd93d;
+   color: #333;
 }
 
 /* Adjust app container when offline indicator is showing */
 body:has(.offline-indicator) .app-container {
-  padding-top: 50px;
+   padding-top: 50px;
 }
 ```
 
@@ -2388,67 +2454,76 @@ Update `src/App.tsx`:
 
 ```tsx
 // src/App.tsx
-import { useIdeas } from '@/hooks/useIdeas'
-import { IdeaForm } from '@/components/IdeaForm'
-import { IdeaCard } from '@/components/IdeaCard'
-import { InstallPrompt } from '@/components/InstallPrompt'
-import { IOSInstallInstructions } from '@/components/IOSInstallInstructions'
-import { OfflineIndicator } from '@/components/OfflineIndicator'
+import { useIdeas } from "@/hooks/useIdeas";
+import { IdeaForm } from "@/components/IdeaForm";
+import { IdeaCard } from "@/components/IdeaCard";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 
 function App() {
-  const { ideas, loading, error, syncing, isOnline, addIdea, editIdea, removeIdea } = useIdeas()
+   const {
+      ideas,
+      loading,
+      error,
+      syncing,
+      isOnline,
+      addIdea,
+      editIdea,
+      removeIdea,
+   } = useIdeas();
 
-  return (
-    <>
-      <OfflineIndicator isOnline={isOnline} syncing={syncing} />
+   return (
+      <>
+         <OfflineIndicator isOnline={isOnline} syncing={syncing} />
 
-      <div className="app-container">
-        <header className="app-header">
-          <h1>Quiver</h1>
-          <p>Capture and develop your ideas</p>
-        </header>
+         <div className="app-container">
+            <header className="app-header">
+               <h1>Quiver</h1>
+               <p>Capture and develop your ideas</p>
+            </header>
 
-        <main className="app-main">
-          <IdeaForm onSubmit={addIdea} />
+            <main className="app-main">
+               <IdeaForm onSubmit={addIdea} />
 
-          {error && <div className="error-message">{error}</div>}
+               {error && <div className="error-message">{error}</div>}
 
-          {loading ? (
-            <div className="loading">Loading ideas...</div>
-          ) : ideas.length === 0 ? (
-            <div className="empty-state">
-              <p>No ideas yet!</p>
-              <p>Start capturing your thoughts above.</p>
-            </div>
-          ) : (
-            <div className="ideas-list">
-              {ideas.map((idea) => (
-                <IdeaCard
-                  key={idea.id}
-                  idea={idea}
-                  onUpdate={editIdea}
-                  onDelete={removeIdea}
-                />
-              ))}
-            </div>
-          )}
-        </main>
+               {loading ? (
+                  <div className="loading">Loading ideas...</div>
+               ) : ideas.length === 0 ? (
+                  <div className="empty-state">
+                     <p>No ideas yet!</p>
+                     <p>Start capturing your thoughts above.</p>
+                  </div>
+               ) : (
+                  <div className="ideas-list">
+                     {ideas.map((idea) => (
+                        <IdeaCard
+                           key={idea.id}
+                           idea={idea}
+                           onUpdate={editIdea}
+                           onDelete={removeIdea}
+                        />
+                     ))}
+                  </div>
+               )}
+            </main>
 
-        <footer className="app-footer">
-          <p>
-            {ideas.length} idea{ideas.length !== 1 ? 's' : ''} captured
-            {!isOnline && ' (offline)'}
-          </p>
-        </footer>
+            <footer className="app-footer">
+               <p>
+                  {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+                  {!isOnline && " (offline)"}
+               </p>
+            </footer>
 
-        <InstallPrompt />
-        <IOSInstallInstructions />
-      </div>
-    </>
-  )
+            <InstallPrompt />
+            <IOSInstallInstructions />
+         </div>
+      </>
+   );
 }
 
-export default App
+export default App;
 ```
 
 #### 5.8 Create an Offline Fallback Page
@@ -2458,97 +2533,106 @@ Create `public/offline.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiver - Offline</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background-color: #f5f5f5;
-      padding: 20px;
-    }
-    .container {
-      text-align: center;
-      max-width: 400px;
-    }
-    h1 {
-      color: #0066cc;
-      margin-bottom: 16px;
-    }
-    p {
-      color: #666;
-      margin-bottom: 24px;
-    }
-    button {
-      background-color: #0066cc;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0052a3;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Quiver</h1>
-    <p>You're currently offline. Your cached ideas are still available in the app.</p>
-    <button onclick="window.location.reload()">Try Again</button>
-  </div>
-</body>
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Quiver - Offline</title>
+      <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+         }
+         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+         }
+         .container {
+            text-align: center;
+            max-width: 400px;
+         }
+         h1 {
+            color: #0066cc;
+            margin-bottom: 16px;
+         }
+         p {
+            color: #666;
+            margin-bottom: 24px;
+         }
+         button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+         }
+         button:hover {
+            background-color: #0052a3;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <h1>Quiver</h1>
+         <p>
+            You're currently offline. Your cached ideas are still available in
+            the app.
+         </p>
+         <button onclick="window.location.reload()">Try Again</button>
+      </div>
+   </body>
 </html>
 ```
 
 ### Verification
 
 1. **Build and preview** the app:
+
    ```bash
    npm run build
    npm run preview
    ```
 
 2. **Test offline mode**:
-   - Open Chrome DevTools → Application → Service Workers
-   - Check the "Offline" checkbox
-   - Refresh the page
-   - You should see the offline indicator banner
-   - Your previously loaded ideas should still appear
+
+   -  Open Chrome DevTools → Application → Service Workers
+   -  Check the "Offline" checkbox
+   -  Refresh the page
+   -  You should see the offline indicator banner
+   -  Your previously loaded ideas should still appear
 
 3. **Test offline creation**:
-   - While offline, create a new idea
-   - The idea should appear immediately in the list
-   - You should see "You're offline. Changes will sync when connected."
+
+   -  While offline, create a new idea
+   -  The idea should appear immediately in the list
+   -  You should see "You're offline. Changes will sync when connected."
 
 4. **Test sync when back online**:
-   - Uncheck the "Offline" checkbox
-   - You should see "Syncing..." briefly
-   - The idea you created offline should now be in your database
-   - Verify in Drizzle Studio: `npm run db:studio`
+
+   -  Uncheck the "Offline" checkbox
+   -  You should see "Syncing..." briefly
+   -  The idea you created offline should now be in your database
+   -  Verify in Drizzle Studio: `npm run db:studio`
 
 5. **Test IndexedDB storage**:
-   - In DevTools → Application → IndexedDB
-   - You should see `quiver-db` with `ideas` and `pendingActions` stores
-   - Cached ideas should be visible in the `ideas` store
+   -  In DevTools → Application → IndexedDB
+   -  You should see `quiver-db` with `ideas` and `pendingActions` stores
+   -  Cached ideas should be visible in the `ideas` store
 
 **Checkpoint**: Your app now works fully offline!
 
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 5: Offline support with IndexedDB and sync"
@@ -2608,6 +2692,7 @@ npm install @anthropic-ai/sdk
 ```
 
 For OpenAI alternative:
+
 ```bash
 npm install openai
 ```
@@ -2618,36 +2703,36 @@ Create `src/lib/ai.ts`:
 
 ```ts
 // src/lib/ai.ts
-import Anthropic from '@anthropic-ai/sdk'
-import type { Idea } from '@/types/idea'
+import Anthropic from "@anthropic-ai/sdk";
+import type { Idea } from "@/types/idea";
 
 const anthropic = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true, // Required for client-side usage
-})
+   apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
+   dangerouslyAllowBrowser: true, // Required for client-side usage
+});
 
 export interface BrainstormResult {
-  suggestions: string[]
-  themes: string[]
-  connections: string[]
+   suggestions: string[];
+   themes: string[];
+   connections: string[];
 }
 
 export async function brainstormIdeas(
-  ideas: Idea[],
-  onStream?: (text: string) => void
+   ideas: Idea[],
+   onStream?: (text: string) => void
 ): Promise<string> {
-  // Build context from recent ideas
-  const ideaContext = ideas
-    .slice(0, 10) // Use last 10 ideas for context
-    .map((idea) => {
-      let text = `- ${idea.title}`
-      if (idea.content) text += `: ${idea.content}`
-      if (idea.tags.length > 0) text += ` [Tags: ${idea.tags.join(', ')}]`
-      return text
-    })
-    .join('\n')
+   // Build context from recent ideas
+   const ideaContext = ideas
+      .slice(0, 10) // Use last 10 ideas for context
+      .map((idea) => {
+         let text = `- ${idea.title}`;
+         if (idea.content) text += `: ${idea.content}`;
+         if (idea.tags.length > 0) text += ` [Tags: ${idea.tags.join(", ")}]`;
+         return text;
+      })
+      .join("\n");
 
-  const prompt = `You are a creative brainstorming partner. Based on the user's recent ideas below, suggest 5 new directions they could explore. Be creative, make unexpected connections, and offer fresh perspectives.
+   const prompt = `You are a creative brainstorming partner. Based on the user's recent ideas below, suggest 5 new directions they could explore. Be creative, make unexpected connections, and offer fresh perspectives.
 
 User's Recent Ideas:
 ${ideaContext}
@@ -2657,81 +2742,87 @@ Please provide:
 2. Common themes you notice across their ideas
 3. Unexpected connections between seemingly unrelated ideas
 
-Format your response in a clear, readable way with headers for each section.`
+Format your response in a clear, readable way with headers for each section.`;
 
-  if (onStream) {
-    // Streaming response
-    let fullText = ''
-    const stream = anthropic.messages.stream({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    })
+   if (onStream) {
+      // Streaming response
+      let fullText = "";
+      const stream = anthropic.messages.stream({
+         model: "claude-3-5-haiku-20241022",
+         max_tokens: 1024,
+         messages: [{ role: "user", content: prompt }],
+      });
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        fullText += event.delta.text
-        onStream(fullText)
+      for await (const event of stream) {
+         if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+         ) {
+            fullText += event.delta.text;
+            onStream(fullText);
+         }
       }
-    }
 
-    return fullText
-  } else {
-    // Non-streaming response
-    const response = await anthropic.messages.create({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    })
+      return fullText;
+   } else {
+      // Non-streaming response
+      const response = await anthropic.messages.create({
+         model: "claude-3-5-haiku-20241022",
+         max_tokens: 1024,
+         messages: [{ role: "user", content: prompt }],
+      });
 
-    const textBlock = response.content.find((block) => block.type === 'text')
-    return textBlock ? textBlock.text : 'No response generated'
-  }
+      const textBlock = response.content.find((block) => block.type === "text");
+      return textBlock ? textBlock.text : "No response generated";
+   }
 }
 
 // Alternative for single idea expansion
 export async function expandIdea(
-  idea: Idea,
-  onStream?: (text: string) => void
+   idea: Idea,
+   onStream?: (text: string) => void
 ): Promise<string> {
-  const prompt = `Help me develop this idea further:
+   const prompt = `Help me develop this idea further:
 
 Title: ${idea.title}
-${idea.content ? `Description: ${idea.content}` : ''}
-${idea.tags.length > 0 ? `Tags: ${idea.tags.join(', ')}` : ''}
+${idea.content ? `Description: ${idea.content}` : ""}
+${idea.tags.length > 0 ? `Tags: ${idea.tags.join(", ")}` : ""}
 
 Please provide:
 1. Three ways to expand or develop this idea
 2. Potential challenges and how to address them
 3. Related concepts or fields to explore
-4. A simple next step to get started`
+4. A simple next step to get started`;
 
-  if (onStream) {
-    let fullText = ''
-    const stream = anthropic.messages.stream({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    })
+   if (onStream) {
+      let fullText = "";
+      const stream = anthropic.messages.stream({
+         model: "claude-3-5-haiku-20241022",
+         max_tokens: 1024,
+         messages: [{ role: "user", content: prompt }],
+      });
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        fullText += event.delta.text
-        onStream(fullText)
+      for await (const event of stream) {
+         if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+         ) {
+            fullText += event.delta.text;
+            onStream(fullText);
+         }
       }
-    }
 
-    return fullText
-  } else {
-    const response = await anthropic.messages.create({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    })
+      return fullText;
+   } else {
+      const response = await anthropic.messages.create({
+         model: "claude-3-5-haiku-20241022",
+         max_tokens: 1024,
+         messages: [{ role: "user", content: prompt }],
+      });
 
-    const textBlock = response.content.find((block) => block.type === 'text')
-    return textBlock ? textBlock.text : 'No response generated'
-  }
+      const textBlock = response.content.find((block) => block.type === "text");
+      return textBlock ? textBlock.text : "No response generated";
+   }
 }
 ```
 
@@ -2741,29 +2832,29 @@ If you prefer OpenAI, create `src/lib/ai-openai.ts`:
 
 ```ts
 // src/lib/ai-openai.ts (alternative to ai.ts)
-import OpenAI from 'openai'
-import type { Idea } from '@/types/idea'
+import OpenAI from "openai";
+import type { Idea } from "@/types/idea";
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-})
+   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+   dangerouslyAllowBrowser: true,
+});
 
 export async function brainstormIdeas(
-  ideas: Idea[],
-  onStream?: (text: string) => void
+   ideas: Idea[],
+   onStream?: (text: string) => void
 ): Promise<string> {
-  const ideaContext = ideas
-    .slice(0, 10)
-    .map((idea) => {
-      let text = `- ${idea.title}`
-      if (idea.content) text += `: ${idea.content}`
-      if (idea.tags.length > 0) text += ` [Tags: ${idea.tags.join(', ')}]`
-      return text
-    })
-    .join('\n')
+   const ideaContext = ideas
+      .slice(0, 10)
+      .map((idea) => {
+         let text = `- ${idea.title}`;
+         if (idea.content) text += `: ${idea.content}`;
+         if (idea.tags.length > 0) text += ` [Tags: ${idea.tags.join(", ")}]`;
+         return text;
+      })
+      .join("\n");
 
-  const prompt = `You are a creative brainstorming partner. Based on the user's recent ideas below, suggest 5 new directions they could explore.
+   const prompt = `You are a creative brainstorming partner. Based on the user's recent ideas below, suggest 5 new directions they could explore.
 
 User's Recent Ideas:
 ${ideaContext}
@@ -2771,31 +2862,31 @@ ${ideaContext}
 Please provide:
 1. 5 new idea suggestions
 2. Common themes you notice
-3. Unexpected connections between ideas`
+3. Unexpected connections between ideas`;
 
-  if (onStream) {
-    let fullText = ''
-    const stream = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      stream: true,
-    })
+   if (onStream) {
+      let fullText = "";
+      const stream = await openai.chat.completions.create({
+         model: "gpt-4o-mini",
+         messages: [{ role: "user", content: prompt }],
+         stream: true,
+      });
 
-    for await (const chunk of stream) {
-      const text = chunk.choices[0]?.delta?.content || ''
-      fullText += text
-      onStream(fullText)
-    }
+      for await (const chunk of stream) {
+         const text = chunk.choices[0]?.delta?.content || "";
+         fullText += text;
+         onStream(fullText);
+      }
 
-    return fullText
-  } else {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-    })
+      return fullText;
+   } else {
+      const response = await openai.chat.completions.create({
+         model: "gpt-4o-mini",
+         messages: [{ role: "user", content: prompt }],
+      });
 
-    return response.choices[0]?.message?.content || 'No response generated'
-  }
+      return response.choices[0]?.message?.content || "No response generated";
+   }
 }
 ```
 
@@ -2805,123 +2896,132 @@ Create `src/components/BrainstormPanel.tsx`:
 
 ```tsx
 // src/components/BrainstormPanel.tsx
-import { useState } from 'react'
-import type { Idea } from '@/types/idea'
-import { brainstormIdeas, expandIdea } from '@/lib/ai'
+import { useState } from "react";
+import type { Idea } from "@/types/idea";
+import { brainstormIdeas, expandIdea } from "@/lib/ai";
 
 interface BrainstormPanelProps {
-  ideas: Idea[]
-  selectedIdea?: Idea | null
+   ideas: Idea[];
+   selectedIdea?: Idea | null;
 }
 
 export function BrainstormPanel({ ideas, selectedIdea }: BrainstormPanelProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<string>('')
-  const [error, setError] = useState<string | null>(null)
+   const [isLoading, setIsLoading] = useState(false);
+   const [result, setResult] = useState<string>("");
+   const [error, setError] = useState<string | null>(null);
 
-  const handleBrainstorm = async () => {
-    if (ideas.length === 0) {
-      setError('Add some ideas first to get AI suggestions!')
-      return
-    }
+   const handleBrainstorm = async () => {
+      if (ideas.length === 0) {
+         setError("Add some ideas first to get AI suggestions!");
+         return;
+      }
 
-    setIsLoading(true)
-    setError(null)
-    setResult('')
+      setIsLoading(true);
+      setError(null);
+      setResult("");
 
-    try {
-      await brainstormIdeas(ideas, (text) => {
-        setResult(text)
-      })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate ideas')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      try {
+         await brainstormIdeas(ideas, (text) => {
+            setResult(text);
+         });
+      } catch (err) {
+         setError(
+            err instanceof Error ? err.message : "Failed to generate ideas"
+         );
+      } finally {
+         setIsLoading(false);
+      }
+   };
 
-  const handleExpandIdea = async () => {
-    if (!selectedIdea) {
-      setError('Select an idea to expand!')
-      return
-    }
+   const handleExpandIdea = async () => {
+      if (!selectedIdea) {
+         setError("Select an idea to expand!");
+         return;
+      }
 
-    setIsLoading(true)
-    setError(null)
-    setResult('')
+      setIsLoading(true);
+      setError(null);
+      setResult("");
 
-    try {
-      await expandIdea(selectedIdea, (text) => {
-        setResult(text)
-      })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to expand idea')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      try {
+         await expandIdea(selectedIdea, (text) => {
+            setResult(text);
+         });
+      } catch (err) {
+         setError(err instanceof Error ? err.message : "Failed to expand idea");
+      } finally {
+         setIsLoading(false);
+      }
+   };
 
-  const handleClear = () => {
-    setResult('')
-    setError(null)
-  }
+   const handleClear = () => {
+      setResult("");
+      setError(null);
+   };
 
-  return (
-    <div className="brainstorm-panel">
-      <div className="brainstorm-header">
-        <h2>AI Brainstorm</h2>
-        <div className="brainstorm-actions">
-          <button
-            onClick={handleBrainstorm}
-            disabled={isLoading || ideas.length === 0}
-            className="btn-brainstorm"
-          >
-            {isLoading ? 'Thinking...' : 'Generate Ideas'}
-          </button>
-          {selectedIdea && (
-            <button
-              onClick={handleExpandIdea}
-              disabled={isLoading}
-              className="btn-expand"
-            >
-              Expand Selected
-            </button>
-          )}
-          {result && (
-            <button onClick={handleClear} className="btn-clear">
-              Clear
-            </button>
-          )}
-        </div>
+   return (
+      <div className="brainstorm-panel">
+         <div className="brainstorm-header">
+            <h2>AI Brainstorm</h2>
+            <div className="brainstorm-actions">
+               <button
+                  onClick={handleBrainstorm}
+                  disabled={isLoading || ideas.length === 0}
+                  className="btn-brainstorm"
+               >
+                  {isLoading ? "Thinking..." : "Generate Ideas"}
+               </button>
+               {selectedIdea && (
+                  <button
+                     onClick={handleExpandIdea}
+                     disabled={isLoading}
+                     className="btn-expand"
+                  >
+                     Expand Selected
+                  </button>
+               )}
+               {result && (
+                  <button onClick={handleClear} className="btn-clear">
+                     Clear
+                  </button>
+               )}
+            </div>
+         </div>
+
+         {error && <div className="brainstorm-error">{error}</div>}
+
+         {result ? (
+            <div className="brainstorm-result">
+               <pre>{result}</pre>
+            </div>
+         ) : (
+            <div className="brainstorm-empty">
+               {ideas.length === 0 ? (
+                  <p>
+                     Add some ideas first, then click "Generate Ideas" to get
+                     AI-powered suggestions!
+                  </p>
+               ) : (
+                  <p>
+                     Click "Generate Ideas" to get AI-powered brainstorming
+                     based on your {ideas.length} idea
+                     {ideas.length !== 1 ? "s" : ""}.
+                  </p>
+               )}
+            </div>
+         )}
+
+         {isLoading && (
+            <div className="brainstorm-loading">
+               <div className="loading-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </div>
+            </div>
+         )}
       </div>
-
-      {error && <div className="brainstorm-error">{error}</div>}
-
-      {result ? (
-        <div className="brainstorm-result">
-          <pre>{result}</pre>
-        </div>
-      ) : (
-        <div className="brainstorm-empty">
-          {ideas.length === 0 ? (
-            <p>Add some ideas first, then click "Generate Ideas" to get AI-powered suggestions!</p>
-          ) : (
-            <p>Click "Generate Ideas" to get AI-powered brainstorming based on your {ideas.length} idea{ideas.length !== 1 ? 's' : ''}.</p>
-          )}
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="brainstorm-loading">
-          <div className="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+   );
 }
 ```
 
@@ -2934,138 +3034,140 @@ Add to `src/index.css`:
 
 /* Brainstorm Panel */
 .brainstorm-panel {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   background: white;
+   border-radius: 8px;
+   padding: 16px;
+   margin-top: 24px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .brainstorm-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 16px;
+   flex-wrap: wrap;
+   gap: 12px;
 }
 
 .brainstorm-header h2 {
-  font-size: 1.25rem;
-  color: #333;
-  margin: 0;
+   font-size: 1.25rem;
+   color: #333;
+   margin: 0;
 }
 
 .brainstorm-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+   display: flex;
+   gap: 8px;
+   flex-wrap: wrap;
 }
 
 .btn-brainstorm {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: transform 0.2s, box-shadow 0.2s;
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
+   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-brainstorm:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+   transform: translateY(-1px);
+   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .btn-brainstorm:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+   opacity: 0.6;
+   cursor: not-allowed;
 }
 
 .btn-expand {
-  background-color: #f0f0f0;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
+   background-color: #f0f0f0;
+   color: #333;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
 }
 
 .btn-clear {
-  background-color: transparent;
-  color: #666;
-  border: 1px solid #ddd;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
+   background-color: transparent;
+   color: #666;
+   border: 1px solid #ddd;
+   padding: 10px 20px;
+   border-radius: 6px;
+   cursor: pointer;
 }
 
 .brainstorm-result {
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  padding: 16px;
-  max-height: 400px;
-  overflow-y: auto;
+   background-color: #f8f9fa;
+   border-radius: 6px;
+   padding: 16px;
+   max-height: 400px;
+   overflow-y: auto;
 }
 
 .brainstorm-result pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: inherit;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin: 0;
+   white-space: pre-wrap;
+   word-wrap: break-word;
+   font-family: inherit;
+   font-size: 0.9rem;
+   line-height: 1.6;
+   margin: 0;
 }
 
 .brainstorm-empty {
-  color: #666;
-  text-align: center;
-  padding: 24px;
+   color: #666;
+   text-align: center;
+   padding: 24px;
 }
 
 .brainstorm-error {
-  background-color: #fff0f0;
-  color: #cc0000;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 16px;
+   background-color: #fff0f0;
+   color: #cc0000;
+   padding: 12px;
+   border-radius: 6px;
+   margin-bottom: 16px;
 }
 
 .brainstorm-loading {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+   display: flex;
+   justify-content: center;
+   padding: 20px;
 }
 
 .loading-dots {
-  display: flex;
-  gap: 8px;
+   display: flex;
+   gap: 8px;
 }
 
 .loading-dots span {
-  width: 10px;
-  height: 10px;
-  background-color: #667eea;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out;
+   width: 10px;
+   height: 10px;
+   background-color: #667eea;
+   border-radius: 50%;
+   animation: bounce 1.4s infinite ease-in-out;
 }
 
 .loading-dots span:nth-child(1) {
-  animation-delay: -0.32s;
+   animation-delay: -0.32s;
 }
 
 .loading-dots span:nth-child(2) {
-  animation-delay: -0.16s;
+   animation-delay: -0.16s;
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
+   0%,
+   80%,
+   100% {
+      transform: scale(0);
+   }
+   40% {
+      transform: scale(1);
+   }
 }
 ```
 
@@ -3075,80 +3177,89 @@ Update `src/App.tsx`:
 
 ```tsx
 // src/App.tsx
-import { useState } from 'react'
-import { useIdeas } from '@/hooks/useIdeas'
-import { IdeaForm } from '@/components/IdeaForm'
-import { IdeaCard } from '@/components/IdeaCard'
-import { InstallPrompt } from '@/components/InstallPrompt'
-import { IOSInstallInstructions } from '@/components/IOSInstallInstructions'
-import { OfflineIndicator } from '@/components/OfflineIndicator'
-import { BrainstormPanel } from '@/components/BrainstormPanel'
-import type { Idea } from '@/types/idea'
+import { useState } from "react";
+import { useIdeas } from "@/hooks/useIdeas";
+import { IdeaForm } from "@/components/IdeaForm";
+import { IdeaCard } from "@/components/IdeaCard";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { BrainstormPanel } from "@/components/BrainstormPanel";
+import type { Idea } from "@/types/idea";
 
 function App() {
-  const { ideas, loading, error, syncing, isOnline, addIdea, editIdea, removeIdea } = useIdeas()
-  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null)
+   const {
+      ideas,
+      loading,
+      error,
+      syncing,
+      isOnline,
+      addIdea,
+      editIdea,
+      removeIdea,
+   } = useIdeas();
+   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
-  const handleSelectIdea = (idea: Idea) => {
-    setSelectedIdea(selectedIdea?.id === idea.id ? null : idea)
-  }
+   const handleSelectIdea = (idea: Idea) => {
+      setSelectedIdea(selectedIdea?.id === idea.id ? null : idea);
+   };
 
-  return (
-    <>
-      <OfflineIndicator isOnline={isOnline} syncing={syncing} />
+   return (
+      <>
+         <OfflineIndicator isOnline={isOnline} syncing={syncing} />
 
-      <div className="app-container">
-        <header className="app-header">
-          <h1>Quiver</h1>
-          <p>Capture and develop your ideas</p>
-        </header>
+         <div className="app-container">
+            <header className="app-header">
+               <h1>Quiver</h1>
+               <p>Capture and develop your ideas</p>
+            </header>
 
-        <main className="app-main">
-          <IdeaForm onSubmit={addIdea} />
+            <main className="app-main">
+               <IdeaForm onSubmit={addIdea} />
 
-          {error && <div className="error-message">{error}</div>}
+               {error && <div className="error-message">{error}</div>}
 
-          {loading ? (
-            <div className="loading">Loading ideas...</div>
-          ) : ideas.length === 0 ? (
-            <div className="empty-state">
-              <p>No ideas yet!</p>
-              <p>Start capturing your thoughts above.</p>
-            </div>
-          ) : (
-            <div className="ideas-list">
-              {ideas.map((idea) => (
-                <IdeaCard
-                  key={idea.id}
-                  idea={idea}
-                  isSelected={selectedIdea?.id === idea.id}
-                  onSelect={() => handleSelectIdea(idea)}
-                  onUpdate={editIdea}
-                  onDelete={removeIdea}
-                />
-              ))}
-            </div>
-          )}
+               {loading ? (
+                  <div className="loading">Loading ideas...</div>
+               ) : ideas.length === 0 ? (
+                  <div className="empty-state">
+                     <p>No ideas yet!</p>
+                     <p>Start capturing your thoughts above.</p>
+                  </div>
+               ) : (
+                  <div className="ideas-list">
+                     {ideas.map((idea) => (
+                        <IdeaCard
+                           key={idea.id}
+                           idea={idea}
+                           isSelected={selectedIdea?.id === idea.id}
+                           onSelect={() => handleSelectIdea(idea)}
+                           onUpdate={editIdea}
+                           onDelete={removeIdea}
+                        />
+                     ))}
+                  </div>
+               )}
 
-          {/* AI Brainstorming Panel */}
-          <BrainstormPanel ideas={ideas} selectedIdea={selectedIdea} />
-        </main>
+               {/* AI Brainstorming Panel */}
+               <BrainstormPanel ideas={ideas} selectedIdea={selectedIdea} />
+            </main>
 
-        <footer className="app-footer">
-          <p>
-            {ideas.length} idea{ideas.length !== 1 ? 's' : ''} captured
-            {!isOnline && ' (offline)'}
-          </p>
-        </footer>
+            <footer className="app-footer">
+               <p>
+                  {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+                  {!isOnline && " (offline)"}
+               </p>
+            </footer>
 
-        <InstallPrompt />
-        <IOSInstallInstructions />
-      </div>
-    </>
-  )
+            <InstallPrompt />
+            <IOSInstallInstructions />
+         </div>
+      </>
+   );
 }
 
-export default App
+export default App;
 ```
 
 #### 6.9 Update IdeaCard for Selection
@@ -3158,25 +3269,31 @@ Update `src/components/IdeaCard.tsx` to support selection:
 ```tsx
 // Add to IdeaCard props interface
 interface IdeaCardProps {
-  idea: Idea
-  isSelected?: boolean
-  onSelect?: () => void
-  onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>
-  onDelete: (id: number) => Promise<void>
+   idea: Idea;
+   isSelected?: boolean;
+   onSelect?: () => void;
+   onUpdate: (id: number, input: UpdateIdeaInput) => Promise<void>;
+   onDelete: (id: number) => Promise<void>;
 }
 
 // Update the component to handle selection
-export function IdeaCard({ idea, isSelected, onSelect, onUpdate, onDelete }: IdeaCardProps) {
-  // ... existing code ...
+export function IdeaCard({
+   idea,
+   isSelected,
+   onSelect,
+   onUpdate,
+   onDelete,
+}: IdeaCardProps) {
+   // ... existing code ...
 
-  return (
-    <div
-      className={`idea-card ${isSelected ? 'selected' : ''}`}
-      onClick={onSelect}
-    >
-      {/* ... existing content ... */}
-    </div>
-  )
+   return (
+      <div
+         className={`idea-card ${isSelected ? "selected" : ""}`}
+         onClick={onSelect}
+      >
+         {/* ... existing content ... */}
+      </div>
+   );
 }
 ```
 
@@ -3186,13 +3303,13 @@ Add the selected style to `src/index.css`:
 /* Add to src/index.css */
 
 .idea-card.selected {
-  border: 2px solid #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+   border: 2px solid #667eea;
+   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
 .idea-card {
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+   cursor: pointer;
+   transition: border-color 0.2s, box-shadow 0.2s;
 }
 ```
 
@@ -3201,34 +3318,39 @@ Add the selected style to `src/index.css`:
 1. **Start the dev server**: `npm run dev`
 
 2. **Test API connection**:
-   - Add a few ideas to your app
-   - Click "Generate Ideas"
-   - You should see streaming text appearing as the AI responds
-   - The response should reference your actual ideas
+
+   -  Add a few ideas to your app
+   -  Click "Generate Ideas"
+   -  You should see streaming text appearing as the AI responds
+   -  The response should reference your actual ideas
 
 3. **Test idea expansion**:
-   - Click on an idea to select it (highlighted border)
-   - Click "Expand Selected"
-   - You should get detailed suggestions for that specific idea
+
+   -  Click on an idea to select it (highlighted border)
+   -  Click "Expand Selected"
+   -  You should get detailed suggestions for that specific idea
 
 4. **Test error handling**:
-   - If your API key is invalid, you should see an error message
-   - If you're offline, the brainstorm button should work but show an error
+
+   -  If your API key is invalid, you should see an error message
+   -  If you're offline, the brainstorm button should work but show an error
 
 5. **Check API usage**:
-   - Go to https://console.anthropic.com
-   - Check your usage to verify API calls are being made
+   -  Go to https://console.anthropic.com
+   -  Check your usage to verify API calls are being made
 
 **Common Issues**:
-- "API key not found": Check your `.env` file has `VITE_ANTHROPIC_API_KEY`
-- "CORS error": Make sure `dangerouslyAllowBrowser: true` is set
-- "401 Unauthorized": Your API key is invalid or has no credits
+
+-  "API key not found": Check your `.env` file has `VITE_ANTHROPIC_API_KEY`
+-  "CORS error": Make sure `dangerouslyAllowBrowser: true` is set
+-  "401 Unauthorized": Your API key is invalid or has no credits
 
 **Checkpoint**: Your app now has AI-powered brainstorming!
 
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 6: AI brainstorming with Claude"
@@ -3296,15 +3418,15 @@ dist
 2. Click "Import Project"
 3. Select your `quiver` repository from the list
 4. Vercel auto-detects Vite - accept the defaults:
-   - Framework Preset: Vite
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
+   -  Framework Preset: Vite
+   -  Build Command: `npm run build`
+   -  Output Directory: `dist`
 5. **Add Environment Variables** (Critical!):
-   - Click "Environment Variables"
-   - Add each variable from your `.env` file:
-     - `VITE_TURSO_DATABASE_URL` = your Turso URL
-     - `VITE_TURSO_AUTH_TOKEN` = your Turso token
-     - `VITE_ANTHROPIC_API_KEY` = your Claude API key
+   -  Click "Environment Variables"
+   -  Add each variable from your `.env` file:
+      -  `VITE_TURSO_DATABASE_URL` = your Turso URL
+      -  `VITE_TURSO_AUTH_TOKEN` = your Turso token
+      -  `VITE_ANTHROPIC_API_KEY` = your Claude API key
 6. Click "Deploy"
 
 **Option B: Via CLI**
@@ -3337,9 +3459,9 @@ If you deployed via CLI, add environment variables in the dashboard:
 1. Go to your project on vercel.com
 2. Click "Settings" → "Environment Variables"
 3. Add each variable:
-   - Name: `VITE_TURSO_DATABASE_URL`
-   - Value: Your Turso database URL
-   - Environment: Production, Preview, Development
+   -  Name: `VITE_TURSO_DATABASE_URL`
+   -  Value: Your Turso database URL
+   -  Environment: Production, Preview, Development
 4. Repeat for `VITE_TURSO_AUTH_TOKEN` and `VITE_ANTHROPIC_API_KEY`
 5. Redeploy for changes to take effect:
    ```bash
@@ -3358,10 +3480,11 @@ If you deployed via CLI, add environment variables in the dashboard:
 
 By default, Vercel deploys automatically when you push to GitHub:
 
-- **Production**: Pushes to `main` branch
-- **Preview**: Pushes to other branches or pull requests
+-  **Production**: Pushes to `main` branch
+-  **Preview**: Pushes to other branches or pull requests
 
 To customize:
+
 1. Go to "Settings" → "Git"
 2. Configure production branch and preview settings
 
@@ -3378,58 +3501,62 @@ npm run preview
 ```
 
 Check for:
-- No build errors
-- Environment variables are loaded
-- PWA features work (service worker, manifest)
+
+-  No build errors
+-  Environment variables are loaded
+-  PWA features work (service worker, manifest)
 
 ### Verification
 
 1. **Access your deployed URL**:
-   - Vercel provides a URL like `quiver-xyz.vercel.app`
-   - Open it in your browser
+
+   -  Vercel provides a URL like `quiver-xyz.vercel.app`
+   -  Open it in your browser
 
 2. **Test core functionality**:
-   - Create a new idea
-   - Refresh the page - idea should persist
-   - Edit and delete ideas
+
+   -  Create a new idea
+   -  Refresh the page - idea should persist
+   -  Edit and delete ideas
 
 3. **Test PWA features**:
-   - Open Chrome DevTools → Application
-   - Verify service worker is registered
-   - Check manifest is loading correctly
-   - Try the install prompt
+
+   -  Open Chrome DevTools → Application
+   -  Verify service worker is registered
+   -  Check manifest is loading correctly
+   -  Try the install prompt
 
 4. **Test AI brainstorming**:
-   - Add a few ideas
-   - Click "Generate Ideas"
-   - Should stream AI response
+
+   -  Add a few ideas
+   -  Click "Generate Ideas"
+   -  Should stream AI response
 
 5. **Test on mobile**:
-   - Open your URL on your phone
-   - Install the PWA
-   - Test offline by enabling airplane mode
+
+   -  Open your URL on your phone
+   -  Install the PWA
+   -  Test offline by enabling airplane mode
 
 6. **Check Vercel dashboard**:
-   - Go to your project on vercel.com
-   - Check "Deployments" for build logs
-   - Check "Analytics" (if enabled) for traffic
+   -  Go to your project on vercel.com
+   -  Check "Deployments" for build logs
+   -  Check "Analytics" (if enabled) for traffic
 
 **Common Deployment Issues**:
 
-| Issue | Solution |
-|-------|----------|
-| Build fails | Check build logs in Vercel dashboard |
+| Issue                | Solution                                    |
+| -------------------- | ------------------------------------------- |
+| Build fails          | Check build logs in Vercel dashboard        |
 | Env vars not working | Ensure they start with `VITE_` and redeploy |
-| Database errors | Verify Turso credentials are correct |
-| 404 on refresh | Add `vercel.json` with rewrites (see below) |
+| Database errors      | Verify Turso credentials are correct        |
+| 404 on refresh       | Add `vercel.json` with rewrites (see below) |
 
 If you get 404s on page refresh, create `vercel.json`:
 
 ```json
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+   "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
 ```
 
@@ -3438,6 +3565,7 @@ If you get 404s on page refresh, create `vercel.json`:
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 7: Deployed to Vercel"
@@ -3467,11 +3595,12 @@ Lighthouse is Chrome's built-in tool for auditing web app quality.
 5. Click "Analyze page load"
 
 **Target scores**:
-- Performance: 90+
-- Accessibility: 90+
-- Best Practices: 90+
-- SEO: 90+
-- PWA: All checks passing
+
+-  Performance: 90+
+-  Accessibility: 90+
+-  Best Practices: 90+
+-  SEO: 90+
+-  PWA: All checks passing
 
 #### 8.2 Fix Common Lighthouse Issues
 
@@ -3482,13 +3611,13 @@ Lighthouse is Chrome's built-in tool for auditing web app quality.
 
 /* Use system fonts to avoid font loading delays */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 /* Optimize image rendering */
 img {
-  content-visibility: auto;
+   content-visibility: auto;
 }
 ```
 
@@ -3521,23 +3650,23 @@ Add focus styles to `src/index.css`:
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #0066cc;
-  outline-offset: 2px;
+   outline: 2px solid #0066cc;
+   outline-offset: 2px;
 }
 
 /* Skip link for keyboard users */
 .skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: #0066cc;
-  color: white;
-  padding: 8px;
-  z-index: 100;
+   position: absolute;
+   top: -40px;
+   left: 0;
+   background: #0066cc;
+   color: white;
+   padding: 8px;
+   z-index: 100;
 }
 
 .skip-link:focus {
-  top: 0;
+   top: 0;
 }
 ```
 
@@ -3559,35 +3688,50 @@ Update `index.html` with complete meta tags:
 
 ```html
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+   <meta charset="UTF-8" />
+   <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+   />
 
-  <!-- SEO Meta Tags -->
-  <title>Quiver - Capture and Develop Your Ideas</title>
-  <meta name="description" content="An offline-first PWA for capturing, organizing, and developing your ideas with AI-powered brainstorming." />
-  <meta name="keywords" content="ideas, notes, brainstorming, AI, offline, PWA" />
-  <meta name="author" content="Your Name" />
+   <!-- SEO Meta Tags -->
+   <title>Quiver - Capture and Develop Your Ideas</title>
+   <meta
+      name="description"
+      content="An offline-first PWA for capturing, organizing, and developing your ideas with AI-powered brainstorming."
+   />
+   <meta
+      name="keywords"
+      content="ideas, notes, brainstorming, AI, offline, PWA"
+   />
+   <meta name="author" content="Your Name" />
 
-  <!-- Open Graph / Social Media -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Quiver - Idea Capture App" />
-  <meta property="og:description" content="Capture and develop your ideas anywhere, even offline." />
-  <meta property="og:image" content="/og-image.png" />
+   <!-- Open Graph / Social Media -->
+   <meta property="og:type" content="website" />
+   <meta property="og:title" content="Quiver - Idea Capture App" />
+   <meta
+      property="og:description"
+      content="Capture and develop your ideas anywhere, even offline."
+   />
+   <meta property="og:image" content="/og-image.png" />
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Quiver - Idea Capture App" />
-  <meta name="twitter:description" content="Capture and develop your ideas anywhere, even offline." />
+   <!-- Twitter -->
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:title" content="Quiver - Idea Capture App" />
+   <meta
+      name="twitter:description"
+      content="Capture and develop your ideas anywhere, even offline."
+   />
 
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#0066cc" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Quiver" />
-  <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+   <!-- PWA Meta Tags -->
+   <meta name="theme-color" content="#0066cc" />
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+   <meta name="apple-mobile-web-app-title" content="Quiver" />
+   <link rel="apple-touch-icon" href="/pwa-192x192.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+   <!-- Favicon -->
+   <link rel="icon" type="image/svg+xml" href="/icon.svg" />
 </head>
 ```
 
@@ -3597,18 +3741,26 @@ Create `src/components/LoadingSpinner.tsx`:
 
 ```tsx
 // src/components/LoadingSpinner.tsx
-export function LoadingSpinner({ size = 'medium' }: { size?: 'small' | 'medium' | 'large' }) {
-  const sizeClass = {
-    small: 'spinner-small',
-    medium: 'spinner-medium',
-    large: 'spinner-large',
-  }[size]
+export function LoadingSpinner({
+   size = "medium",
+}: {
+   size?: "small" | "medium" | "large";
+}) {
+   const sizeClass = {
+      small: "spinner-small",
+      medium: "spinner-medium",
+      large: "spinner-large",
+   }[size];
 
-  return (
-    <div className={`spinner ${sizeClass}`} role="status" aria-label="Loading">
-      <div className="spinner-circle"></div>
-    </div>
-  )
+   return (
+      <div
+         className={`spinner ${sizeClass}`}
+         role="status"
+         aria-label="Loading"
+      >
+         <div className="spinner-circle"></div>
+      </div>
+   );
 }
 ```
 
@@ -3618,24 +3770,35 @@ Add spinner styles:
 /* Add to src/index.css */
 
 .spinner {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
 }
 
-.spinner-small .spinner-circle { width: 16px; height: 16px; }
-.spinner-medium .spinner-circle { width: 24px; height: 24px; }
-.spinner-large .spinner-circle { width: 40px; height: 40px; }
+.spinner-small .spinner-circle {
+   width: 16px;
+   height: 16px;
+}
+.spinner-medium .spinner-circle {
+   width: 24px;
+   height: 24px;
+}
+.spinner-large .spinner-circle {
+   width: 40px;
+   height: 40px;
+}
 
 .spinner-circle {
-  border: 3px solid #e0e0e0;
-  border-top-color: #0066cc;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+   border: 3px solid #e0e0e0;
+   border-top-color: #0066cc;
+   border-radius: 50%;
+   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+   to {
+      transform: rotate(360deg);
+   }
 }
 ```
 
@@ -3645,49 +3808,49 @@ Create `src/components/ErrorBoundary.tsx`:
 
 ```tsx
 // src/components/ErrorBoundary.tsx
-import { Component, ReactNode } from 'react'
+import { Component, ReactNode } from "react";
 
 interface Props {
-  children: ReactNode
-  fallback?: ReactNode
+   children: ReactNode;
+   fallback?: ReactNode;
 }
 
 interface State {
-  hasError: boolean
-  error?: Error
+   hasError: boolean;
+   error?: Error;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false }
-  }
+   constructor(props: Props) {
+      super(props);
+      this.state = { hasError: false };
+   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
-  }
+   static getDerivedStateFromError(error: Error): State {
+      return { hasError: true, error };
+   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo)
-  }
+   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+      console.error("Error caught by boundary:", error, errorInfo);
+   }
 
-  render() {
-    if (this.state.hasError) {
-      return (
-        this.props.fallback || (
-          <div className="error-boundary">
-            <h2>Something went wrong</h2>
-            <p>Please refresh the page and try again.</p>
-            <button onClick={() => window.location.reload()}>
-              Refresh Page
-            </button>
-          </div>
-        )
-      )
-    }
+   render() {
+      if (this.state.hasError) {
+         return (
+            this.props.fallback || (
+               <div className="error-boundary">
+                  <h2>Something went wrong</h2>
+                  <p>Please refresh the page and try again.</p>
+                  <button onClick={() => window.location.reload()}>
+                     Refresh Page
+                  </button>
+               </div>
+            )
+         );
+      }
 
-    return this.props.children
-  }
+      return this.props.children;
+   }
 }
 ```
 
@@ -3697,26 +3860,26 @@ Add error boundary styles:
 /* Add to src/index.css */
 
 .error-boundary {
-  text-align: center;
-  padding: 40px;
-  background: #fff0f0;
-  border-radius: 8px;
-  margin: 20px;
+   text-align: center;
+   padding: 40px;
+   background: #fff0f0;
+   border-radius: 8px;
+   margin: 20px;
 }
 
 .error-boundary h2 {
-  color: #cc0000;
-  margin-bottom: 12px;
+   color: #cc0000;
+   margin-bottom: 12px;
 }
 
 .error-boundary button {
-  margin-top: 16px;
-  padding: 10px 20px;
-  background: #cc0000;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+   margin-top: 16px;
+   padding: 10px 20px;
+   background: #cc0000;
+   color: white;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
 }
 ```
 
@@ -3724,19 +3887,19 @@ Wrap your app in `src/main.tsx`:
 
 ```tsx
 // src/main.tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import { ErrorBoundary } from './components/ErrorBoundary'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import "./index.css";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById("root")!).render(
+   <React.StrictMode>
+      <ErrorBoundary>
+         <App />
+      </ErrorBoundary>
+   </React.StrictMode>
+);
 ```
 
 #### 8.5 Add Keyboard Shortcuts
@@ -3745,40 +3908,40 @@ Create `src/hooks/useKeyboardShortcuts.ts`:
 
 ```ts
 // src/hooks/useKeyboardShortcuts.ts
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 interface Shortcuts {
-  [key: string]: () => void
+   [key: string]: () => void;
 }
 
 export function useKeyboardShortcuts(shortcuts: Shortcuts) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts when typing in inputs
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
-        return
-      }
+   useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+         // Don't trigger shortcuts when typing in inputs
+         if (
+            e.target instanceof HTMLInputElement ||
+            e.target instanceof HTMLTextAreaElement
+         ) {
+            return;
+         }
 
-      const key = [
-        e.ctrlKey || e.metaKey ? 'mod' : '',
-        e.shiftKey ? 'shift' : '',
-        e.key.toLowerCase(),
-      ]
-        .filter(Boolean)
-        .join('+')
+         const key = [
+            e.ctrlKey || e.metaKey ? "mod" : "",
+            e.shiftKey ? "shift" : "",
+            e.key.toLowerCase(),
+         ]
+            .filter(Boolean)
+            .join("+");
 
-      if (shortcuts[key]) {
-        e.preventDefault()
-        shortcuts[key]()
-      }
-    }
+         if (shortcuts[key]) {
+            e.preventDefault();
+            shortcuts[key]();
+         }
+      };
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [shortcuts])
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+   }, [shortcuts]);
 }
 ```
 
@@ -3786,23 +3949,23 @@ Use in your App component:
 
 ```tsx
 // In src/App.tsx
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 function App() {
-  const inputRef = useRef<HTMLInputElement>(null)
+   const inputRef = useRef<HTMLInputElement>(null);
 
-  useKeyboardShortcuts({
-    'mod+n': () => inputRef.current?.focus(), // Focus new idea input
-    'mod+b': () => handleBrainstorm(), // Trigger brainstorm
-    'escape': () => setSelectedIdea(null), // Deselect idea
-  })
+   useKeyboardShortcuts({
+      "mod+n": () => inputRef.current?.focus(), // Focus new idea input
+      "mod+b": () => handleBrainstorm(), // Trigger brainstorm
+      escape: () => setSelectedIdea(null), // Deselect idea
+   });
 
-  // Pass inputRef to IdeaForm
-  return (
-    // ...
-    <IdeaForm onSubmit={addIdea} inputRef={inputRef} />
-    // ...
-  )
+   // Pass inputRef to IdeaForm
+   return (
+      // ...
+      <IdeaForm onSubmit={addIdea} inputRef={inputRef} />
+      // ...
+   );
 }
 ```
 
@@ -3813,42 +3976,42 @@ Create `src/components/ConfirmDialog.tsx`:
 ```tsx
 // src/components/ConfirmDialog.tsx
 interface ConfirmDialogProps {
-  isOpen: boolean
-  title: string
-  message: string
-  confirmText?: string
-  cancelText?: string
-  onConfirm: () => void
-  onCancel: () => void
+   isOpen: boolean;
+   title: string;
+   message: string;
+   confirmText?: string;
+   cancelText?: string;
+   onConfirm: () => void;
+   onCancel: () => void;
 }
 
 export function ConfirmDialog({
-  isOpen,
-  title,
-  message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  onConfirm,
-  onCancel,
+   isOpen,
+   title,
+   message,
+   confirmText = "Confirm",
+   cancelText = "Cancel",
+   onConfirm,
+   onCancel,
 }: ConfirmDialogProps) {
-  if (!isOpen) return null
+   if (!isOpen) return null;
 
-  return (
-    <div className="dialog-overlay" onClick={onCancel}>
-      <div className="dialog" onClick={(e) => e.stopPropagation()}>
-        <h3>{title}</h3>
-        <p>{message}</p>
-        <div className="dialog-actions">
-          <button onClick={onCancel} className="btn-cancel">
-            {cancelText}
-          </button>
-          <button onClick={onConfirm} className="btn-confirm">
-            {confirmText}
-          </button>
-        </div>
+   return (
+      <div className="dialog-overlay" onClick={onCancel}>
+         <div className="dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>{title}</h3>
+            <p>{message}</p>
+            <div className="dialog-actions">
+               <button onClick={onCancel} className="btn-cancel">
+                  {cancelText}
+               </button>
+               <button onClick={onConfirm} className="btn-confirm">
+                  {confirmText}
+               </button>
+            </div>
+         </div>
       </div>
-    </div>
-  )
+   );
 }
 ```
 
@@ -3858,54 +4021,54 @@ Add dialog styles:
 /* Add to src/index.css */
 
 .dialog-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+   position: fixed;
+   inset: 0;
+   background: rgba(0, 0, 0, 0.5);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
 }
 
 .dialog {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  max-width: 400px;
-  width: 90%;
+   background: white;
+   border-radius: 8px;
+   padding: 24px;
+   max-width: 400px;
+   width: 90%;
 }
 
 .dialog h3 {
-  margin-bottom: 8px;
+   margin-bottom: 8px;
 }
 
 .dialog p {
-  color: #666;
-  margin-bottom: 20px;
+   color: #666;
+   margin-bottom: 20px;
 }
 
 .dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
+   display: flex;
+   justify-content: flex-end;
+   gap: 12px;
 }
 
 .dialog .btn-cancel {
-  background: #f0f0f0;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
+   background: #f0f0f0;
+   color: #333;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 4px;
+   cursor: pointer;
 }
 
 .dialog .btn-confirm {
-  background: #cc0000;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
+   background: #cc0000;
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 4px;
+   cursor: pointer;
 }
 ```
 
@@ -3914,79 +4077,90 @@ Add dialog styles:
 Test these scenarios on a real mobile device:
 
 **Touch Interactions**:
-- [ ] Tap to select ideas works
-- [ ] Swipe/scroll is smooth
-- [ ] Form inputs don't zoom on focus (font-size >= 16px)
-- [ ] Buttons have adequate touch targets (min 44x44px)
+
+-  [ ] Tap to select ideas works
+-  [ ] Swipe/scroll is smooth
+-  [ ] Form inputs don't zoom on focus (font-size >= 16px)
+-  [ ] Buttons have adequate touch targets (min 44x44px)
 
 **PWA Installation**:
-- [ ] Android: "Add to Home Screen" banner appears
-- [ ] iOS: Can add via Share → Add to Home Screen
-- [ ] App opens in standalone mode (no browser chrome)
-- [ ] Splash screen appears during load
+
+-  [ ] Android: "Add to Home Screen" banner appears
+-  [ ] iOS: Can add via Share → Add to Home Screen
+-  [ ] App opens in standalone mode (no browser chrome)
+-  [ ] Splash screen appears during load
 
 **Offline**:
-- [ ] App works with airplane mode on
-- [ ] Ideas sync when connection returns
-- [ ] Offline indicator shows correctly
+
+-  [ ] App works with airplane mode on
+-  [ ] Ideas sync when connection returns
+-  [ ] Offline indicator shows correctly
 
 **Performance**:
-- [ ] First load under 3 seconds on 4G
-- [ ] Interactions feel responsive
-- [ ] No janky scrolling
+
+-  [ ] First load under 3 seconds on 4G
+-  [ ] Interactions feel responsive
+-  [ ] No janky scrolling
 
 #### 8.8 Final Polish Checklist
 
 Run through this checklist before considering the app complete:
 
 **Functionality**:
-- [ ] Can create new ideas
-- [ ] Can edit existing ideas
-- [ ] Can archive/delete ideas
-- [ ] Ideas persist after refresh
-- [ ] AI brainstorming generates relevant suggestions
-- [ ] Idea expansion works for selected ideas
+
+-  [ ] Can create new ideas
+-  [ ] Can edit existing ideas
+-  [ ] Can archive/delete ideas
+-  [ ] Ideas persist after refresh
+-  [ ] AI brainstorming generates relevant suggestions
+-  [ ] Idea expansion works for selected ideas
 
 **PWA**:
-- [ ] Service worker registered
-- [ ] App is installable
-- [ ] Offline mode works
-- [ ] Data syncs when back online
+
+-  [ ] Service worker registered
+-  [ ] App is installable
+-  [ ] Offline mode works
+-  [ ] Data syncs when back online
 
 **Accessibility**:
-- [ ] All interactive elements focusable
-- [ ] Keyboard navigation works
-- [ ] Screen reader compatible (test with VoiceOver/NVDA)
-- [ ] Color contrast meets WCAG AA
+
+-  [ ] All interactive elements focusable
+-  [ ] Keyboard navigation works
+-  [ ] Screen reader compatible (test with VoiceOver/NVDA)
+-  [ ] Color contrast meets WCAG AA
 
 **Performance**:
-- [ ] Lighthouse score 90+ in all categories
-- [ ] No console errors
-- [ ] No memory leaks (check DevTools Memory tab)
+
+-  [ ] Lighthouse score 90+ in all categories
+-  [ ] No console errors
+-  [ ] No memory leaks (check DevTools Memory tab)
 
 **UX**:
-- [ ] Loading states for async operations
-- [ ] Error messages are helpful
-- [ ] Empty states guide the user
-- [ ] Confirmation for destructive actions
+
+-  [ ] Loading states for async operations
+-  [ ] Error messages are helpful
+-  [ ] Empty states guide the user
+-  [ ] Confirmation for destructive actions
 
 ### Verification
 
 1. **Run final Lighthouse audit** - All categories should be 90+
 
 2. **Test on multiple devices**:
-   - Desktop Chrome
-   - Desktop Firefox
-   - Desktop Safari
-   - Android Chrome
-   - iOS Safari
+
+   -  Desktop Chrome
+   -  Desktop Firefox
+   -  Desktop Safari
+   -  Android Chrome
+   -  iOS Safari
 
 3. **Test offline workflow**:
-   - Load app while online
-   - Go offline
-   - Create/edit ideas
-   - Go back online
-   - Verify sync
+
+   -  Load app while online
+   -  Go offline
+   -  Create/edit ideas
+   -  Go back online
+   -  Verify sync
 
 4. **Have someone else test it** - Fresh eyes catch issues you miss
 
@@ -3995,6 +4169,7 @@ Run through this checklist before considering the app complete:
 ---
 
 **Commit your progress**:
+
 ```bash
 git add .
 git commit -m "Milestone 8: Testing and polish complete"
@@ -4017,12 +4192,12 @@ Error: Cannot find module '@/lib/ideas'
 
 ```json
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+   "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["./src/*"]
+      }
+   }
 }
 ```
 
@@ -4046,9 +4221,9 @@ Cannot find name 'import.meta'
 
 ```json
 {
-  "compilerOptions": {
-    "types": ["vite/client"]
-  }
+   "compilerOptions": {
+      "types": ["vite/client"]
+   }
 }
 ```
 
@@ -4059,6 +4234,7 @@ Cannot find name 'import.meta'
 **Cause**: Migrations haven't been run.
 
 **Solution**:
+
 ```bash
 npx drizzle-kit push
 ```
@@ -4068,6 +4244,7 @@ npx drizzle-kit push
 **Cause**: Invalid Turso credentials.
 
 **Solution**:
+
 1. Verify your `.env` file has correct values
 2. Regenerate token: `turso db tokens create quiver`
 3. Check the URL format: `libsql://quiver-USERNAME.turso.io`
@@ -4077,6 +4254,7 @@ npx drizzle-kit push
 **Cause**: Missing indexes or inefficient queries.
 
 **Solution**:
+
 ```sql
 -- Run in Turso CLI or Drizzle Studio
 CREATE INDEX IF NOT EXISTS idx_ideas_created_at ON ideas(created_at DESC);
@@ -4090,6 +4268,7 @@ CREATE INDEX IF NOT EXISTS idx_ideas_archived ON ideas(archived) WHERE archived 
 **Cause**: Usually a development mode issue.
 
 **Solution**: PWAs only work in production builds:
+
 ```bash
 npm run build
 npm run preview
@@ -4098,11 +4277,13 @@ npm run preview
 #### Install prompt not showing
 
 **Causes**:
+
 1. Already installed or previously dismissed
 2. Not enough user engagement
 3. Missing manifest requirements
 
 **Solutions**:
+
 1. Test in incognito mode
 2. Clear site data in DevTools → Application → Clear storage
 3. Verify manifest in DevTools → Application → Manifest
@@ -4112,6 +4293,7 @@ npm run preview
 **Cause**: Service worker not caching correctly.
 
 **Solution**:
+
 1. Check DevTools → Application → Cache Storage
 2. Verify service worker is active
 3. Ensure `workbox.globPatterns` includes all needed files
@@ -4123,6 +4305,7 @@ npm run preview
 **Cause**: Environment variable not loading.
 
 **Solution**:
+
 1. Ensure variable starts with `VITE_` for client-side access
 2. Restart the dev server after adding env vars
 3. Check `.env` file is in project root
@@ -4135,19 +4318,21 @@ npm run preview
 
 ```ts
 const anthropic = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true,
-})
+   apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
+   dangerouslyAllowBrowser: true,
+});
 ```
 
 #### "401 Unauthorized" from Claude API
 
 **Causes**:
+
 1. Invalid API key
 2. No credits on account
 3. Key was deleted/regenerated
 
 **Solution**:
+
 1. Verify key at https://console.anthropic.com
 2. Add credits ($5 minimum)
 3. Generate new key if needed
@@ -4157,6 +4342,7 @@ const anthropic = new Anthropic({
 **Cause**: Not using streaming.
 
 **Solution**: Use streaming for better UX:
+
 ```ts
 const stream = anthropic.messages.stream({...})
 for await (const event of stream) {
@@ -4169,6 +4355,7 @@ for await (const event of stream) {
 #### Vercel build fails
 
 **Solution**: Check build logs. Common issues:
+
 1. TypeScript errors - fix locally first with `npm run build`
 2. Missing dependencies - check `package.json`
 3. Environment variables - ensure they're set in Vercel dashboard
@@ -4178,6 +4365,7 @@ for await (const event of stream) {
 **Cause**: Variables not set in Vercel or wrong prefix.
 
 **Solution**:
+
 1. Go to Vercel dashboard → Settings → Environment Variables
 2. Add all `VITE_*` variables
 3. Redeploy after adding variables
@@ -4187,11 +4375,10 @@ for await (const event of stream) {
 **Cause**: SPA routing not configured.
 
 **Solution**: Add `vercel.json`:
+
 ```json
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+   "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
 ```
 
@@ -4202,6 +4389,7 @@ for await (const event of stream) {
 **Cause**: Sync logic not triggering.
 
 **Solution**: Check browser console for errors. Verify:
+
 1. `app-back-online` event fires
 2. `syncPendingActions` function runs
 3. IndexedDB has queued actions
@@ -4211,11 +4399,12 @@ for await (const event of stream) {
 **Cause**: Offline IDs conflict with server IDs.
 
 **Solution**: Use temporary negative IDs for offline items:
+
 ```ts
 const tempIdea = {
-  id: -Date.now(), // Negative to distinguish from server IDs
-  // ...
-}
+   id: -Date.now(), // Negative to distinguish from server IDs
+   // ...
+};
 ```
 
 ---
@@ -4227,9 +4416,10 @@ The core app is complete, but automated tab capture requires a browser extension
 ### Why an Extension?
 
 Web apps cannot access browser tabs due to security restrictions. A browser extension has elevated permissions and can:
-- Read all open tabs
-- Access tab URLs and titles
-- Send data to your web app
+
+-  Read all open tabs
+-  Access tab URLs and titles
+-  Send data to your web app
 
 ### Extension Architecture
 
@@ -4246,20 +4436,20 @@ quiver-extension/
 
 ```json
 {
-  "manifest_version": 3,
-  "name": "Quiver Tab Capture",
-  "version": "1.0",
-  "description": "Capture browser tabs to Quiver",
-  "permissions": ["tabs"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": "icons/icon128.png"
-  },
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+   "manifest_version": 3,
+   "name": "Quiver Tab Capture",
+   "version": "1.0",
+   "description": "Capture browser tabs to Quiver",
+   "permissions": ["tabs"],
+   "action": {
+      "default_popup": "popup.html",
+      "default_icon": "icons/icon128.png"
+   },
+   "icons": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+   }
 }
 ```
 
@@ -4267,63 +4457,65 @@ quiver-extension/
 
 ```js
 // popup.js
-document.getElementById('capture').addEventListener('click', async () => {
-  const tabs = await chrome.tabs.query({ currentWindow: true })
+document.getElementById("capture").addEventListener("click", async () => {
+   const tabs = await chrome.tabs.query({ currentWindow: true });
 
-  const tabData = tabs.map(tab => ({
-    title: tab.title,
-    url: tab.url,
-  }))
+   const tabData = tabs.map((tab) => ({
+      title: tab.title,
+      url: tab.url,
+   }));
 
-  // Send to your web app
-  await fetch('https://your-quiver-app.vercel.app/api/capture', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tabs: tabData }),
-  })
-})
+   // Send to your web app
+   await fetch("https://your-quiver-app.vercel.app/api/capture", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tabs: tabData }),
+   });
+});
 ```
 
 ### Development Time Estimate
 
-| Task | Time |
-|------|------|
-| Basic extension structure | 1-2 hours |
-| Tab capture logic | 1-2 hours |
-| Communication with web app | 2-3 hours |
-| API endpoint in web app | 1-2 hours |
-| UI polish | 2-3 hours |
-| Firefox compatibility | 2-4 hours |
-| **Total** | **10-16 hours** |
+| Task                       | Time            |
+| -------------------------- | --------------- |
+| Basic extension structure  | 1-2 hours       |
+| Tab capture logic          | 1-2 hours       |
+| Communication with web app | 2-3 hours       |
+| API endpoint in web app    | 1-2 hours       |
+| UI polish                  | 2-3 hours       |
+| Firefox compatibility      | 2-4 hours       |
+| **Total**                  | **10-16 hours** |
 
 ### Alternative: Web Share Target
 
 A quicker solution that doesn't require an extension:
 
 1. Add to your PWA manifest:
+
 ```json
 {
-  "share_target": {
-    "action": "/share",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  }
+   "share_target": {
+      "action": "/share",
+      "method": "GET",
+      "params": {
+         "title": "title",
+         "text": "text",
+         "url": "url"
+      }
+   }
 }
 ```
 
 2. Handle shared content in your app:
+
 ```ts
 // Check URL params on load
-const params = new URLSearchParams(window.location.search)
-const sharedUrl = params.get('url')
-const sharedTitle = params.get('title')
+const params = new URLSearchParams(window.location.search);
+const sharedUrl = params.get("url");
+const sharedTitle = params.get("title");
 
 if (sharedUrl) {
-  // Create idea with shared content
+   // Create idea with shared content
 }
 ```
 
@@ -4408,21 +4600,21 @@ quiver/
 
 ### Key Documentation Links
 
-- **Vite**: https://vitejs.dev/guide/
-- **vite-plugin-pwa**: https://vite-pwa-org.netlify.app/
-- **Turso**: https://docs.turso.tech/
-- **Drizzle ORM**: https://orm.drizzle.team/docs/overview
-- **Anthropic SDK**: https://docs.anthropic.com/
-- **Vercel**: https://vercel.com/docs
+-  **Vite**: https://vitejs.dev/guide/
+-  **vite-plugin-pwa**: https://vite-pwa-org.netlify.app/
+-  **Turso**: https://docs.turso.tech/
+-  **Drizzle ORM**: https://orm.drizzle.team/docs/overview
+-  **Anthropic SDK**: https://docs.anthropic.com/
+-  **Vercel**: https://vercel.com/docs
 
 ### Cost Summary
 
-| Service | Free Tier | Estimated Cost |
-|---------|-----------|----------------|
-| Turso | 500M reads, 10M writes | $0 |
-| Vercel | 100GB bandwidth | $0 |
-| Claude Haiku | - | ~$2.70/month |
-| **Total** | | **~$2.70/month** |
+| Service      | Free Tier              | Estimated Cost   |
+| ------------ | ---------------------- | ---------------- |
+| Turso        | 500M reads, 10M writes | $0               |
+| Vercel       | 100GB bandwidth        | $0               |
+| Claude Haiku | -                      | ~$2.70/month     |
+| **Total**    |                        | **~$2.70/month** |
 
 ---
 
@@ -4430,27 +4622,29 @@ quiver/
 
 You've built a production-ready, offline-first Progressive Web App with:
 
-- Full CRUD functionality for ideas
-- Cloud database with Turso
-- Offline support with IndexedDB
-- AI-powered brainstorming with Claude
-- PWA installation on any device
-- Deployed to Vercel
+-  Full CRUD functionality for ideas
+-  Cloud database with Turso
+-  Offline support with IndexedDB
+-  AI-powered brainstorming with Claude
+-  PWA installation on any device
+-  Deployed to Vercel
 
 **What you've learned**:
-- Modern React development with Vite
-- Type-safe database access with Drizzle ORM
-- PWA concepts: service workers, caching, manifests
-- Offline-first architecture patterns
-- AI API integration with streaming
-- Production deployment workflows
+
+-  Modern React development with Vite
+-  Type-safe database access with Drizzle ORM
+-  PWA concepts: service workers, caching, manifests
+-  Offline-first architecture patterns
+-  AI API integration with streaming
+-  Production deployment workflows
 
 **Keep building!** Some ideas for enhancements:
-- Add user authentication
-- Implement idea categories/folders
-- Add rich text editing
-- Build the browser extension
-- Add collaboration features
-- Implement idea search with full-text search
+
+-  Add user authentication
+-  Implement idea categories/folders
+-  Add rich text editing
+-  Build the browser extension
+-  Add collaboration features
+-  Implement idea search with full-text search
 
 Happy coding!
