@@ -8,12 +8,17 @@
 		"build": "tsc -b && vite build",
 		"lint": "biome lint .",
 		"preview": "vite preview",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio",
 		"generate-pwa-assets": "pwa-assets-generator"
 	},
 	"dependencies": {
 		"@libsql/client": "^0.15.15",
 		"@tailwindcss/vite": "^4.1.17",
 		"drizzle-orm": "^0.44.7",
+		"idb": "^8.0.3",
+		"lucide-react": "^0.554.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"tailwindcss": "^4.1.17"

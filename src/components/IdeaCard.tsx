@@ -1,41 +1,83 @@
+import { ArchiveIcon, TrashIcon } from "lucide-react";
 import type { Idea } from "../lib/schema";
 
 interface IdeaCardProps {
 	idea: Idea;
-	onDelete: (id: number) => void;
+	onDelete: (id: number) => Promise<void>;
+	onArchive: (id: number) => Promise<void>;
 }
 
-export function IdeaCard({ idea, onDelete }: IdeaCardProps) {
+/**
+ * Displays a single idea with actions.
+ *
+ * This is a "presentational" component—it receives data and callbacks
+ * as props and doesn't manage any state itself.
+ */
+export function IdeaCard({ idea, onDelete, onArchive }: IdeaCardProps) {
+	// Format the date in a human-readable way
+	const formattedDate = new Date(idea.createdAt).toLocaleDateString("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+	});
+
 	return (
-		<div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-			<div className="flex justify-between items-start mb-2">
-				<h3 className="text-lg font-semibold text-gray-900">{idea.title}</h3>
+		<article
+			className={`bg-white rounded-lg shadow-sm border border-gray-200 p-5
+                  ${idea.archived ? "opacity-60" : ""}`}
+		>
+			{/* Header: title and date */}
+			<header className="flex justify-between items-start gap-4 mb-3">
+				<h3 className="text-lg font-semibold text-gray-900 leading-tight">
+					{idea.title}
+				</h3>
+				<time
+					dateTime={idea.createdAt.toISOString()}
+					className="text-sm text-gray-500 whitespace-nowrap"
+				>
+					{formattedDate}
+				</time>
+			</header>
+
+			{/* Content */}
+			<p className="text-gray-600 mb-4 whitespace-pre-wrap">{idea.content}</p>
+
+			{/* Tags */}
+			{idea.tags && idea.tags.length > 0 && (
+				<div className="flex flex-wrap gap-2 mb-4">
+					{idea.tags.map((tag) => (
+						<span
+							key={tag}
+							className="inline-block px-2.5 py-0.5 bg-gray-100 text-gray-600
+                         text-xs font-medium rounded-full"
+						>
+							{tag}
+						</span>
+					))}
+				</div>
+			)}
+
+			{/* Actions */}
+			<footer className="flex justify-end gap-2">
+				{!idea.archived && (
+					<button
+						onClick={() => onArchive(idea.id)}
+						className="px-3 py-1.5 text-sm font-medium text-gray-600
+                       bg-gray-100 rounded-md
+                       hover:bg-gray-200 transition-colors"
+					>
+						<ArchiveIcon className="w-4 h-4" />
+					</button>
+				)}
 				<button
 					onClick={() => onDelete(idea.id)}
-					className="text-gray-400 hover:text-danger transition-colors"
-					aria-label="Delete idea"
+					className="px-3 py-1.5 text-sm font-medium text-red-600
+                     bg-red-50 rounded-md
+                     hover:bg-red-100 transition-colors"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<path d="M3 6h18"></path>
-						<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-						<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-					</svg>
+					<TrashIcon className="w-4 h-4" />
 				</button>
-			</div>
-			<p className="text-gray-600 whitespace-pre-wrap mb-4">{idea.content}</p>
-			<div className="text-xs text-gray-400">
-				{new Date(idea.createdAt).toLocaleDateString()}
-			</div>
-		</div>
+			</footer>
+		</article>
 	);
 }
