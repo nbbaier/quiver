@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/04-pwa-fundamentals"
 ---
 
-*This is Part 4 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
+_This is Part 4 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
 
 ---
 
@@ -28,10 +28,11 @@ A Progressive Web App isn't a different technology—it's a set of enhancements 
 When all three are present, browsers recognize the site as installable. Chrome shows an install icon in the address bar. Android prompts users to add to home screen. iOS allows "Add to Home Screen" from the share menu.
 
 Once installed, the app:
-- Appears on the home screen with its own icon
-- Opens in a standalone window (no browser URL bar)
-- Can work offline (with proper service worker configuration)
-- Receives push notifications (if implemented)
+
+-  Appears on the home screen with its own icon
+-  Opens in a standalone window (no browser URL bar)
+-  Can work offline (with proper service worker configuration)
+-  Receives push notifications (if implemented)
 
 The user experience becomes indistinguishable from a native app.
 
@@ -71,49 +72,49 @@ import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: "autoUpdate",
-      includeAssets: ["icon.svg"],
-      manifest: {
-        name: "Quiver - Idea Capture",
-        short_name: "Quiver",
-        description: "Capture and develop your ideas anywhere",
-        theme_color: "#0066cc",
-        background_color: "#f5f5f5",
-        display: "standalone",
-        scope: "/",
-        start_url: "/",
-        icons: [
-          {
-            src: "pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable",
-          },
-        ],
+   plugins: [
+      react(),
+      VitePWA({
+         registerType: "autoUpdate",
+         includeAssets: ["icon.svg"],
+         manifest: {
+            name: "Quiver - Idea Capture",
+            short_name: "Quiver",
+            description: "Capture and develop your ideas anywhere",
+            theme_color: "#0066cc",
+            background_color: "#f5f5f5",
+            display: "standalone",
+            scope: "/",
+            start_url: "/",
+            icons: [
+               {
+                  src: "pwa-192x192.png",
+                  sizes: "192x192",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+               },
+               {
+                  src: "pwa-512x512.png",
+                  sizes: "512x512",
+                  type: "image/png",
+                  purpose: "maskable",
+               },
+            ],
+         },
+         workbox: {
+            globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+         },
+      }),
+   ],
+   resolve: {
+      alias: {
+         "@": path.resolve(__dirname, "./src"),
       },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-      },
-    }),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+   },
 });
 ```
 
@@ -122,11 +123,12 @@ Let's break down the important options:
 **`registerType: "autoUpdate"`** — When we deploy a new version, the service worker updates automatically. Users always get the latest code without being prompted. The alternative is `"prompt"`, which asks users before updating.
 
 **`manifest` object** — This becomes the web app manifest. Key fields:
-- `name`: Full name shown in app stores and launchers
-- `short_name`: Used when space is limited (home screen icons)
-- `theme_color`: Colors the mobile status bar and browser chrome
-- `background_color`: Splash screen background during app launch
-- `display: "standalone"`: Removes browser chrome—the app looks native
+
+-  `name`: Full name shown in app stores and launchers
+-  `short_name`: Used when space is limited (home screen icons)
+-  `theme_color`: Colors the mobile status bar and browser chrome
+-  `background_color`: Splash screen background during app launch
+-  `display: "standalone"`: Removes browser chrome—the app looks native
 
 **`icons`** — Minimum two: 192x192 and 512x512. The `maskable` variant allows Android to crop the icon into circles or other shapes without cutting off important content.
 
@@ -137,6 +139,7 @@ Let's break down the important options:
 A service worker is JavaScript that runs in a separate thread from your main app. It intercepts network requests and can serve cached responses, enabling offline functionality.
 
 The key mental model: when your app makes a fetch request, the service worker sees it first. It can:
+
 1. Pass it through to the network (normal behavior)
 2. Return a cached response (offline or cache-first)
 3. Return a cached response while fetching an update (stale-while-revalidate)
@@ -154,36 +157,37 @@ Update `index.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#0066cc" />
-    <meta
-      name="description"
-      content="Capture and develop your ideas anywhere"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Quiver" />
-    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
-    <title>Quiver</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+   <head>
+      <meta charset="UTF-8" />
+      <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      />
+      <meta name="theme-color" content="#0066cc" />
+      <meta
+         name="description"
+         content="Capture and develop your ideas anywhere"
+      />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="Quiver" />
+      <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+      <title>Quiver</title>
+   </head>
+   <body>
+      <div id="root"></div>
+      <script type="module" src="/src/main.tsx"></script>
+   </body>
 </html>
 ```
 
 The `apple-*` meta tags are iOS-specific. Safari doesn't fully support the web app manifest, so these provide equivalent functionality:
-- `apple-mobile-web-app-capable`: Enables standalone mode on iOS
-- `apple-mobile-web-app-status-bar-style`: Status bar appearance
-- `apple-mobile-web-app-title`: App name on home screen
-- `apple-touch-icon`: Icon for home screen
+
+-  `apple-mobile-web-app-capable`: Enables standalone mode on iOS
+-  `apple-mobile-web-app-status-bar-style`: Status bar appearance
+-  `apple-mobile-web-app-title`: App name on home screen
+-  `apple-touch-icon`: Icon for home screen
 
 ## Custom Install Prompt
 
@@ -196,80 +200,80 @@ import { useState, useEffect } from "react";
 
 // TypeScript interface for the browser event
 interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+   prompt(): Promise<void>;
+   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 export function InstallPrompt() {
-  const [installPrompt, setInstallPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [showPrompt, setShowPrompt] = useState(false);
+   const [installPrompt, setInstallPrompt] =
+      useState<BeforeInstallPromptEvent | null>(null);
+   const [isInstalled, setIsInstalled] = useState(false);
+   const [showPrompt, setShowPrompt] = useState(false);
 
-  useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true);
-      return;
-    }
+   useEffect(() => {
+      // Check if already installed
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+         setIsInstalled(true);
+         return;
+      }
 
-    // Capture the install prompt event
-    const handleBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setInstallPrompt(e as BeforeInstallPromptEvent);
-      // Show our custom prompt after user engagement
-      setTimeout(() => setShowPrompt(true), 3000);
-    };
+      // Capture the install prompt event
+      const handleBeforeInstall = (e: Event) => {
+         e.preventDefault();
+         setInstallPrompt(e as BeforeInstallPromptEvent);
+         // Show our custom prompt after user engagement
+         setTimeout(() => setShowPrompt(true), 3000);
+      };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+      window.addEventListener("beforeinstallprompt", handleBeforeInstall);
 
-    // Handle successful installation
-    window.addEventListener("appinstalled", () => {
-      setIsInstalled(true);
+      // Handle successful installation
+      window.addEventListener("appinstalled", () => {
+         setIsInstalled(true);
+         setShowPrompt(false);
+      });
+
+      return () => {
+         window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      };
+   }, []);
+
+   const handleInstall = async () => {
+      if (!installPrompt) return;
+
+      await installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+
+      if (outcome === "accepted") {
+         setIsInstalled(true);
+      }
       setShowPrompt(false);
-    });
+   };
 
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
-    };
-  }, []);
+   const handleDismiss = () => {
+      setShowPrompt(false);
+   };
 
-  const handleInstall = async () => {
-    if (!installPrompt) return;
+   if (isInstalled || !showPrompt) return null;
 
-    await installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      setIsInstalled(true);
-    }
-    setShowPrompt(false);
-  };
-
-  const handleDismiss = () => {
-    setShowPrompt(false);
-  };
-
-  if (isInstalled || !showPrompt) return null;
-
-  return (
-    <div className="install-prompt">
-      <div className="install-prompt-content">
-        <p>
-          <strong>Install Quiver</strong>
-        </p>
-        <p>Add to your home screen for quick access</p>
-        <div className="install-prompt-actions">
-          <button onClick={handleInstall} className="btn-install">
-            Install
-          </button>
-          <button onClick={handleDismiss} className="btn-dismiss">
-            Not now
-          </button>
-        </div>
+   return (
+      <div className="install-prompt">
+         <div className="install-prompt-content">
+            <p>
+               <strong>Install Quiver</strong>
+            </p>
+            <p>Add to your home screen for quick access</p>
+            <div className="install-prompt-actions">
+               <button onClick={handleInstall} className="btn-install">
+                  Install
+               </button>
+               <button onClick={handleDismiss} className="btn-dismiss">
+                  Not now
+               </button>
+            </div>
+         </div>
       </div>
-    </div>
-  );
+   );
 }
 ```
 
@@ -293,38 +297,36 @@ Create `src/components/IOSInstallInstructions.tsx`:
 import { useState, useEffect } from "react";
 
 export function IOSInstallInstructions() {
-  const [show, setShow] = useState(false);
+   const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    // Detect iOS Safari (not in standalone mode)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isStandalone = window.matchMedia(
-      "(display-mode: standalone)"
-    ).matches;
-    const isSafari =
-      /Safari/.test(navigator.userAgent) &&
-      !/Chrome/.test(navigator.userAgent);
+   useEffect(() => {
+      // Detect iOS Safari (not in standalone mode)
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isStandalone = window.matchMedia(
+         "(display-mode: standalone)"
+      ).matches;
+      const isSafari =
+         /Safari/.test(navigator.userAgent) &&
+         !/Chrome/.test(navigator.userAgent);
 
-    if (isIOS && isSafari && !isStandalone) {
-      setTimeout(() => setShow(true), 5000);
-    }
-  }, []);
+      if (isIOS && isSafari && !isStandalone) {
+         setTimeout(() => setShow(true), 5000);
+      }
+   }, []);
 
-  if (!show) return null;
+   if (!show) return null;
 
-  return (
-    <div className="ios-install-instructions">
-      <button className="close-btn" onClick={() => setShow(false)}>
-        ×
-      </button>
-      <p>
-        <strong>Install Quiver</strong>
-      </p>
-      <p>
-        Tap the share button then "Add to Home Screen"
-      </p>
-    </div>
-  );
+   return (
+      <div className="ios-install-instructions">
+         <button className="close-btn" onClick={() => setShow(false)}>
+            ×
+         </button>
+         <p>
+            <strong>Install Quiver</strong>
+         </p>
+         <p>Tap the share button then "Add to Home Screen"</p>
+      </div>
+   );
 }
 ```
 
@@ -337,83 +339,83 @@ Add to `src/index.css`:
 ```css
 /* Install Prompt */
 .install-prompt {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  animation: slideUp 0.3s ease-out;
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: white;
+   border-radius: 12px;
+   padding: 16px;
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+   z-index: 1000;
+   animation: slideUp 0.3s ease-out;
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+   from {
+      transform: translateY(100%);
+      opacity: 0;
+   }
+   to {
+      transform: translateY(0);
+      opacity: 1;
+   }
 }
 
 .install-prompt-content p {
-  margin-bottom: 8px;
+   margin-bottom: 8px;
 }
 
 .install-prompt-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
+   display: flex;
+   gap: 12px;
+   margin-top: 12px;
 }
 
 .btn-install {
-  background-color: #0066cc;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
+   background-color: #0066cc;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
 }
 
 .btn-dismiss {
-  background-color: transparent;
-  color: #666;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
+   background-color: transparent;
+   color: #666;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
 }
 
 /* iOS Instructions */
 .ios-install-instructions {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: #333;
-  color: white;
-  border-radius: 12px;
-  padding: 16px;
-  z-index: 1000;
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   right: 20px;
+   background: #333;
+   color: white;
+   border-radius: 12px;
+   padding: 16px;
+   z-index: 1000;
 }
 
 .ios-install-instructions .close-btn {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
+   position: absolute;
+   top: 8px;
+   right: 12px;
+   background: none;
+   border: none;
+   color: white;
+   font-size: 24px;
+   cursor: pointer;
 }
 
 .ios-install-instructions p {
-  margin-bottom: 4px;
+   margin-bottom: 4px;
 }
 ```
 
@@ -429,52 +431,52 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
 
 function App() {
-  const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
+   const { ideas, loading, error, addIdea, editIdea, removeIdea } = useIdeas();
 
-  return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>Quiver</h1>
-        <p>Capture and develop your ideas</p>
-      </header>
+   return (
+      <div className="app-container">
+         <header className="app-header">
+            <h1>Quiver</h1>
+            <p>Capture and develop your ideas</p>
+         </header>
 
-      <main className="app-main">
-        <IdeaForm onSubmit={addIdea} />
+         <main className="app-main">
+            <IdeaForm onSubmit={addIdea} />
 
-        {error && <div className="error-message">{error}</div>}
+            {error && <div className="error-message">{error}</div>}
 
-        {loading ? (
-          <div className="loading">Loading ideas...</div>
-        ) : ideas.length === 0 ? (
-          <div className="empty-state">
-            <p>No ideas yet!</p>
-            <p>Start capturing your thoughts above.</p>
-          </div>
-        ) : (
-          <div className="ideas-list">
-            {ideas.map((idea) => (
-              <IdeaCard
-                key={idea.id}
-                idea={idea}
-                onUpdate={editIdea}
-                onDelete={removeIdea}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+            {loading ? (
+               <div className="loading">Loading ideas...</div>
+            ) : ideas.length === 0 ? (
+               <div className="empty-state">
+                  <p>No ideas yet!</p>
+                  <p>Start capturing your thoughts above.</p>
+               </div>
+            ) : (
+               <div className="ideas-list">
+                  {ideas.map((idea) => (
+                     <IdeaCard
+                        key={idea.id}
+                        idea={idea}
+                        onUpdate={editIdea}
+                        onDelete={removeIdea}
+                     />
+                  ))}
+               </div>
+            )}
+         </main>
 
-      <footer className="app-footer">
-        <p>
-          {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
-        </p>
-      </footer>
+         <footer className="app-footer">
+            <p>
+               {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+            </p>
+         </footer>
 
-      {/* PWA Install Prompts */}
-      <InstallPrompt />
-      <IOSInstallInstructions />
-    </div>
-  );
+         {/* PWA Install Prompts */}
+         <InstallPrompt />
+         <IOSInstallInstructions />
+      </div>
+   );
 }
 
 export default App;
@@ -502,24 +504,26 @@ Open Chrome and navigate to `http://localhost:4173`. Then:
 4. **Verify standalone mode**: The installed app should have no URL bar—just your app content in a native-feeling window.
 
 If something's wrong, check the DevTools console for errors. Common issues:
-- Missing icons (check paths and filenames)
-- Service worker registration failures (check `vite.config.ts` syntax)
-- HTTPS requirement (not an issue in local preview, but matters in production)
+
+-  Missing icons (check paths and filenames)
+-  Service worker registration failures (check `vite.config.ts` syntax)
+-  HTTPS requirement (not an issue in local preview, but matters in production)
 
 ## What We've Built
 
 The app is now installable. Users can add it to their home screens and launch it like a native app. The service worker precaches static assets, so the app shell loads instantly.
 
 But we're not done with offline support. Right now, if you go offline:
-- The app shell loads (good)
-- But data fetches fail (bad)
-- No ideas appear until you're back online (very bad)
+
+-  The app shell loads (good)
+-  But data fetches fail (bad)
+-  No ideas appear until you're back online (very bad)
 
 In Part 5, we'll fix this. We'll add IndexedDB for local data storage, queue changes made offline, and sync when the connection returns. The app will work fully without internet.
 
 ---
 
-*Commit your progress:*
+_Commit your progress:_
 
 ```bash
 git add .
@@ -528,4 +532,3 @@ git commit -m "Part 4: PWA configuration with install prompts"
 
 ---
 
-*Next in the series: [Part 5: Offline-First Architecture](/blog/05-offline-first.md)*

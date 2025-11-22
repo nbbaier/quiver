@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/02-database-architecture"
 ---
 
-*This is Part 2 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
+_This is Part 2 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
 
 ---
 
@@ -19,10 +19,10 @@ If you've built web apps in the last decade, you've probably defaulted to Postgr
 
 But PostgreSQL comes with overhead:
 
-- You need a server to run it (or a managed service)
-- Connection pooling becomes important at scale
-- Configuration isn't trivial
-- The free tier of most providers is limited
+-  You need a server to run it (or a managed service)
+-  Connection pooling becomes important at scale
+-  Configuration isn't trivial
+-  The free tier of most providers is limited
 
 For a personal project that might see 10 users (you, and your nine closest friends if you're lucky), this overhead starts to feel excessive.
 
@@ -43,10 +43,11 @@ Turso is built on libSQL, a fork of SQLite that adds the network capabilities SQ
 From your code's perspective, you're just making SQLite queries. But those queries are hitting a globally-distributed database with single-digit millisecond latency from most locations.
 
 The free tier offers:
-- 500 databases
-- 9GB total storage
-- 1 billion row reads per month
-- 25 million row writes per month
+
+-  500 databases
+-  9GB total storage
+-  1 billion row reads per month
+-  25 million row writes per month
 
 For a personal idea capture app, you could use this for years without paying a cent.
 
@@ -55,16 +56,19 @@ For a personal idea capture app, you could use this for years without paying a c
 First, install the Turso CLI:
 
 **macOS:**
+
 ```bash
 brew install tursodatabase/tap/turso
 ```
 
 **Linux/WSL:**
+
 ```bash
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
 Create an account:
+
 ```bash
 turso auth signup
 ```
@@ -156,29 +160,29 @@ Create `src/db/schema.ts`:
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 export const ideas = sqliteTable("ideas", {
-  // Primary key with auto-increment
-  id: integer("id").primaryKey({ autoIncrement: true }),
+   // Primary key with auto-increment
+   id: integer("id").primaryKey({ autoIncrement: true }),
 
-  // Required field
-  title: text("title").notNull(),
+   // Required field
+   title: text("title").notNull(),
 
-  // Optional field (can be null)
-  content: text("content"),
+   // Optional field (can be null)
+   content: text("content"),
 
-  // JSON stored as text (SQLite doesn't have native arrays)
-  tags: text("tags"),   // Will store: '["productivity", "app-idea"]'
-  urls: text("urls"),   // Will store: '["https://example.com"]'
+   // JSON stored as text (SQLite doesn't have native arrays)
+   tags: text("tags"), // Will store: '["productivity", "app-idea"]'
+   urls: text("urls"), // Will store: '["https://example.com"]'
 
-  // Boolean as integer (SQLite convention)
-  archived: integer("archived", { mode: "boolean" }).default(false),
+   // Boolean as integer (SQLite convention)
+   archived: integer("archived", { mode: "boolean" }).default(false),
 
-  // Timestamps as integers (Unix timestamps)
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
+   // Timestamps as integers (Unix timestamps)
+   createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+   updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
 });
 
 // Infer types from the schema
@@ -208,12 +212,11 @@ import { createClient } from "@libsql/client";
 import * as schema from "./schema";
 
 const client = createClient({
-  url:
-    import.meta.env.VITE_TURSO_DATABASE_URL ||
-    process.env.TURSO_DATABASE_URL!,
-  authToken:
-    import.meta.env.VITE_TURSO_AUTH_TOKEN ||
-    process.env.TURSO_AUTH_TOKEN,
+   url:
+      import.meta.env.VITE_TURSO_DATABASE_URL ||
+      process.env.TURSO_DATABASE_URL!,
+   authToken:
+      import.meta.env.VITE_TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
 });
 
 export const db = drizzle(client, { schema });
@@ -236,13 +239,13 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export default {
-  schema: "./src/db/schema.ts",
-  out: "./drizzle",
-  dialect: "turso",
-  dbCredentials: {
-    url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  },
+   schema: "./src/db/schema.ts",
+   out: "./drizzle",
+   dialect: "turso",
+   dbCredentials: {
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+   },
 } satisfies Config;
 ```
 
@@ -250,14 +253,14 @@ Add helper scripts to `package.json`:
 
 ```json
 {
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
-  }
+   "scripts": {
+      "dev": "vite",
+      "build": "tsc -b && vite build",
+      "preview": "vite preview",
+      "db:generate": "drizzle-kit generate",
+      "db:push": "drizzle-kit push",
+      "db:studio": "drizzle-kit studio"
+   }
 }
 ```
 
@@ -285,32 +288,32 @@ import { ideas } from "./schema";
 import { eq } from "drizzle-orm";
 
 async function testConnection() {
-  console.log("Testing database connection...\n");
+   console.log("Testing database connection...\n");
 
-  // CREATE
-  const [newIdea] = await db
-    .insert(ideas)
-    .values({
-      title: "Test Idea",
-      content: "This is a test to verify the database works!",
-    })
-    .returning();
+   // CREATE
+   const [newIdea] = await db
+      .insert(ideas)
+      .values({
+         title: "Test Idea",
+         content: "This is a test to verify the database works!",
+      })
+      .returning();
 
-  console.log("Created idea:", newIdea);
-  console.log("Notice the auto-generated id and timestamps\n");
+   console.log("Created idea:", newIdea);
+   console.log("Notice the auto-generated id and timestamps\n");
 
-  // READ
-  const allIdeas = await db.select().from(ideas);
-  console.log("All ideas in database:", allIdeas);
-  console.log(`Found ${allIdeas.length} idea(s)\n`);
+   // READ
+   const allIdeas = await db.select().from(ideas);
+   console.log("All ideas in database:", allIdeas);
+   console.log(`Found ${allIdeas.length} idea(s)\n`);
 
-  // DELETE (cleanup)
-  await db.delete(ideas).where(eq(ideas.id, newIdea.id));
-  console.log("Cleaned up test data\n");
+   // DELETE (cleanup)
+   await db.delete(ideas).where(eq(ideas.id, newIdea.id));
+   console.log("Cleaned up test data\n");
 
-  console.log("=".repeat(40));
-  console.log("SUCCESS! Database connection verified.");
-  console.log("=".repeat(40));
+   console.log("=".repeat(40));
+   console.log("SUCCESS! Database connection verified.");
+   console.log("=".repeat(40));
 }
 
 testConnection().catch(console.error);
@@ -323,9 +326,10 @@ bun run src/db/test-connection.ts
 ```
 
 You should see:
-- A created idea with an auto-generated ID
-- Timestamps that are set automatically
-- The cleanup removing the test data
+
+-  A created idea with an auto-generated ID
+-  Timestamps that are set automatically
+-  The cleanup removing the test data
 
 If this works, your database is properly configured.
 
@@ -334,41 +338,46 @@ If this works, your database is properly configured.
 Let's look at what Drizzle queries actually do. These patterns will recur throughout the app:
 
 **Select all rows:**
+
 ```typescript
 const allIdeas = await db.select().from(ideas);
 // SQL: SELECT * FROM ideas
 ```
 
 **Select with conditions:**
+
 ```typescript
 const activeIdeas = await db
-  .select()
-  .from(ideas)
-  .where(eq(ideas.archived, false))
-  .orderBy(desc(ideas.createdAt));
+   .select()
+   .from(ideas)
+   .where(eq(ideas.archived, false))
+   .orderBy(desc(ideas.createdAt));
 // SQL: SELECT * FROM ideas WHERE archived = 0 ORDER BY created_at DESC
 ```
 
 **Insert and return the new row:**
+
 ```typescript
 const [newIdea] = await db
-  .insert(ideas)
-  .values({ title: "My idea", content: "Details..." })
-  .returning();
+   .insert(ideas)
+   .values({ title: "My idea", content: "Details..." })
+   .returning();
 // SQL: INSERT INTO ideas (title, content, ...) VALUES (?, ?) RETURNING *
 ```
 
 **Update a specific row:**
+
 ```typescript
 const [updated] = await db
-  .update(ideas)
-  .set({ title: "New title", updatedAt: new Date() })
-  .where(eq(ideas.id, 123))
-  .returning();
+   .update(ideas)
+   .set({ title: "New title", updatedAt: new Date() })
+   .where(eq(ideas.id, 123))
+   .returning();
 // SQL: UPDATE ideas SET title = ?, updated_at = ? WHERE id = ? RETURNING *
 ```
 
 **Delete a row:**
+
 ```typescript
 await db.delete(ideas).where(eq(ideas.id, 123));
 // SQL: DELETE FROM ideas WHERE id = ?
@@ -385,6 +394,7 @@ For a personal app that only you use, this is acceptable. The credentials are "y
 For a multi-user application, this would be a serious security problem. Each user would have your database token and could read or modify anyone's data. The fix is to add a backend API layer—serverless functions on Vercel or Cloudflare that hold the credentials securely and authorize requests.
 
 We're skipping that layer for this MVP because:
+
 1. It's a personal app
 2. Adding API routes doubles the complexity
 3. We can always add them later
@@ -395,10 +405,10 @@ Just know that "browser talks directly to database" is a shortcut, not a product
 
 At this point, you have:
 
-- A Turso database running in the cloud
-- A Drizzle schema defining your data structure
-- A configured client connecting to Turso
-- A verified connection with CRUD operations
+-  A Turso database running in the cloud
+-  A Drizzle schema defining your data structure
+-  A configured client connecting to Turso
+-  A verified connection with CRUD operations
 
 The database layer is complete. Our ideas will persist across sessions, synced globally, with type-safe queries that your IDE understands.
 
@@ -406,7 +416,7 @@ In Part 3, we'll build the React interface on top of this foundation—a custom 
 
 ---
 
-*Commit your progress:*
+_Commit your progress:_
 
 ```bash
 git add .
@@ -415,4 +425,3 @@ git commit -m "Part 2: Database setup with Turso and Drizzle"
 
 ---
 
-*Next in the series: [Part 3: Building the Core CRUD Interface](/blog/03-crud-interface.md)*

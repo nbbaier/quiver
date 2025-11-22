@@ -1,62 +1,86 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 
-const posts = await getCollection('posts');
+const posts = await getCollection("posts");
 
 // Group posts by series
-const seriesMap = posts.reduce((acc, post) => {
-  const seriesKey = post.data.series || 'Other';
-  if (!acc[seriesKey]) {
-    acc[seriesKey] = {
-      key: seriesKey,
-      title: post.data.seriesTitle || seriesKey,
-      posts: [],
-      count: 0
-    };
-  }
-  acc[seriesKey].posts.push(post);
-  acc[seriesKey].count++;
-  return acc;
-}, {} as Record<string, { key: string, title: string, posts: any[], count: number }>);
+const seriesMap = posts.reduce(
+   (acc, post) => {
+      const seriesKey = post.data.series || "Other";
+      if (!acc[seriesKey]) {
+         acc[seriesKey] = {
+            key: seriesKey,
+            title: post.data.seriesTitle || seriesKey,
+            posts: [],
+            count: 0,
+         };
+      }
+      acc[seriesKey].posts.push(post);
+      acc[seriesKey].count++;
+      return acc;
+   },
+   {} as Record<
+      string,
+      { key: string; title: string; posts: any[]; count: number }
+   >
+);
 
-const seriesList = Object.values(seriesMap).sort((a, b) => a.title.localeCompare(b.title));
+const seriesList = Object.values(seriesMap).sort((a, b) =>
+   a.title.localeCompare(b.title)
+);
 ---
 
-<Layout title="Dev Blog Series">
-	<div class="text-center mb-16">
-		<h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4">
-			Developer Guides
-		</h1>
-		<p class="text-xl text-gray-500 max-w-2xl mx-auto">
-			Select a series to start reading.
-		</p>
-	</div>
+<Layout title="Dev Blog Series" series="Developer Guides">
+   <div class="text-center mb-16">
+      <h1
+         class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4"
+      >
+         Developer Guides
+      </h1>
+      <p class="text-xl text-gray-500 max-w-2xl mx-auto">
+         Select a series to start reading.
+      </p>
+   </div>
 
-	<div class="flex flex-col gap-8 max-w-3xl mx-auto">
-		{seriesList.map(series => (
-			<a 
-				href={`/series/${series.key.toLowerCase()}`}
-				class="block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200 group"
-			>
-				<div class="p-10">
-					<div class="flex items-center justify-between mb-6">
-						<span class="bg-blue-50 text-blue-700 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
-							Series
-						</span>
-						<span class="text-gray-500 font-medium">
-							{series.count} Parts
-						</span>
-					</div>
-					<h2 class="text-4xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-						{series.title}
-					</h2>
-					<div class="flex items-center text-gray-500 font-medium text-lg mt-6 group-hover:text-blue-600 transition-colors">
-						Start Reading 
-						<svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-					</div>
-				</div>
-			</a>
-		))}
-	</div>
+   <div class="flex flex-col gap-8 max-w-3xl mx-auto">
+      {
+         seriesList.map((series) => (
+            <a
+               href={`/series/${series.key.toLowerCase()}`}
+               class="block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200 group"
+            >
+               <div class="p-10">
+                  <div class="flex items-center justify-between mb-6">
+                     <span class="bg-blue-50 text-blue-700 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
+                        Series
+                     </span>
+                     <span class="text-gray-500 font-medium">
+                        {series.count} Parts
+                     </span>
+                  </div>
+                  <h2 class="text-4xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+                     {series.title}
+                  </h2>
+                  <div class="flex items-center text-gray-500 font-medium text-lg mt-6 group-hover:text-blue-600 transition-colors">
+                     Start Reading
+                     <svg
+                        class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                     >
+                        <path
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                           stroke-width="2"
+                           d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                     </svg>
+                  </div>
+               </div>
+            </a>
+         ))
+      }
+   </div>
 </Layout>

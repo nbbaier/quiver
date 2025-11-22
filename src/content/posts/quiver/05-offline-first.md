@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/05-offline-first"
 ---
 
-*This is Part 5 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI.*
+_This is Part 5 of a 7-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
 
 ---
 
@@ -14,6 +14,7 @@ slug: "quiver/05-offline-first"
 The naive approach—cache some assets and show a "you're offline" page—doesn't cut it for an idea capture app. Ideas happen at inconvenient times. If the app can't accept input offline, it's fundamentally broken.
 
 True offline-first means:
+
 1. Data is stored locally, not just cached
 2. Changes made offline are queued for later sync
 3. When the connection returns, everything syncs automatically
@@ -26,10 +27,12 @@ This post covers the architecture that makes this possible: IndexedDB for local 
 Here's our approach:
 
 **Read path:**
+
 1. When online, fetch from Turso and cache locally
 2. When offline (or on error), read from local cache
 
 **Write path:**
+
 1. When online, write to Turso immediately
 2. When offline, write to local cache AND queue the action
 3. When back online, replay the queue and refresh
@@ -54,100 +57,100 @@ import type { Idea, CreateIdeaInput } from "@/types/idea";
 
 // Define the database schema
 interface QuiverDB extends DBSchema {
-  ideas: {
-    key: number;
-    value: Idea;
-    indexes: { "by-created": Date };
-  };
-  pendingActions: {
-    key: number;
-    value: {
-      id: number;
-      type: "create" | "update" | "delete";
-      data: CreateIdeaInput | Partial<Idea> | number;
-      timestamp: Date;
-    };
-  };
+   ideas: {
+      key: number;
+      value: Idea;
+      indexes: { "by-created": Date };
+   };
+   pendingActions: {
+      key: number;
+      value: {
+         id: number;
+         type: "create" | "update" | "delete";
+         data: CreateIdeaInput | Partial<Idea> | number;
+         timestamp: Date;
+      };
+   };
 }
 
 // Singleton database connection
 let dbPromise: Promise<IDBPDatabase<QuiverDB>> | null = null;
 
 function getDB() {
-  if (!dbPromise) {
-    dbPromise = openDB<QuiverDB>("quiver-db", 1, {
-      upgrade(db) {
-        // Create ideas store with an index on createdAt
-        const ideasStore = db.createObjectStore("ideas", { keyPath: "id" });
-        ideasStore.createIndex("by-created", "createdAt");
+   if (!dbPromise) {
+      dbPromise = openDB<QuiverDB>("quiver-db", 1, {
+         upgrade(db) {
+            // Create ideas store with an index on createdAt
+            const ideasStore = db.createObjectStore("ideas", { keyPath: "id" });
+            ideasStore.createIndex("by-created", "createdAt");
 
-        // Create pending actions store with auto-increment key
-        db.createObjectStore("pendingActions", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      },
-    });
-  }
-  return dbPromise;
+            // Create pending actions store with auto-increment key
+            db.createObjectStore("pendingActions", {
+               keyPath: "id",
+               autoIncrement: true,
+            });
+         },
+      });
+   }
+   return dbPromise;
 }
 
 // Cache multiple ideas at once
 export async function cacheIdeas(ideas: Idea[]): Promise<void> {
-  const db = await getDB();
-  const tx = db.transaction("ideas", "readwrite");
-  await Promise.all([...ideas.map((idea) => tx.store.put(idea)), tx.done]);
+   const db = await getDB();
+   const tx = db.transaction("ideas", "readwrite");
+   await Promise.all([...ideas.map((idea) => tx.store.put(idea)), tx.done]);
 }
 
 // Get all cached ideas, sorted by creation date
 export async function getCachedIdeas(): Promise<Idea[]> {
-  const db = await getDB();
-  const ideas = await db.getAllFromIndex("ideas", "by-created");
-  return ideas.reverse(); // Newest first
+   const db = await getDB();
+   const ideas = await db.getAllFromIndex("ideas", "by-created");
+   return ideas.reverse(); // Newest first
 }
 
 // Cache a single idea
 export async function cacheIdea(idea: Idea): Promise<void> {
-  const db = await getDB();
-  await db.put("ideas", idea);
+   const db = await getDB();
+   await db.put("ideas", idea);
 }
 
 // Remove a cached idea
 export async function removeCachedIdea(id: number): Promise<void> {
-  const db = await getDB();
-  await db.delete("ideas", id);
+   const db = await getDB();
+   await db.delete("ideas", id);
 }
 
 // Queue an action for later sync
 export async function queueAction(
-  type: "create" | "update" | "delete",
-  data: CreateIdeaInput | Partial<Idea> | number
+   type: "create" | "update" | "delete",
+   data: CreateIdeaInput | Partial<Idea> | number
 ): Promise<void> {
-  const db = await getDB();
-  await db.add("pendingActions", {
-    id: Date.now(),
-    type,
-    data,
-    timestamp: new Date(),
-  });
+   const db = await getDB();
+   await db.add("pendingActions", {
+      id: Date.now(),
+      type,
+      data,
+      timestamp: new Date(),
+   });
 }
 
 // Get all pending actions
 export async function getPendingActions() {
-  const db = await getDB();
-  return db.getAll("pendingActions");
+   const db = await getDB();
+   return db.getAll("pendingActions");
 }
 
 // Clear a specific pending action after sync
 export async function clearPendingAction(id: number): Promise<void> {
-  const db = await getDB();
-  await db.delete("pendingActions", id);
+   const db = await getDB();
+   await db.delete("pendingActions", id);
 }
 
 // Clear all pending actions
 export async function clearAllPendingActions(): Promise<void> {
-  const db = await getDB();
-  await db.clear("pendingActions");
+   const db = await getDB();
+   await db.clear("pendingActions");
 }
 ```
 
@@ -167,33 +170,33 @@ Create `src/hooks/useOnlineStatus.ts`:
 import { useState, useEffect } from "react";
 
 export function useOnlineStatus() {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [wasOffline, setWasOffline] = useState(false);
+   const [isOnline, setIsOnline] = useState(navigator.onLine);
+   const [wasOffline, setWasOffline] = useState(false);
 
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      if (wasOffline) {
-        // Dispatch event for sync trigger
-        window.dispatchEvent(new CustomEvent("app-back-online"));
-      }
-    };
+   useEffect(() => {
+      const handleOnline = () => {
+         setIsOnline(true);
+         if (wasOffline) {
+            // Dispatch event for sync trigger
+            window.dispatchEvent(new CustomEvent("app-back-online"));
+         }
+      };
 
-    const handleOffline = () => {
-      setIsOnline(false);
-      setWasOffline(true);
-    };
+      const handleOffline = () => {
+         setIsOnline(false);
+         setWasOffline(true);
+      };
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
 
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, [wasOffline]);
+      return () => {
+         window.removeEventListener("online", handleOnline);
+         window.removeEventListener("offline", handleOffline);
+      };
+   }, [wasOffline]);
 
-  return { isOnline, wasOffline };
+   return { isOnline, wasOffline };
 }
 ```
 
@@ -213,205 +216,218 @@ import * as offlineStorage from "@/lib/offline-storage";
 import { useOnlineStatus } from "./useOnlineStatus";
 
 export function useIdeas() {
-  const [ideas, setIdeas] = useState<Idea[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
-  const { isOnline } = useOnlineStatus();
+   const [ideas, setIdeas] = useState<Idea[]>([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
+   const [syncing, setSyncing] = useState(false);
+   const { isOnline } = useOnlineStatus();
 
-  // Sync pending actions when back online
-  const syncPendingActions = useCallback(async () => {
-    if (!isOnline) return;
+   // Sync pending actions when back online
+   const syncPendingActions = useCallback(async () => {
+      if (!isOnline) return;
 
-    setSyncing(true);
-    try {
-      const pendingActions = await offlineStorage.getPendingActions();
-
-      for (const action of pendingActions) {
-        try {
-          if (action.type === "create") {
-            await ideasLib.createIdea(action.data as CreateIdeaInput);
-          } else if (action.type === "update") {
-            const updateData = action.data as Partial<Idea> & { id: number };
-            await ideasLib.updateIdea(updateData.id, updateData);
-          } else if (action.type === "delete") {
-            await ideasLib.archiveIdea(action.data as number);
-          }
-          await offlineStorage.clearPendingAction(action.id);
-        } catch (err) {
-          console.error("Failed to sync action:", action, err);
-          // Continue with other actions even if one fails
-        }
-      }
-
-      // Refresh from server after sync
-      const freshData = await ideasLib.getIdeas();
-      setIdeas(freshData);
-      await offlineStorage.cacheIdeas(freshData);
-    } finally {
-      setSyncing(false);
-    }
-  }, [isOnline]);
-
-  // Listen for back-online event
-  useEffect(() => {
-    const handleBackOnline = () => {
-      syncPendingActions();
-    };
-
-    window.addEventListener("app-back-online", handleBackOnline);
-    return () => window.removeEventListener("app-back-online", handleBackOnline);
-  }, [syncPendingActions]);
-
-  // Fetch ideas from server or cache
-  const fetchIdeas = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      if (isOnline) {
-        // Online: fetch from server and cache
-        const data = await ideasLib.getIdeas();
-        setIdeas(data);
-        await offlineStorage.cacheIdeas(data);
-      } else {
-        // Offline: load from cache
-        const cachedData = await offlineStorage.getCachedIdeas();
-        setIdeas(cachedData);
-      }
-    } catch (err) {
-      // On error, try to fall back to cache
+      setSyncing(true);
       try {
-        const cachedData = await offlineStorage.getCachedIdeas();
-        setIdeas(cachedData);
-        setError("Using cached data (offline)");
-      } catch {
-        setError(err instanceof Error ? err.message : "Failed to fetch ideas");
+         const pendingActions = await offlineStorage.getPendingActions();
+
+         for (const action of pendingActions) {
+            try {
+               if (action.type === "create") {
+                  await ideasLib.createIdea(action.data as CreateIdeaInput);
+               } else if (action.type === "update") {
+                  const updateData = action.data as Partial<Idea> & {
+                     id: number;
+                  };
+                  await ideasLib.updateIdea(updateData.id, updateData);
+               } else if (action.type === "delete") {
+                  await ideasLib.archiveIdea(action.data as number);
+               }
+               await offlineStorage.clearPendingAction(action.id);
+            } catch (err) {
+               console.error("Failed to sync action:", action, err);
+               // Continue with other actions even if one fails
+            }
+         }
+
+         // Refresh from server after sync
+         const freshData = await ideasLib.getIdeas();
+         setIdeas(freshData);
+         await offlineStorage.cacheIdeas(freshData);
+      } finally {
+         setSyncing(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [isOnline]);
+   }, [isOnline]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchIdeas();
-  }, [fetchIdeas]);
+   // Listen for back-online event
+   useEffect(() => {
+      const handleBackOnline = () => {
+         syncPendingActions();
+      };
 
-  // Create a new idea (with offline support)
-  const addIdea = useCallback(
-    async (input: CreateIdeaInput) => {
+      window.addEventListener("app-back-online", handleBackOnline);
+      return () =>
+         window.removeEventListener("app-back-online", handleBackOnline);
+   }, [syncPendingActions]);
+
+   // Fetch ideas from server or cache
+   const fetchIdeas = useCallback(async () => {
       try {
-        if (isOnline) {
-          // Online: create on server and cache
-          const newIdea = await ideasLib.createIdea(input);
-          setIdeas((prev) => [newIdea, ...prev]);
-          await offlineStorage.cacheIdea(newIdea);
-          return newIdea;
-        } else {
-          // Offline: create locally and queue for sync
-          const tempIdea: Idea = {
-            id: Date.now(), // Temporary negative ID
-            title: input.title,
-            content: input.content || null,
-            tags: input.tags || [],
-            urls: input.urls || [],
-            archived: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-          setIdeas((prev) => [tempIdea, ...prev]);
-          await offlineStorage.cacheIdea(tempIdea);
-          await offlineStorage.queueAction("create", input);
-          return tempIdea;
-        }
+         setLoading(true);
+         setError(null);
+
+         if (isOnline) {
+            // Online: fetch from server and cache
+            const data = await ideasLib.getIdeas();
+            setIdeas(data);
+            await offlineStorage.cacheIdeas(data);
+         } else {
+            // Offline: load from cache
+            const cachedData = await offlineStorage.getCachedIdeas();
+            setIdeas(cachedData);
+         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to create idea");
-        throw err;
-      }
-    },
-    [isOnline]
-  );
-
-  // Update an idea (with offline support)
-  const editIdea = useCallback(
-    async (id: number, input: UpdateIdeaInput) => {
-      try {
-        if (isOnline) {
-          const updated = await ideasLib.updateIdea(id, input);
-          if (updated) {
-            setIdeas((prev) =>
-              prev.map((idea) => (idea.id === id ? updated : idea))
+         // On error, try to fall back to cache
+         try {
+            const cachedData = await offlineStorage.getCachedIdeas();
+            setIdeas(cachedData);
+            setError("Using cached data (offline)");
+         } catch {
+            setError(
+               err instanceof Error ? err.message : "Failed to fetch ideas"
             );
-            await offlineStorage.cacheIdea(updated);
-          }
-          return updated;
-        } else {
-          // Optimistic update with queue
-          const currentIdea = ideas.find((i) => i.id === id);
-          if (currentIdea) {
-            const newIdea = {
-              ...currentIdea,
-              ...input,
-              updatedAt: new Date(),
-            };
-            setIdeas((prev) =>
-              prev.map((idea) => (idea.id === id ? newIdea : idea))
+         }
+      } finally {
+         setLoading(false);
+      }
+   }, [isOnline]);
+
+   // Initial fetch
+   useEffect(() => {
+      fetchIdeas();
+   }, [fetchIdeas]);
+
+   // Create a new idea (with offline support)
+   const addIdea = useCallback(
+      async (input: CreateIdeaInput) => {
+         try {
+            if (isOnline) {
+               // Online: create on server and cache
+               const newIdea = await ideasLib.createIdea(input);
+               setIdeas((prev) => [newIdea, ...prev]);
+               await offlineStorage.cacheIdea(newIdea);
+               return newIdea;
+            } else {
+               // Offline: create locally and queue for sync
+               const tempIdea: Idea = {
+                  id: Date.now(), // Temporary negative ID
+                  title: input.title,
+                  content: input.content || null,
+                  tags: input.tags || [],
+                  urls: input.urls || [],
+                  archived: false,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+               };
+               setIdeas((prev) => [tempIdea, ...prev]);
+               await offlineStorage.cacheIdea(tempIdea);
+               await offlineStorage.queueAction("create", input);
+               return tempIdea;
+            }
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to create idea"
             );
-            await offlineStorage.cacheIdea(newIdea as Idea);
-            await offlineStorage.queueAction("update", { id, ...input });
-          }
-          return currentIdea;
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to update idea");
-        throw err;
-      }
-    },
-    [isOnline, ideas]
-  );
+            throw err;
+         }
+      },
+      [isOnline]
+   );
 
-  // Archive an idea (with offline support)
-  const removeIdea = useCallback(
-    async (id: number) => {
-      try {
-        if (isOnline) {
-          await ideasLib.archiveIdea(id);
-        } else {
-          await offlineStorage.queueAction("delete", id);
-        }
-        setIdeas((prev) => prev.filter((idea) => idea.id !== id));
-        await offlineStorage.removeCachedIdea(id);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to archive idea");
-        throw err;
-      }
-    },
-    [isOnline]
-  );
+   // Update an idea (with offline support)
+   const editIdea = useCallback(
+      async (id: number, input: UpdateIdeaInput) => {
+         try {
+            if (isOnline) {
+               const updated = await ideasLib.updateIdea(id, input);
+               if (updated) {
+                  setIdeas((prev) =>
+                     prev.map((idea) => (idea.id === id ? updated : idea))
+                  );
+                  await offlineStorage.cacheIdea(updated);
+               }
+               return updated;
+            } else {
+               // Optimistic update with queue
+               const currentIdea = ideas.find((i) => i.id === id);
+               if (currentIdea) {
+                  const newIdea = {
+                     ...currentIdea,
+                     ...input,
+                     updatedAt: new Date(),
+                  };
+                  setIdeas((prev) =>
+                     prev.map((idea) => (idea.id === id ? newIdea : idea))
+                  );
+                  await offlineStorage.cacheIdea(newIdea as Idea);
+                  await offlineStorage.queueAction("update", { id, ...input });
+               }
+               return currentIdea;
+            }
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to update idea"
+            );
+            throw err;
+         }
+      },
+      [isOnline, ideas]
+   );
 
-  return {
-    ideas,
-    loading,
-    error,
-    syncing,
-    isOnline,
-    addIdea,
-    editIdea,
-    removeIdea,
-    refreshIdeas: fetchIdeas,
-  };
+   // Archive an idea (with offline support)
+   const removeIdea = useCallback(
+      async (id: number) => {
+         try {
+            if (isOnline) {
+               await ideasLib.archiveIdea(id);
+            } else {
+               await offlineStorage.queueAction("delete", id);
+            }
+            setIdeas((prev) => prev.filter((idea) => idea.id !== id));
+            await offlineStorage.removeCachedIdea(id);
+         } catch (err) {
+            setError(
+               err instanceof Error ? err.message : "Failed to archive idea"
+            );
+            throw err;
+         }
+      },
+      [isOnline]
+   );
+
+   return {
+      ideas,
+      loading,
+      error,
+      syncing,
+      isOnline,
+      addIdea,
+      editIdea,
+      removeIdea,
+      refreshIdeas: fetchIdeas,
+   };
 }
 ```
 
 This is substantially more complex than before. Let's trace through the key flows:
 
 **Fetching ideas:**
-- Online: fetch from Turso, update state, cache locally
-- Offline: load from IndexedDB cache
-- Error: try cache as fallback
+
+-  Online: fetch from Turso, update state, cache locally
+-  Offline: load from IndexedDB cache
+-  Error: try cache as fallback
 
 **Creating ideas offline:**
+
 1. Generate a temporary ID based on timestamp
 2. Create a local Idea object
 3. Add to React state immediately (user sees it)
@@ -419,6 +435,7 @@ This is substantially more complex than before. Let's trace through the key flow
 5. Queue a "create" action for later sync
 
 **Syncing when back online:**
+
 1. Get all pending actions from IndexedDB
 2. For each action, execute it against Turso
 3. Clear the action from the queue on success
@@ -433,22 +450,22 @@ Users should know when they're offline. Create `src/components/OfflineIndicator.
 
 ```typescript
 interface OfflineIndicatorProps {
-  isOnline: boolean;
-  syncing: boolean;
+   isOnline: boolean;
+   syncing: boolean;
 }
 
 export function OfflineIndicator({ isOnline, syncing }: OfflineIndicatorProps) {
-  if (isOnline && !syncing) return null;
+   if (isOnline && !syncing) return null;
 
-  return (
-    <div className={`offline-indicator ${syncing ? "syncing" : "offline"}`}>
-      {syncing ? (
-        <span>Syncing...</span>
-      ) : (
-        <span>You're offline. Changes will sync when connected.</span>
-      )}
-    </div>
-  );
+   return (
+      <div className={`offline-indicator ${syncing ? "syncing" : "offline"}`}>
+         {syncing ? (
+            <span>Syncing...</span>
+         ) : (
+            <span>You're offline. Changes will sync when connected.</span>
+         )}
+      </div>
+   );
 }
 ```
 
@@ -457,29 +474,29 @@ Add styles to `src/index.css`:
 ```css
 /* Offline Indicator */
 .offline-indicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 16px;
-  text-align: center;
-  font-size: 0.875rem;
-  z-index: 1001;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   padding: 8px 16px;
+   text-align: center;
+   font-size: 0.875rem;
+   z-index: 1001;
 }
 
 .offline-indicator.offline {
-  background-color: #ff6b6b;
-  color: white;
+   background-color: #ff6b6b;
+   color: white;
 }
 
 .offline-indicator.syncing {
-  background-color: #ffd93d;
-  color: #333;
+   background-color: #ffd93d;
+   color: #333;
 }
 
 /* Push content down when indicator is showing */
 body:has(.offline-indicator) .app-container {
-  padding-top: 50px;
+   padding-top: 50px;
 }
 ```
 
@@ -496,65 +513,65 @@ import { IOSInstallInstructions } from "@/components/IOSInstallInstructions";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 
 function App() {
-  const {
-    ideas,
-    loading,
-    error,
-    syncing,
-    isOnline,
-    addIdea,
-    editIdea,
-    removeIdea,
-  } = useIdeas();
+   const {
+      ideas,
+      loading,
+      error,
+      syncing,
+      isOnline,
+      addIdea,
+      editIdea,
+      removeIdea,
+   } = useIdeas();
 
-  return (
-    <>
-      <OfflineIndicator isOnline={isOnline} syncing={syncing} />
+   return (
+      <>
+         <OfflineIndicator isOnline={isOnline} syncing={syncing} />
 
-      <div className="app-container">
-        <header className="app-header">
-          <h1>Quiver</h1>
-          <p>Capture and develop your ideas</p>
-        </header>
+         <div className="app-container">
+            <header className="app-header">
+               <h1>Quiver</h1>
+               <p>Capture and develop your ideas</p>
+            </header>
 
-        <main className="app-main">
-          <IdeaForm onSubmit={addIdea} />
+            <main className="app-main">
+               <IdeaForm onSubmit={addIdea} />
 
-          {error && <div className="error-message">{error}</div>}
+               {error && <div className="error-message">{error}</div>}
 
-          {loading ? (
-            <div className="loading">Loading ideas...</div>
-          ) : ideas.length === 0 ? (
-            <div className="empty-state">
-              <p>No ideas yet!</p>
-              <p>Start capturing your thoughts above.</p>
-            </div>
-          ) : (
-            <div className="ideas-list">
-              {ideas.map((idea) => (
-                <IdeaCard
-                  key={idea.id}
-                  idea={idea}
-                  onUpdate={editIdea}
-                  onDelete={removeIdea}
-                />
-              ))}
-            </div>
-          )}
-        </main>
+               {loading ? (
+                  <div className="loading">Loading ideas...</div>
+               ) : ideas.length === 0 ? (
+                  <div className="empty-state">
+                     <p>No ideas yet!</p>
+                     <p>Start capturing your thoughts above.</p>
+                  </div>
+               ) : (
+                  <div className="ideas-list">
+                     {ideas.map((idea) => (
+                        <IdeaCard
+                           key={idea.id}
+                           idea={idea}
+                           onUpdate={editIdea}
+                           onDelete={removeIdea}
+                        />
+                     ))}
+                  </div>
+               )}
+            </main>
 
-        <footer className="app-footer">
-          <p>
-            {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
-            {!isOnline && " (offline)"}
-          </p>
-        </footer>
+            <footer className="app-footer">
+               <p>
+                  {ideas.length} idea{ideas.length !== 1 ? "s" : ""} captured
+                  {!isOnline && " (offline)"}
+               </p>
+            </footer>
 
-        <InstallPrompt />
-        <IOSInstallInstructions />
-      </div>
-    </>
-  );
+            <InstallPrompt />
+            <IOSInstallInstructions />
+         </div>
+      </>
+   );
 }
 
 export default App;
@@ -615,62 +632,62 @@ Create `public/offline.html`:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quiver - Offline</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background-color: #f5f5f5;
-        padding: 20px;
-      }
-      .container {
-        text-align: center;
-        max-width: 400px;
-      }
-      h1 {
-        color: #0066cc;
-        margin-bottom: 16px;
-      }
-      p {
-        color: #666;
-        margin-bottom: 24px;
-      }
-      button {
-        background-color: #0066cc;
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #0052a3;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Quiver</h1>
-      <p>
-        You're currently offline. Your cached ideas are still available in
-        the app.
-      </p>
-      <button onclick="window.location.reload()">Try Again</button>
-    </div>
-  </body>
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Quiver - Offline</title>
+      <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+         }
+         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+         }
+         .container {
+            text-align: center;
+            max-width: 400px;
+         }
+         h1 {
+            color: #0066cc;
+            margin-bottom: 16px;
+         }
+         p {
+            color: #666;
+            margin-bottom: 24px;
+         }
+         button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+         }
+         button:hover {
+            background-color: #0052a3;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <h1>Quiver</h1>
+         <p>
+            You're currently offline. Your cached ideas are still available in
+            the app.
+         </p>
+         <button onclick="window.location.reload()">Try Again</button>
+      </div>
+   </body>
 </html>
 ```
 
@@ -715,10 +732,10 @@ This implementation handles the common case well but has some edge cases:
 
 The app now works fully offline:
 
-- Ideas are cached locally and displayed without network access
-- New ideas can be created offline
-- Changes are queued and synced automatically
-- Users see clear status indicators
+-  Ideas are cached locally and displayed without network access
+-  New ideas can be created offline
+-  Changes are queued and synced automatically
+-  Users see clear status indicators
 
 This is true offline-first architecture. The network is an enhancement, not a requirement.
 
@@ -726,7 +743,7 @@ In Part 6, we'll add AI brainstorming. This requires network access, but we'll i
 
 ---
 
-*Commit your progress:*
+_Commit your progress:_
 
 ```bash
 git add .
@@ -735,4 +752,3 @@ git commit -m "Part 5: Offline support with IndexedDB and sync"
 
 ---
 
-*Next in the series: [Part 6: AI Integration with Claude](/blog/06-ai-integration.md)*
