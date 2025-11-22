@@ -3,11 +3,19 @@ import type { Idea, UpdateIdeaInput } from "@/types/idea";
 
 interface IdeaCardProps {
 	idea: Idea;
+	isSelected?: boolean;
+	onSelect?: () => void;
 	onUpdate: (id: number, input: UpdateIdeaInput) => Promise<unknown>;
 	onDelete: (id: number) => Promise<void>;
 }
 
-export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
+export function IdeaCard({
+	idea,
+	isSelected,
+	onSelect,
+	onUpdate,
+	onDelete,
+}: IdeaCardProps) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [title, setTitle] = useState(idea.title);
 	const [content, setContent] = useState(idea.content || "");
@@ -28,6 +36,13 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
 		if (window.confirm("Archive this idea?")) {
 			setIsDeleting(true);
 			await onDelete(idea.id);
+		}
+	};
+
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			onSelect?.();
 		}
 	};
 
@@ -70,7 +85,14 @@ export function IdeaCard({ idea, onUpdate, onDelete }: IdeaCardProps) {
 	}
 
 	return (
-		<div className="idea-card">
+		// biome-ignore lint/a11y/useSemanticElements: this is a button but it is not a semantic element
+		<div
+			role="button"
+			className={`idea-card ${isSelected ? "selected" : ""}`}
+			onClick={onSelect}
+			onKeyDown={handleKeyDown}
+			tabIndex={onSelect ? 0 : undefined}
+		>
 			<div className="idea-header">
 				<h3 className="idea-title">{idea.title}</h3>
 				<span className="idea-date">{formatDate(idea.createdAt)}</span>
