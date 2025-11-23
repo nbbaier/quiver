@@ -1,0 +1,31 @@
+import { Inngest } from "inngest";
+
+export const inngest = new Inngest({
+	id: "quiver",
+});
+
+/**
+ * Type definitions for events.
+ */
+export type Events = {
+	"idea/brainstorm": {
+		data: {
+			ideaId: number;
+			title: string;
+			content: string;
+			context?: string;
+		};
+	};
+	"idea/brainstorm.completed": {
+		data: {
+			ideaId: number;
+			result: string;
+		};
+	};
+	"idea/brainstorm.failed": {
+		data: {
+			ideaId: number;
+			error: string;
+		};
+	};
+};

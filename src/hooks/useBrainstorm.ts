@@ -1,121 +1,127 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-const API_URL = import.meta.env.DEV ? "http://localhost:3001" : ""; //
+const API_URL = import.meta.env.DEV ? "http://localhost:3001" : "";
 
 interface Idea {
+	id: number;
 	title: string;
 	content: string;
 }
 
 /**
- * Hook for AI brainstorming with streaming support.
+ * Hook for AI brainstorming with Inngest (polling).
  *
- * Why a custom hook instead of useChat?
- * - useChat is designed for multi-turn conversations
- * - We want single-shot brainstorming with custom UI
- * - Easier to control the exact request format
+ * Flow:
+ * 1. Send brainstorm request
+ * 2. Server returns immediately (event sent to Inngest)
+ * 3. Poll for results until complete
+ *
+ * Why polling instead of WebSockets?
+ * - Simpler to implement
+ * - Works with serverless (no persistent connections)
+ * - Polling interval of 1s is fine for 5-10 second operations
  */
 export function useBrainstorm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string>("");
 	const [error, setError] = useState<Error | null>(null);
+	const pollIntervalRef = useRef<number | null>(null);
 
 	/**
-	 * Start a brainstorming session.
-	 *
-	 * @param idea - The idea to brainstorm
-	 * @param context - Optional additional context from the user
+	 * Stop polling.
 	 */
-	const brainstorm = useCallback(async (idea: Idea, context?: string) => {
-		console.log("[Brainstorm] Starting brainstorm request", { idea, context });
-		setIsLoading(true);
-		setResult("");
-		setError(null);
-
-		try {
-			const response = await fetch(`${API_URL}/api/brainstorm`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ idea, context }),
-			});
-
-			console.log("[Brainstorm] Response received", {
-				status: response.status,
-				statusText: response.statusText,
-				headers: Object.fromEntries(response.headers.entries()),
-				contentType: response.headers.get("content-type"),
-			});
-
-			if (!response.ok) {
-				throw new Error(`API error: ${response.status}`);
-			}
-
-			// Get the readable stream from the response
-			const reader = response.body?.getReader();
-			if (!reader) throw new Error("No response body");
-
-			console.log(
-				"[Brainstorm] Stream reader created, starting to read chunks",
-			);
-
-			const decoder = new TextDecoder();
-			let fullText = "";
-			let chunkCount = 0;
-
-			// Read the stream chunk by chunk
-			// toTextStreamResponse() sends plain text, not SSE format
-			while (true) {
-				const { done, value } = await reader.read();
-
-				if (done) {
-					console.log("[Brainstorm] Stream done", {
-						totalChunks: chunkCount,
-						finalTextLength: fullText.length,
-					});
-					break;
-				}
-
-				chunkCount++;
-				const chunk = decoder.decode(value, { stream: true });
-
-				// toTextStreamResponse() sends plain text directly
-				// Just append each chunk to the full text
-				fullText += chunk;
-
-				console.log(`[Brainstorm] Chunk ${chunkCount} received`, {
-					chunkLength: chunk.length,
-					chunkPreview: chunk.substring(0, 50),
-					fullTextLength: fullText.length,
-					fullTextPreview: fullText.substring(0, 200),
-				});
-
-				// Update UI with accumulated text
-				setResult(fullText);
-			}
-
-			console.log("[Brainstorm] Stream processing complete", {
-				finalText: fullText,
-				finalTextLength: fullText.length,
-			});
-		} catch (err) {
-			console.error("[Brainstorm] Error occurred", {
-				error: err,
-				message: err instanceof Error ? err.message : String(err),
-			});
-			setError(err instanceof Error ? err : new Error("Brainstorm failed"));
-		} finally {
-			console.log("[Brainstorm] Setting isLoading to false");
-			setIsLoading(false);
+	const stopPolling = useCallback(() => {
+		if (pollIntervalRef.current) {
+			clearInterval(pollIntervalRef.current);
+			pollIntervalRef.current = null;
 		}
 	}, []);
 
 	/**
-	 * Clear the current result.
+	 * Poll for brainstorm results.
 	 */
-	const reset = useCallback(() => {
-		setResult("");
-		setError(null);
-	}, []);
+	const pollForResults = useCallback(
+		async (ideaId: number) => {
+			const poll = async () => {
+				try {
+					const response = await fetch(`${API_URL}/api/brainstorm/${ideaId}`);
+					const data = await response.json();
 
-	return { brainstorm, isLoading, result, error, reset };
+					if (data.status === "completed") {
+						setResult(data.result);
+						setIsLoading(false);
+						stopPolling();
+					} else if (data.status === "failed") {
+						setError(new Error(data.error || "Brainstorm failed"));
+						setIsLoading(false);
+						stopPolling();
+					}
+					// If status is "pending", keep polling
+				} catch (err) {
+					setError(err instanceof Error ? err : new Error("Polling failed"));
+					setIsLoading(false);
+					stopPolling();
+				}
+			};
+
+			// Poll every second
+			pollIntervalRef.current = window.setInterval(poll, 1000);
+			// Also poll immediately
+			poll();
+		},
+		[stopPolling],
+	);
+
+	/**
+	 * Start a brainstorming session.
+	 */
+	const brainstorm = useCallback(
+		async (idea: Idea, context?: string) => {
+			setIsLoading(true);
+			setResult("");
+			setError(null);
+			stopPolling();
+
+			try {
+				const response = await fetch(`${API_URL}/api/brainstorm`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						ideaId: idea.id,
+						idea: { title: idea.title, content: idea.content },
+						context,
+					}),
+				});
+
+				if (!response.ok) {
+					throw new Error("Failed to start brainstorm");
+				}
+
+				// Start polling for results
+				pollForResults(idea.id);
+			} catch (err) {
+				setError(
+					err instanceof Error ? err : new Error("Failed to brainstorm"),
+				);
+				setIsLoading(false);
+			}
+		},
+		[pollForResults, stopPolling],
+	);
+
+	/**
+	 * Cancel the current brainstorm.
+	 */
+	const cancel = useCallback(() => {
+		stopPolling();
+		setIsLoading(false);
+	}, [stopPolling]);
+
+	return {
+		brainstorm,
+		cancel,
+		isLoading,
+		result,
+		error,
+	};
 }

@@ -44,7 +44,9 @@ export function IdeaCard({ idea, onDelete, onArchive }: IdeaCardProps) {
 				</header>
 
 				{/* Content */}
-				<p className="text-text-muted mb-4 whitespace-pre-wrap">{idea.content}</p>
+				<p className="text-text-muted mb-4 whitespace-pre-wrap">
+					{idea.content}
+				</p>
 
 				{/* Tags */}
 				{idea.tags && idea.tags.length > 0 && (

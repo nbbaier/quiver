@@ -2,19 +2,109 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { serve } from "inngest/hono";
+import { inngest } from "../lib/inngest";
+import { functions } from "../lib/inngest-functions";
 
 const app = new Hono();
 
 app.use("/*", cors());
 
+app.on(
+	["GET", "POST", "PUT"],
+	"/api/inngest",
+	serve({ client: inngest, functions }),
+);
+
+/**
+ * Start a brainstorm via Inngest.
+ *
+ * Instead of calling Claude directly, we send an event to Inngest.
+ * This returns immediately—the actual work happens in the background.
+ */
 app.post("/api/brainstorm", async (c) => {
+	const { ideaId, idea, context } = await c.req.json();
+
+	// Send event to Inngest (returns immediately)
+	await inngest.send({
+		name: "idea/brainstorm",
+		data: {
+			ideaId,
+			title: idea.title,
+			content: idea.content,
+			context,
+		},
+	});
+
+	// Return immediately—brainstorm runs in background
+	return c.json({
+		status: "started",
+		message: "Brainstorm started. Poll /api/brainstorm/:id for results.",
+	});
+});
+
+const brainstormResults = new Map<
+	number,
+	{
+		status: "pending" | "completed" | "failed";
+		result?: string;
+		error?: string;
+	}
+>();
+
+/**
+ * Event handler for brainstorm completion.
+ *
+ * When Inngest finishes a brainstorm, it sends a completion event.
+ * We listen for this and store the result.
+ */
+app.post("/api/inngest/webhook", async (c) => {
+	const event = await c.req.json();
+
+	if (event.name === "idea/brainstorm.completed") {
+		brainstormResults.set(event.data.ideaId, {
+			status: "completed",
+			result: event.data.result,
+		});
+	} else if (event.name === "idea/brainstorm.failed") {
+		brainstormResults.set(event.data.ideaId, {
+			status: "failed",
+			error: event.data.error,
+		});
+	}
+
+	return c.json({ received: true });
+});
+
+/**
+ * Poll for brainstorm results.
+ *
+ * The frontend calls this repeatedly until the brainstorm completes.
+ */
+app.get("/api/brainstorm/:id", async (c) => {
+	const ideaId = parseInt(c.req.param("id"));
+	const result = brainstormResults.get(ideaId);
+
+	if (!result) {
+		return c.json({ status: "pending" });
+	}
+
+	// Clean up after returning completed result
+	if (result.status !== "pending") {
+		brainstormResults.delete(ideaId);
+	}
+
+	return c.json(result);
+});
+
+app.post("/api/brainstorm/stream", async (c) => {
 	const { idea, context } = await c.req.json();
 
 	console.log("[Server] Brainstorm request received", { idea, context });
 
 	// Create the streaming response
 	const result = streamText({
-		model: anthropic("claude-3-5-haiku-20241022"),
+		model: anthropic("claude-haiku-4-5"),
 		system: `You are a creative brainstorming assistant. Your role is to help expand and develop ideas.
 
 When given an idea, you should:
