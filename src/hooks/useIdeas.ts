@@ -15,6 +15,7 @@ export function useIdeas() {
 	// Filter state
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [showArchived, setShowArchived] = useState(false);
+	const [searchQuery, setSearchQuery] = useState("");
 
 	/**
 	 * Fetch ideas from local cache (and server if online).
@@ -91,6 +92,20 @@ export function useIdeas() {
 			// Filter by archived state
 			if (!showArchived && idea.archived) return false;
 
+			// Filter by search query
+			if (searchQuery) {
+				const query = searchQuery.toLowerCase();
+				const matchesTitle = idea.title.toLowerCase().includes(query);
+				const matchesContent = idea.content.toLowerCase().includes(query);
+				const matchesTags = idea.tags?.some((tag) =>
+					tag.toLowerCase().includes(query),
+				);
+
+				if (!matchesTitle && !matchesContent && !matchesTags) {
+					return false;
+				}
+			}
+
 			// Filter by tags (OR logic)
 			if (selectedTags.length > 0) {
 				const ideaTags = idea.tags || [];
@@ -102,7 +117,7 @@ export function useIdeas() {
 
 			return true;
 		});
-	}, [ideas, selectedTags, showArchived]);
+	}, [ideas, selectedTags, showArchived, searchQuery]);
 
 	/**
 	 * Toggle a tag in the filter.
@@ -165,6 +180,10 @@ export function useIdeas() {
 		allTags,
 		selectedTags,
 		toggleTag,
+
+		// Search
+		searchQuery,
+		setSearchQuery,
 
 		// Archived filter
 		showArchived,

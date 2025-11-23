@@ -2,6 +2,7 @@ import { FilterBar } from "./components/FilterBar";
 import { IdeaForm } from "./components/IdeaForm";
 import { IdeaList } from "./components/IdeaList";
 import { OfflineIndicator } from "./components/OfflineIndicator";
+import { SearchBar } from "./components/SearchBar";
 import { ThemeSwitcher } from "./components/ThemeSwitcher";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { useIdeas } from "./hooks/useIdeas";
@@ -12,6 +13,7 @@ function AppContent() {
 		loading,
 		error,
 		syncing,
+		setSearchQuery,
 		allTags,
 		selectedTags,
 		toggleTag,
@@ -69,6 +71,12 @@ function AppContent() {
 						onTagToggle={toggleTag}
 						showArchived={showArchived}
 						onToggleArchived={toggleArchived}
+					/>
+
+					{/* Search */}
+					<SearchBar
+						onSearch={setSearchQuery}
+						placeholder="Search ideas by title, content, or tag..."
 					/>
 
 					{/* Ideas list */}
