@@ -1,3 +1,10 @@
+---
+title: "Quiver Implementation Guide"
+series: "Quiver"
+description: "A step-by-step guide to building the Quiver offline-first PWA."
+---
+
+
 <!-- SPLIT_OUTPUT: 01-intro-and-setup -->
 
 # Quiver: Offline-First Idea Capture App Implementation Guide
