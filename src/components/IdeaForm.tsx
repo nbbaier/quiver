@@ -43,7 +43,7 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 			<div>
 				<label
 					htmlFor="title"
-					className="block text-sm font-medium text-gray-700 mb-1"
+					className="block text-sm font-medium text-text-main mb-1"
 				>
 					Title
 				</label>
@@ -55,10 +55,10 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 					placeholder="What's your idea?"
 					disabled={submitting}
 					required
-					className="w-full px-4 py-3 border border-gray-300 rounded-lg
+					className="w-full px-4 py-3 border border-border-default bg-bg-card text-text-main rounded-lg
                      focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-                     disabled:bg-gray-100 disabled:cursor-not-allowed
-                     transition-colors"
+                     disabled:bg-bg-elevated disabled:cursor-not-allowed
+                     transition-colors placeholder:text-text-muted/50"
 				/>
 			</div>
 
@@ -66,7 +66,7 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 			<div>
 				<label
 					htmlFor="content"
-					className="block text-sm font-medium text-gray-700 mb-1"
+					className="block text-sm font-medium text-text-main mb-1"
 				>
 					Details
 				</label>
@@ -78,10 +78,10 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 					rows={4}
 					disabled={submitting}
 					required
-					className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-y
+					className="w-full px-4 py-3 border border-border-default bg-bg-card text-text-main rounded-lg resize-y
                      focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-                     disabled:bg-gray-100 disabled:cursor-not-allowed
-                     transition-colors"
+                     disabled:bg-bg-elevated disabled:cursor-not-allowed
+                     transition-colors placeholder:text-text-muted/50"
 				/>
 			</div>
 
@@ -89,7 +89,7 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 			<button
 				type="submit"
 				disabled={submitting || !isValid}
-				className="w-full py-3 px-4 bg-primary text-white font-medium rounded-lg
+				className="w-full py-3 px-4 bg-primary text-white font-medium rounded-md
                    hover:bg-primary-hover
                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                    disabled:opacity-50 disabled:cursor-not-allowed

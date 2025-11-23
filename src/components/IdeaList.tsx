@@ -21,13 +21,13 @@ export function IdeaList({
 }: IdeaListProps) {
 	if (loading) {
 		return (
-			<div className="text-center py-12 text-gray-500">Loading ideas...</div>
+			<div className="text-center py-12 text-text-muted">Loading ideas...</div>
 		);
 	}
 
 	if (error) {
 		return (
-			<div className="text-center py-12 text-red-600">
+			<div className="text-center py-12 text-danger">
 				Error: {error.message}
 			</div>
 		);
@@ -35,7 +35,7 @@ export function IdeaList({
 
 	if (ideas.length === 0) {
 		return (
-			<div className="text-center py-12 text-gray-500">
+			<div className="text-center py-12 text-text-muted">
 				<p>No ideas yet.</p>
 				<p className="mt-1">Create your first one above!</p>
 			</div>
@@ -51,7 +51,7 @@ export function IdeaList({
 			{/* Active ideas */}
 			{activeIdeas.length > 0 && (
 				<section>
-					<h2 className="text-lg font-semibold text-gray-900 mb-4">
+					<h2 className="text-lg font-semibold text-text-main mb-4">
 						Ideas ({activeIdeas.length})
 					</h2>
 					<div className="space-y-4">
@@ -70,7 +70,7 @@ export function IdeaList({
 			{/* Archived ideas */}
 			{archivedIdeas.length > 0 && (
 				<section>
-					<h2 className="text-lg font-semibold text-gray-500 mb-4">
+					<h2 className="text-lg font-semibold text-text-muted mb-4">
 						Archived ({archivedIdeas.length})
 					</h2>
 					<div className="space-y-4">

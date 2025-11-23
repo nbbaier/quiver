@@ -5,7 +5,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const ideas = sqliteTable("ideas", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
 	title: text("title").notNull(),
-	content: text("content").notNull().default(""), // Default empty string to avoid null values
+	content: text("content").notNull(),
 	urls: text("urls", { mode: "json" }).$type<string[]>().default([]),
 	tags: text("tags", { mode: "json" }).$type<string[]>().default([]),
 	createdAt: integer("created_at", { mode: "timestamp" })
