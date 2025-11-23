@@ -1,3 +1,4 @@
+import { FilterBar } from "./components/FilterBar";
 import { IdeaForm } from "./components/IdeaForm";
 import { IdeaList } from "./components/IdeaList";
 import { OfflineIndicator } from "./components/OfflineIndicator";
@@ -11,13 +12,22 @@ function AppContent() {
 		loading,
 		error,
 		syncing,
+		allTags,
+		selectedTags,
+		toggleTag,
+		showArchived,
+		toggleArchived,
 		createIdea,
 		deleteIdea,
 		archiveIdea,
 	} = useIdeas();
 
-	const handleCreateIdea = async (title: string, content: string) => {
-		await createIdea(title, content);
+	const handleCreateIdea = async (
+		title: string,
+		content: string,
+		tags: string[],
+	) => {
+		await createIdea(title, content, tags);
 	};
 
 	const handleArchiveIdea = async (id: number) => {
@@ -51,6 +61,15 @@ function AppContent() {
 						</h2>
 						<IdeaForm onSubmit={handleCreateIdea} />
 					</section>
+
+					{/* Filter bar */}
+					<FilterBar
+						allTags={allTags}
+						selectedTags={selectedTags}
+						onTagToggle={toggleTag}
+						showArchived={showArchived}
+						onToggleArchived={toggleArchived}
+					/>
 
 					{/* Ideas list */}
 					<section>

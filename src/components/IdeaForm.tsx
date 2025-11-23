@@ -1,9 +1,9 @@
 import { type FormEvent, useState } from "react";
+import { TagInput } from "./TagInput";
 
 interface IdeaFormProps {
-	onSubmit: (title: string, content: string) => Promise<void>;
+	onSubmit: (title: string, content: string, tags: string[]) => Promise<void>;
 }
-
 /**
  * Form for capturing new ideas.
  *
@@ -16,17 +16,15 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [submitting, setSubmitting] = useState(false);
+	const [tags, setTags] = useState<string[]>([]);
 
 	const handleSubmit = async (e: FormEvent) => {
-		// Prevent default form submission (page reload)
 		e.preventDefault();
-
-		// Validate
 		if (!title.trim() || !content.trim()) return;
 
 		setSubmitting(true);
 		try {
-			await onSubmit(title.trim(), content.trim());
+			await onSubmit(title.trim(), content.trim(), tags);
 			// Clear form on success
 			setTitle("");
 			setContent("");
@@ -85,11 +83,26 @@ export function IdeaForm({ onSubmit }: IdeaFormProps) {
 				/>
 			</div>
 
-			{/* Submit button */}
+			{/* Tags */}
+			<div>
+				<label className="block text-sm font-medium text-gray-700 mb-1">
+					Tags
+				</label>
+				<TagInput
+					tags={tags}
+					onChange={setTags}
+					placeholder="Type and press Enter to add tags"
+				/>
+				<p className="mt-1 text-xs text-gray-500">
+					Press Enter or comma to add, Backspace to remove
+				</p>
+			</div>
+
+			{/* Submit */}
 			<button
 				type="submit"
 				disabled={submitting || !isValid}
-				className="w-full py-3 px-4 bg-primary text-white font-medium rounded-md
+				className="w-full py-3 px-4 bg-primary text-white font-medium rounded-lg
                    hover:bg-primary-hover
                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                    disabled:opacity-50 disabled:cursor-not-allowed
