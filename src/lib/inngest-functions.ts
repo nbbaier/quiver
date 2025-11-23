@@ -1,6 +1,6 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { generateText } from "ai";
-import { inngest } from "./inngest";
+import { inngest } from "./inngest.js";
 
 /**
  * Brainstorm function.
