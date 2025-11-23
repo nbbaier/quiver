@@ -18,7 +18,7 @@ interface BrainstormPanelProps {
  */
 export function BrainstormPanel({ idea, onClose }: BrainstormPanelProps) {
 	const [additionalContext, setAdditionalContext] = useState("");
-	const { brainstorm, isLoading, result, error, reset } = useBrainstorm();
+	const { brainstorm, isLoading, result, error } = useBrainstorm();
 
 	const handleBrainstorm = () => {
 		console.log("handleBrainstorm", idea, additionalContext);
@@ -79,7 +79,7 @@ export function BrainstormPanel({ idea, onClose }: BrainstormPanelProps) {
 								? "Brainstorm Again"
 								: "Start Brainstorm"}
 					</button>
-					{result && (
+					{/* {result && (
 						<button
 							onClick={reset}
 							className="px-4 py-2 bg-bg-elevated text-text-main border border-border-default font-medium rounded-lg
@@ -87,7 +87,7 @@ export function BrainstormPanel({ idea, onClose }: BrainstormPanelProps) {
 						>
 							Clear
 						</button>
-					)}
+					)} */}
 				</div>
 
 				{/* Error state */}
