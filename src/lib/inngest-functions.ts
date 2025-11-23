@@ -66,17 +66,46 @@ Avoid generic advice—be specific to THIS idea.`,
 		});
 
 		/**
-		 * Send a completion event.
+		 * Store the result via HTTP call to our webhook endpoint.
 		 *
-		 * This lets other parts of your system react to brainstorm completion.
-		 * For example, you could trigger a notification or update a cache.
+		 * This allows the frontend to poll for results.
 		 */
-		await step.sendEvent("notify-completion", {
-			name: "idea/brainstorm.completed",
-			data: {
-				ideaId,
-				result,
-			},
+		await step.run("store-result", async () => {
+			// Get the base URL for the webhook
+			// Defaults to localhost:3001 for development
+			// In production, set INNGEST_BASE_URL env var to your server URL
+			const baseUrl = process.env.INNGEST_BASE_URL || "http://localhost:3001";
+
+			console.log(`[Inngest] Using baseUrl: ${baseUrl}`);
+
+			const webhookUrl = `${baseUrl}/api/inngest/webhook`;
+			console.log(
+				`[Inngest] Storing result for ideaId ${ideaId} via ${webhookUrl}`,
+			);
+
+			const response = await fetch(webhookUrl, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					name: "idea/brainstorm.completed",
+					data: { ideaId, result },
+				}),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error(
+					`[Inngest] Failed to store result: ${response.status} ${response.statusText}`,
+					errorText,
+				);
+				throw new Error(
+					`Failed to store brainstorm result: ${response.statusText}`,
+				);
+			}
+
+			const responseData = await response.json();
+			console.log(`[Inngest] Successfully stored result for ideaId ${ideaId}`);
+			return responseData;
 		});
 
 		return { ideaId, result };

@@ -25,6 +25,11 @@ app.on(
 app.post("/api/brainstorm", async (c) => {
 	const { ideaId, idea, context } = await c.req.json();
 
+	// Initialize as pending so polling knows it's in progress
+	brainstormResults.set(ideaId, {
+		status: "pending",
+	});
+
 	// Send event to Inngest (returns immediately)
 	await inngest.send({
 		name: "idea/brainstorm",
@@ -61,16 +66,24 @@ const brainstormResults = new Map<
 app.post("/api/inngest/webhook", async (c) => {
 	const event = await c.req.json();
 
+	console.log("[Webhook] Received event:", event.name, event.data);
+
 	if (event.name === "idea/brainstorm.completed") {
 		brainstormResults.set(event.data.ideaId, {
 			status: "completed",
 			result: event.data.result,
 		});
+		console.log(
+			`[Webhook] Stored completed result for ideaId: ${event.data.ideaId}`,
+		);
 	} else if (event.name === "idea/brainstorm.failed") {
 		brainstormResults.set(event.data.ideaId, {
 			status: "failed",
 			error: event.data.error,
 		});
+		console.log(
+			`[Webhook] Stored failed result for ideaId: ${event.data.ideaId}`,
+		);
 	}
 
 	return c.json({ received: true });
