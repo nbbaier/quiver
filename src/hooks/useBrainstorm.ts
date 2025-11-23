@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
+// In development, use the local Hono server
+// In production, use Vercel's API routes (relative URL)
 const API_URL = import.meta.env.DEV ? "http://localhost:3001" : "";
 
 interface Idea {
@@ -25,6 +27,7 @@ export function useBrainstorm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState<string>("");
 	const [error, setError] = useState<Error | null>(null);
+
 	const pollIntervalRef = useRef<number | null>(null);
 
 	/**

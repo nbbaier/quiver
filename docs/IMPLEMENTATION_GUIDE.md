@@ -4761,145 +4761,47 @@ bun run dev
 -  Serverless functions for the API
 -  Free tier is generous for personal projects
 
-### Step 10.1: Create Vercel API Routes
+### Step 10.1: Create Vercel API Routes for Polling
 
-For production, we need to restructure our API to work with Vercel's serverless functions. Create `api/brainstorm.ts` in your project root (not in `src/`):
+For production, we need Vercel API routes that support the polling approach with Inngest. Since Vercel functions are stateless, we'll need to use your database to store brainstorm results instead of an in-memory Map.
 
-```typescript
-import { anthropic } from "@ai-sdk/anthropic";
-import { streamText } from "ai";
+**Note:** The existing `api/brainstorm.ts` file uses streaming. For polling with Inngest, we need different routes. You can either:
 
-export const config = {
-   runtime: "edge", // Use edge runtime for faster cold starts
-};
+-  Keep both approaches (streaming for direct calls, polling for Inngest)
+-  Or replace the streaming route with polling routes
 
-export default async function handler(req: Request) {
-   // Only allow POST
-   if (req.method !== "POST") {
-      return new Response("Method not allowed", { status: 405 });
-   }
+For polling, create or update these Vercel API routes:
 
-   try {
-      const { idea, context } = await req.json();
+**Option 1: Update `api/brainstorm.ts` to support both POST (start) and handle Inngest webhooks**
 
-      const result = streamText({
-         model: anthropic("claude-haiku-4-5-20250514"),
-         system: `You are a creative brainstorming assistant. Your role is to help expand and develop ideas.
+Or create separate route files:
 
-When given an idea, you should:
-1. Identify the core concept and what makes it interesting
-2. Suggest 3-5 specific directions to explore
-3. Ask 2-3 thought-provoking questions that deepen the idea
-4. Offer one unexpected connection or angle
+-  `api/brainstorm/index.ts` - POST to start brainstorm
+-  `api/brainstorm/[id].ts` - GET to poll for results
+-  `api/inngest/webhook.ts` - POST to receive results from Inngest
 
-Be concise but insightful. Use bullet points for clarity.
-Avoid generic advice—be specific to THIS idea.`,
-         messages: [
-            {
-               role: "user",
-               content: context
-                  ? `Here's an idea I want to brainstorm:
+Since Vercel serverless functions are stateless, you'll need to store brainstorm results in your database. The polling endpoints would query the database instead of an in-memory Map.
 
-**Title:** ${idea.title}
-**Details:** ${idea.content}
+**For now, the existing `api/brainstorm.ts` works for direct streaming calls.** If you're using Inngest in production, you'll need additional routes or update the existing one to handle the polling pattern with database storage.
 
-**Additional context:** ${context}
+### Step 10.2: Verify the Brainstorm Hook for Production
 
-Please help me develop this idea.`
-                  : `Here's an idea I want to brainstorm:
+**Good news:** The `useBrainstorm` hook already has the correct baseUrl logic for production! No changes are needed.
 
-**Title:** ${idea.title}
-**Details:** ${idea.content}
+The hook already includes this pattern:
 
-Please help me develop this idea.`,
-            },
-         ],
-      });
-
-      return result.toDataStreamResponse();
-   } catch (error) {
-      console.error("Brainstorm error:", error);
-      return new Response("Internal server error", { status: 500 });
-   }
-}
-```
-
-### Step 10.2: Update the Brainstorm Hook for Production
-
-Update `src/hooks/useBrainstorm.ts` to use the correct API URL:
-
-```typescript
-import { useState, useCallback } from "react";
-
-// In development, use the local Hono server
-// In production, use Vercel's API routes (relative URL)
+```5:5:src/hooks/useBrainstorm.ts
 const API_URL = import.meta.env.DEV ? "http://localhost:3001" : "";
-
-interface Idea {
-   title: string;
-   content: string;
-}
-
-export function useBrainstorm() {
-   const [isLoading, setIsLoading] = useState(false);
-   const [result, setResult] = useState<string>("");
-   const [error, setError] = useState<Error | null>(null);
-
-   const brainstorm = useCallback(async (idea: Idea, context?: string) => {
-      setIsLoading(true);
-      setResult("");
-      setError(null);
-
-      try {
-         const response = await fetch(`${API_URL}/api/brainstorm`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idea, context }),
-         });
-
-         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-         }
-
-         const reader = response.body?.getReader();
-         if (!reader) throw new Error("No response body");
-
-         const decoder = new TextDecoder();
-         let fullText = "";
-
-         while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("\n");
-            for (const line of lines) {
-               if (line.startsWith("0:")) {
-                  try {
-                     const text = JSON.parse(line.slice(2));
-                     fullText += text;
-                     setResult(fullText);
-                  } catch {
-                     // Skip malformed lines
-                  }
-               }
-            }
-         }
-      } catch (err) {
-         setError(err instanceof Error ? err : new Error("Brainstorm failed"));
-      } finally {
-         setIsLoading(false);
-      }
-   }, []);
-
-   const reset = useCallback(() => {
-      setResult("");
-      setError(null);
-   }, []);
-
-   return { brainstorm, isLoading, result, error, reset };
-}
 ```
+
+**How it works:**
+
+-  In **development** (`import.meta.env.DEV === true`): Uses `"http://localhost:3001"` to call your local Hono server
+-  In **production** (`import.meta.env.DEV === false`): Uses `""` (empty string), which creates relative URLs like `/api/brainstorm` and `/api/brainstorm/:id`
+
+This means your production builds will automatically call Vercel's API routes using relative URLs, which is exactly what we want.
+
+The polling logic in the hook (from Step 7.5) will work perfectly with Vercel API routes once you set up the routes that support polling with Inngest, as mentioned in Step 10.1.
 
 ### Step 10.3: Create Vercel Configuration
 

@@ -117,7 +117,7 @@ app.post("/api/brainstorm/stream", async (c) => {
 
 	// Create the streaming response
 	const result = streamText({
-		model: anthropic("claude-haiku-4-5"),
+		model: anthropic("claude-haiku-4-5-20251001"),
 		system: `You are a creative brainstorming assistant. Your role is to help expand and develop ideas.
 
 When given an idea, you should:
