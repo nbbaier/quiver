@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/01-the-weekend-project"
 ---
 
-_This is Part 1 of a 8-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
+_This is Part 1 of a 10-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
 
 ---
 
@@ -164,6 +164,7 @@ export default App;
 ```
 
 Remove the unused files:
+
 ```bash
 rm src/App.css src/assets/react.svg
 ```
@@ -183,8 +184,6 @@ mkdir -p src/components src/hooks src/lib src/types
 
 ## Next Steps
 
-We have a running React app with a modern styling engine. It looks nice, but it doesn't *do* anything yet.
+We have a running React app with a modern styling engine. It looks nice, but it doesn't _do_ anything yet.
 
 In the next part, we'll set up our "Backend" (which is really just a serverless database connection). We'll configure Turso and Drizzle to give us a type-safe data layer that runs at the edge.
-
-[Read Part 2: Database Architecture →](/blog/quiver/02-database-architecture)

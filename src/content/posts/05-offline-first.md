@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/05-offline-first"
 ---
 
-_This is Part 5 of a 8-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 5 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -15,10 +15,10 @@ Traditional web apps read from a server. Offline-first apps read from a **local 
 
 ## The Strategy
 
-1.  **Reads are always local**: We display what's in the browser's IndexedDB. It's instant.
-2.  **Writes are local first**: When you save, we write to IndexedDB immediately.
-3.  **Sync Queue**: If offline, we add the operation to a "pending changes" queue.
-4.  **Background Sync**: When online, we process the queue and send changes to Turso.
+1. **Reads are always local**: We display what's in the browser's IndexedDB. It's instant.
+2. **Writes are local first**: When you save, we write to IndexedDB immediately.
+3. **Sync Queue**: If offline, we add the operation to a "pending changes" queue.
+4. **Background Sync**: When online, we process the queue and send changes to Turso.
 
 ## Setting up IndexedDB
 
@@ -46,7 +46,10 @@ export async function getDb() {
             store.createIndex("createdAt", "createdAt");
          }
          if (!db.objectStoreNames.contains("pending")) {
-            db.createObjectStore("pending", { keyPath: "id", autoIncrement: true });
+            db.createObjectStore("pending", {
+               keyPath: "id",
+               autoIncrement: true,
+            });
          }
       },
    });
@@ -93,7 +96,7 @@ We need a function that runs when connection is restored. It iterates through th
 ```typescript
 export async function syncToRemote() {
    const pending = await localDb.getPendingChanges();
-   
+
    for (const change of pending) {
       if (change.type === "create") {
          await api.createIdea(change.data);
@@ -101,7 +104,7 @@ export async function syncToRemote() {
       // ... handle update/delete
       await localDb.removePendingChange(change.id);
    }
-   
+
    // Refresh local cache with latest server state
    const fresh = await api.getAllIdeas();
    await localDb.saveLocalIdeas(fresh);
@@ -130,5 +133,3 @@ With this architecture, the app feels incredibly fast. Saving an idea is a local
 If you're on a plane, you can create 50 ideas. They'll sit in IndexedDB with negative IDs. The moment you reconnect, they flush to the server and get real IDs.
 
 Now that we have a robust, offline-capable app, let's make it smart.
-
-[Read Part 6: AI Integration →](/blog/quiver/06-ai-integration)

@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/06-ai-integration"
 ---
 
-_This is Part 6 of a 8-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 6 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -83,7 +83,7 @@ Create `src/hooks/useBrainstorm.ts`:
 
 export function useBrainstorm() {
    const [result, setResult] = useState("");
-   
+
    const brainstorm = async (idea) => {
       const response = await fetch("http://localhost:3001/api/brainstorm", {
          method: "POST",
@@ -96,7 +96,7 @@ export function useBrainstorm() {
       while (true) {
          const { done, value } = await reader.read();
          if (done) break;
-         
+
          const chunk = decoder.decode(value);
          // Parse the AI SDK format (it sends data like '0:"text"')
          // ... (parsing logic here)
@@ -117,5 +117,3 @@ The result is magical: you click a button, and immediately see Claude thinking t
 ## Costs
 
 Claude Haiku is incredibly cheap. You can brainstorm hundreds of ideas for pennies. This makes it feasible to include in a personal tool without worrying about the bill.
-
-[Read Part 7: Inngest Integration →](/blog/quiver/07-inngest-integration)

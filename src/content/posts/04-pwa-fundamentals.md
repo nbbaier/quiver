@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/04-pwa-fundamentals"
 ---
 
-_This is Part 4 of a 8-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 4 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -37,7 +37,11 @@ export default defineConfig({
       tailwindcss(),
       VitePWA({
          registerType: "autoUpdate",
-         includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+         includeAssets: [
+            "favicon.ico",
+            "apple-touch-icon.png",
+            "mask-icon.svg",
+         ],
          manifest: {
             name: "Quiver Idea Capture",
             short_name: "Quiver",
@@ -97,5 +101,3 @@ If you go offline now, the **shell** of the app will load (because the HTML/JS i
 You'll see the UI, but it will be empty or show an error.
 
 To fix this, we need to move our data layer to the client. We need **Offline-First Architecture**.
-
-[Read Part 5: Offline-First Architecture →](/blog/quiver/05-offline-first)

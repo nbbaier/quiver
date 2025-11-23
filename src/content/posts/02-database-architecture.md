@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/02-database-architecture"
 ---
 
-_This is Part 2 of a 8-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 2 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -189,5 +189,3 @@ export async function archiveIdea(id: number): Promise<Idea | undefined> {
 We now have a cloud database, a type-safe schema, and clean functions to interact with it. But our app is still just a blank screen.
 
 In the next part, we'll build the UI to actually create and view these ideas.
-
-[Read Part 3: The CRUD Interface →](/blog/quiver/03-crud-interface)

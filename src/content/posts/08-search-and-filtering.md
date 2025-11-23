@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/08-search-and-filtering"
 ---
 
-_This is Part 8 of a 10-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 8 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -20,6 +20,7 @@ Because Quiver is offline-first with a local database, we can do something power
 First, let's create a visual way to filter by tags and archived status.
 
 Create `src/components/FilterBar.tsx`. This component will show:
+
 1. A list of all available tags (so you can click to filter)
 2. A toggle for archived ideas
 
@@ -93,7 +94,7 @@ Update `src/hooks/useIdeas.ts`:
 
 export function useIdeas() {
    // ... existing state
-   
+
    const [selectedTags, setSelectedTags] = useState<string[]>([]);
    const [showArchived, setShowArchived] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
@@ -101,13 +102,13 @@ export function useIdeas() {
    // Calculate all unique tags from the idea list
    const allTags = useMemo(() => {
       const tags = new Set<string>();
-      ideas.forEach(idea => idea.tags?.forEach(t => tags.add(t)));
+      ideas.forEach((idea) => idea.tags?.forEach((t) => tags.add(t)));
       return Array.from(tags).sort();
    }, [ideas]);
 
    // The core filtering logic
    const filteredIdeas = useMemo(() => {
-      return ideas.filter(idea => {
+      return ideas.filter((idea) => {
          // 1. Filter by archived status
          if (!showArchived && idea.archived) return false;
 
@@ -121,7 +122,7 @@ export function useIdeas() {
 
          // 3. Filter by tags (OR logic: match ANY selected tag)
          if (selectedTags.length > 0) {
-            const hasTag = selectedTags.some(tag => idea.tags?.includes(tag));
+            const hasTag = selectedTags.some((tag) => idea.tags?.includes(tag));
             if (!hasTag) return false;
          }
 
@@ -155,5 +156,3 @@ We'll update `App.tsx` to include a search input that updates `setSearchQuery`.
 Since we are filtering on the client, this is extremely fast for up to a few thousand items. If you had 50,000 ideas, you might need a dedicated search index like **FlexSearch** or **MiniSearch**. But for personal knowledge management, a simple array filter is surprisingly robust and keeps our bundle size small.
 
 In the next part, we'll take our finished application and deploy it to the edge.
-
-[Read Part 9: Deployment to Vercel →](/blog/quiver/09-deployment-to-vercel)

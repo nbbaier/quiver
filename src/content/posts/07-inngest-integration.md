@@ -5,7 +5,7 @@ series: "Quiver"
 slug: "quiver/07-inngest-integration"
 ---
 
-_This is Part 7 of a 8-part series on building Quiver. [Start with Part 1](/blog/quiver/01-the-weekend-project) if you missed it._
+_This is Part 7 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
 
 ---
 
@@ -21,6 +21,7 @@ Previously:
 `Browser -> API -> Claude -> Browser (Stream)`
 
 Now:
+
 1. `Browser -> API -> Inngest (Event)`
 2. `Inngest -> API (Background Function) -> Claude -> DB`
 3. `Browser (Polling) -> API -> DB`
@@ -130,5 +131,3 @@ Since we can't stream the response directly anymore, our frontend needs to poll 
 It feels like extra work for a weekend project. But imagine if you had 1,000 users. Imagine if you wanted to add "Generate Image" or "Summarize" features. With Inngest, you just add a function. You get concurrency control (limit to 5 concurrent AI calls to save money), retries, and logs for free.
 
 In the next (and final) part, we'll polish the UI with search and filtering, and finally deploy to Vercel.
-
-[Read Part 8: Deployment & Polish →](/blog/quiver/08-deployment-polish)
