@@ -1,8 +1,8 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { serve } from "inngest/hono";
+import { anthropic, systemPrompt, userPrompt } from "../lib/ai.js";
 import { inngest } from "../lib/inngest";
 import { functions } from "../lib/inngest-functions";
 
@@ -118,37 +118,8 @@ app.post("/api/brainstorm/stream", async (c) => {
 	// Create the streaming response
 	const result = streamText({
 		model: anthropic("claude-haiku-4-5-20251001"),
-		system: `You are a creative brainstorming assistant. Your role is to help expand and develop ideas.
-
-When given an idea, you should:
-1. Identify the core concept and what makes it interesting
-2. Suggest 3-5 specific directions to explore
-3. Ask 2-3 thought-provoking questions that deepen the idea
-4. Offer one unexpected connection or angle
-
-Be concise but insightful. Use bullet points for clarity.
-Avoid generic advice—be specific to THIS idea.`,
-
-		messages: [
-			{
-				role: "user",
-				content: context
-					? `Here's an idea I want to brainstorm:
-
-**Title:** ${idea.title}
-**Details:** ${idea.content}
-
-**Additional context:** ${context}
-
-Please help me develop this idea.`
-					: `Here's an idea I want to brainstorm:
-
-**Title:** ${idea.title}
-**Details:** ${idea.content}
-
-Please help me develop this idea.`,
-			},
-		],
+		system: systemPrompt,
+		prompt: userPrompt(idea.title, idea.content, context),
 	});
 
 	console.log("[Server] streamText result created");

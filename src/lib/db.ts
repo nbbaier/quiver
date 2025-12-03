@@ -1,9 +1,17 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./schema";
+import * as schema from "./schema.js";
 
-const dbUrl = import.meta.env.VITE_TURSO_DATABASE_URL;
-const dbToken = import.meta.env.VITE_TURSO_AUTH_TOKEN;
+const dbUrl =
+	(typeof process !== "undefined" && process.env?.VITE_TURSO_DATABASE_URL) ||
+	(typeof import.meta !== "undefined" &&
+		import.meta.env?.VITE_TURSO_DATABASE_URL) ||
+	undefined;
+const dbToken =
+	(typeof process !== "undefined" && process.env?.VITE_TURSO_AUTH_TOKEN) ||
+	(typeof import.meta !== "undefined" &&
+		import.meta.env?.VITE_TURSO_AUTH_TOKEN) ||
+	undefined;
 
 if (!dbUrl || !dbToken) {
 	throw new Error(

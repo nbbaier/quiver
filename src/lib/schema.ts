@@ -17,6 +17,25 @@ export const ideas = sqliteTable("ideas", {
 	archived: integer("archived", { mode: "boolean" }).default(false),
 });
 
-// Inference magic
+// Add to your existing schema
+export const brainstormResults = sqliteTable("brainstorm_results", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	ideaId: integer("idea_id").notNull(),
+	status: text("status", { enum: ["pending", "completed", "failed"] })
+		.notNull()
+		.default("pending"),
+	result: text("result"),
+	error: text("error"),
+	createdAt: text("created_at")
+		.notNull()
+		.$defaultFn(() => new Date().toISOString()),
+	updatedAt: text("updated_at")
+		.notNull()
+		.$defaultFn(() => new Date().toISOString()),
+});
+
+export type BrainstormResult = typeof brainstormResults.$inferSelect;
+export type NewBrainstormResult = typeof brainstormResults.$inferInsert;
+
 export type Idea = typeof ideas.$inferSelect;
 export type NewIdea = typeof ideas.$inferInsert;

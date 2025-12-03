@@ -44,10 +44,12 @@ export function useBrainstorm() {
 	 * Poll for brainstorm results.
 	 */
 	const pollForResults = useCallback(
-		async (ideaId: number) => {
+		async (brainstormId: number) => {
 			const poll = async () => {
 				try {
-					const response = await fetch(`${API_URL}/api/brainstorm/${ideaId}`);
+					const response = await fetch(
+						`${API_URL}/api/brainstorm/${brainstormId}`,
+					);
 					const data = await response.json();
 
 					if (data.status === "completed") {
@@ -100,8 +102,9 @@ export function useBrainstorm() {
 					throw new Error("Failed to start brainstorm");
 				}
 
-				// Start polling for results
-				pollForResults(idea.id);
+				const data = await response.json();
+
+				pollForResults(data.id);
 			} catch (err) {
 				setError(
 					err instanceof Error ? err : new Error("Failed to brainstorm"),

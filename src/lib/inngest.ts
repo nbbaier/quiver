@@ -11,6 +11,7 @@ export const inngest = new Inngest({
 export type Events = {
 	"idea/brainstorm": {
 		data: {
+			brainstormId: number;
 			ideaId: number;
 			title: string;
 			content: string;
