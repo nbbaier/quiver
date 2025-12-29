@@ -1,0 +1,1 @@
+ALTER TABLE `ideas` ALTER COLUMN "content" TO "content" text NOT NULL DEFAULT '';
