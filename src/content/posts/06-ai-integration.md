@@ -1,11 +1,11 @@
 ---
 title: "Part 6: AI Integration"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "06-ai-integration"
 series: "Quiver"
-slug: "quiver/06-ai-integration"
 ---
 
-_This is Part 6 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
+_This is Part 6 of a 10-part series on building Quiver. [Start with Part 1](/posts/01-the-weekend-project) if you missed it._
 
 ---
 

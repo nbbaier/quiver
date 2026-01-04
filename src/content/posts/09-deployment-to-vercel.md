@@ -1,11 +1,11 @@
 ---
 title: "Part 9: Deployment to Vercel"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "09-deployment-to-vercel"
 series: "Quiver"
-slug: "quiver/09-deployment-to-vercel"
 ---
 
-_This is Part 9 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
+_This is Part 9 of a 10-part series on building Quiver. [Start with Part 1](/posts/01-the-weekend-project) if you missed it._
 
 ---
 

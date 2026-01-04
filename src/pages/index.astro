@@ -2,68 +2,49 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
-const posts = await getCollection("posts");
+const guides = await getCollection("guides");
 
-// Group posts by series
-const seriesMap = posts.reduce(
-   (acc, post) => {
-      const seriesKey = post.data.series || "Other";
-      if (!acc[seriesKey]) {
-         acc[seriesKey] = {
-            key: seriesKey,
-            title: post.data.seriesTitle || seriesKey,
-            posts: [],
-            count: 0,
-         };
-      }
-      acc[seriesKey].posts.push(post);
-      acc[seriesKey].count++;
-      return acc;
-   },
-   {} as Record<
-      string,
-      { key: string; title: string; posts: any[]; count: number }
-   >
-);
-
-const seriesList = Object.values(seriesMap).sort((a, b) =>
-   a.title.localeCompare(b.title)
+const guidesList = guides.sort((a, b) =>
+   a.data.title.localeCompare(b.data.title)
 );
 ---
 
-<Layout title="Dev Blog Series" series="Developer Guides">
+<Layout title="Implementation Guides">
    <div class="text-center mb-16">
       <h1
          class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4"
       >
-         Developer Guides
+         Implementation Guides
       </h1>
       <p class="text-xl text-gray-500 max-w-2xl mx-auto">
-         Select a series to start reading.
+         Step-by-step guides for building projects from scratch.
       </p>
    </div>
 
    <div class="flex flex-col gap-8 max-w-3xl mx-auto">
       {
-         seriesList.map((series) => (
+         guidesList.map((guide) => (
             <a
-               href={`/series/${series.key.toLowerCase()}`}
+               href={`/guides/${guide.id}`}
                class="block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200 group"
             >
                <div class="p-10">
                   <div class="flex items-center justify-between mb-6">
                      <span class="bg-blue-50 text-blue-700 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
-                        Series
+                        Guide
                      </span>
                      <span class="text-gray-500 font-medium">
-                        {series.count} Parts
+                        {guide.data.series}
                      </span>
                   </div>
-                  <h2 class="text-4xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-                     {series.title}
+                  <h2 class="text-3xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+                     {guide.data.title}
                   </h2>
-                  <div class="flex items-center text-gray-500 font-medium text-lg mt-6 group-hover:text-blue-600 transition-colors">
-                     Start Reading
+                  <p class="text-gray-600 text-lg mb-6">
+                     {guide.data.description}
+                  </p>
+                  <div class="flex items-center text-gray-500 font-medium text-lg group-hover:text-blue-600 transition-colors">
+                     Read Guide
                      <svg
                         class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                         fill="none"

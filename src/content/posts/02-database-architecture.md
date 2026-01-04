@@ -1,11 +1,11 @@
 ---
 title: "Part 2: Database Architecture"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "02-database-architecture"
 series: "Quiver"
-slug: "quiver/02-database-architecture"
 ---
 
-_This is Part 2 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
+_This is Part 2 of a 10-part series on building Quiver. [Start with Part 1](/posts/01-the-weekend-project) if you missed it._
 
 ---
 

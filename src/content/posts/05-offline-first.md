@@ -1,11 +1,11 @@
 ---
 title: "Part 5: Offline-First Architecture"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "05-offline-first"
 series: "Quiver"
-slug: "quiver/05-offline-first"
 ---
 
-_This is Part 5 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
+_This is Part 5 of a 10-part series on building Quiver. [Start with Part 1](/posts/01-the-weekend-project) if you missed it._
 
 ---
 

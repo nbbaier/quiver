@@ -1,11 +1,11 @@
 ---
 title: "Part 7: Inngest Integration"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "07-inngest-integration"
 series: "Quiver"
-slug: "quiver/07-inngest-integration"
 ---
 
-_This is Part 7 of a 10-part series on building Quiver. [Start with Part 1](/posts/quiver/01-the-weekend-project) if you missed it._
+_This is Part 7 of a 10-part series on building Quiver. [Start with Part 1](/posts/01-the-weekend-project) if you missed it._
 
 ---
 

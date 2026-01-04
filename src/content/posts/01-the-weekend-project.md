@@ -1,8 +1,8 @@
 ---
 title: "Part 1: The Weekend Project"
 seriesTitle: "Building Quiver: An Offline-First PWA in a Weekend"
+slug: "01-the-weekend-project"
 series: "Quiver"
-slug: "quiver/01-the-weekend-project"
 ---
 
 _This is Part 1 of a 10-part series on building Quiver, an offline-first Progressive Web App for capturing and developing ideas with AI._
