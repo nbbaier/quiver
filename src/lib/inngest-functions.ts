@@ -16,8 +16,8 @@ export const brainstormIdea = inngest.createFunction(
 		id: "brainstorm-idea",
 		retries: 3,
 		concurrency: { limit: 2 },
+		triggers: [{ event: "idea/brainstorm" }],
 	},
-	{ event: "idea/brainstorm" },
 	async ({ event, step }) => {
 		const { brainstormId, ideaId, title, content, context } = event.data;
 
