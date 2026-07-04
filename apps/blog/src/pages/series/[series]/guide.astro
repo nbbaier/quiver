@@ -1,0 +1,234 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+   const guides = await getCollection("guides");
+   
+   return guides.map((guide) => {
+      return {
+         params: { series: guide.data.series.toLowerCase() },
+         props: { guide },
+      };
+   });
+}
+
+const { guide } = Astro.props;
+const { Content, headings } = await render(guide);
+const seriesTitle = guide.data.series;
+const seriesSlug = guide.data.series.toLowerCase();
+---
+
+<Layout 
+   title={`${guide.data.title} - ${seriesTitle}`} 
+   series={seriesTitle}
+   maxWidth="max-w-7xl"
+>
+   <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+      <aside class="hidden lg:block lg:col-span-3 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 custom-scrollbar">
+         <div class="flex items-center justify-between mb-4 cursor-pointer group" id="toc-toggle">
+            <p class="font-bold text-gray-900 uppercase tracking-wider text-sm">
+               On this page
+            </p>
+            <svg 
+               class="w-4 h-4 text-gray-500 group-hover:text-gray-900 transition-transform duration-200" 
+               id="toc-chevron"
+               fill="none" 
+               stroke="currentColor" 
+               viewBox="0 0 24 24"
+            >
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+         </div>
+         <nav class="space-y-1 transition-all duration-300 origin-top" id="toc-content" aria-label="Table of Contents">
+            <ul class="text-sm text-gray-600">
+               {headings.filter(h => h.depth > 1 && h.depth <= 3).map((heading) => (
+                  <li class="relative">
+                     <a
+                        href={`#${heading.slug}`}
+                        class={`block py-1 transition-colors hover:text-blue-600 ${
+                           heading.depth === 3 ? "pl-4" : ""
+                        }`}
+                        data-toc-link={heading.slug}
+                     >
+                        {heading.text}
+                     </a>
+                  </li>
+               ))}
+            </ul>
+         </nav>
+      </aside>
+
+      <article
+         class="lg:col-span-9 prose prose-lg prose-blue mx-auto prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-xl prose-pre:bg-gray-900 prose-pre:text-gray-50 shadow-none"
+      >
+         <header class="mb-8 not-prose border-b border-gray-100 pb-8">
+            <nav class="flex items-center text-sm text-gray-500 mb-6 gap-2">
+               <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
+               <span class="text-gray-300">/</span>
+               <a
+                  href={`/series/${seriesSlug}`}
+                  class="hover:text-blue-600 transition-colors">{seriesTitle}</a
+               >
+               <span class="text-gray-300">/</span>
+               <span class="text-gray-900 font-medium">Guide</span>
+            </nav>
+
+            <h1
+               class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight"
+            >
+               {guide.data.title}
+            </h1>
+             <p class="text-xl text-gray-500 mt-4">
+               {guide.data.description}
+            </p>
+         </header>
+         <Content />
+      </article>
+   </div>
+
+   <!-- Mobile TOC Trigger -->
+   <button 
+      id="mobile-toc-toggle"
+      class="lg:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg z-50 hover:bg-blue-700 transition-colors"
+      aria-label="Table of Contents"
+   >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+      </svg>
+   </button>
+
+   <!-- Mobile TOC Overlay -->
+   <div id="mobile-toc-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+   <!-- Mobile TOC Drawer -->
+   <div id="mobile-toc-drawer" class="fixed inset-y-0 right-0 w-72 bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 lg:hidden flex flex-col">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+         <h2 class="font-bold text-gray-900 uppercase tracking-wider text-sm">On this page</h2>
+         <button id="mobile-toc-close" class="p-2 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-200 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+         </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+         <ul class="text-sm text-gray-600 space-y-3">
+            {headings.filter(h => h.depth > 1 && h.depth <= 3).map((heading) => (
+               <li class="relative">
+                  <a
+                     href={`#${heading.slug}`}
+                     class={`block transition-colors hover:text-blue-600 ${
+                        heading.depth === 3 ? "pl-4" : ""
+                     }`}
+                  >
+                     {heading.text}
+                  </a>
+               </li>
+            ))}
+         </ul>
+      </nav>
+   </div>
+
+   <style>
+      .custom-scrollbar::-webkit-scrollbar {
+         width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+         background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+         background-color: #e5e7eb;
+         border-radius: 20px;
+      }
+      .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+         background-color: #d1d5db;
+      }
+
+      /* Fix anchor scrolling behind sticky header */
+      article :global(h2),
+      article :global(h3),
+      article :global(h4) {
+         scroll-margin-top: 6rem;
+      }
+   </style>
+
+   <script>
+      // TOC Toggle Logic (Desktop)
+      const tocToggle = document.getElementById("toc-toggle");
+      const tocContent = document.getElementById("toc-content");
+      const tocChevron = document.getElementById("toc-chevron");
+      let isCollapsed = false;
+
+      if (tocToggle && tocContent && tocChevron) {
+         tocToggle.addEventListener("click", () => {
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+               tocContent.style.display = "none";
+               tocChevron.style.transform = "rotate(-90deg)";
+            } else {
+               tocContent.style.display = "block";
+               tocChevron.style.transform = "rotate(0deg)";
+            }
+         });
+      }
+
+      // Mobile TOC Logic
+      const mobileTocToggle = document.getElementById("mobile-toc-toggle");
+      const mobileTocClose = document.getElementById("mobile-toc-close");
+      const mobileTocOverlay = document.getElementById("mobile-toc-overlay");
+      const mobileTocDrawer = document.getElementById("mobile-toc-drawer");
+      const mobileTocLinks = document.querySelectorAll("#mobile-toc-drawer a");
+
+      function toggleMobileToc(show) {
+         if (show) {
+            mobileTocOverlay?.classList.remove("hidden");
+            mobileTocDrawer?.classList.remove("translate-x-full");
+            document.body.style.overflow = "hidden";
+         } else {
+            mobileTocOverlay?.classList.add("hidden");
+            mobileTocDrawer?.classList.add("translate-x-full");
+            document.body.style.overflow = "";
+         }
+      }
+
+      mobileTocToggle?.addEventListener("click", () => toggleMobileToc(true));
+      mobileTocClose?.addEventListener("click", () => toggleMobileToc(false));
+      mobileTocOverlay?.addEventListener("click", () => toggleMobileToc(false));
+
+      mobileTocLinks.forEach(link => {
+         link.addEventListener("click", () => toggleMobileToc(false));
+      });
+
+      // Simple TOC highlighting
+      const observer = new IntersectionObserver(
+         (entries) => {
+            entries.forEach((entry) => {
+               if (entry.isIntersecting) {
+                  // Remove active class from all
+                  document.querySelectorAll("aside a, #mobile-toc-drawer a").forEach((link) => {
+                     link.classList.remove("text-blue-600", "font-semibold");
+                  });
+                  // Add to current
+                  const id = entry.target.getAttribute("id");
+                  // Desktop
+                  const link = document.querySelector(`aside a[href="#${id}"]`);
+                  if (link) {
+                     link.classList.add("text-blue-600", "font-semibold");
+                  }
+                  // Mobile
+                  const mobileLink = document.querySelector(`#mobile-toc-drawer a[href="#${id}"]`);
+                  if (mobileLink) {
+                     mobileLink.classList.add("text-blue-600", "font-semibold");
+                  }
+               }
+            });
+         },
+         { rootMargin: "-100px 0px -66% 0px" }
+      );
+
+      // Observe headings
+      document.querySelectorAll("article h2, article h3").forEach((heading) => {
+         observer.observe(heading);
+      });
+   </script>
+</Layout>

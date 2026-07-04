@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+const guides = await getCollection("guides");
+
+const guidesList = guides.sort((a, b) =>
+   a.data.title.localeCompare(b.data.title)
+);
+---
+
+<Layout title="Implementation Guides">
+   <div class="text-center mb-16">
+      <h1
+         class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4"
+      >
+         Implementation Guides
+      </h1>
+      <p class="text-xl text-gray-500 max-w-2xl mx-auto">
+         Step-by-step guides for building projects from scratch.
+      </p>
+   </div>
+
+   <div class="flex flex-col gap-8 max-w-3xl mx-auto">
+      {
+         guidesList.map((guide) => (
+            <a
+               href={`/guides/${guide.id}`}
+               class="block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200 group"
+            >
+               <div class="p-10">
+                  <div class="flex items-center justify-between mb-6">
+                     <span class="bg-blue-50 text-blue-700 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wide">
+                        Guide
+                     </span>
+                     <span class="text-gray-500 font-medium">
+                        {guide.data.series}
+                     </span>
+                  </div>
+                  <h2 class="text-3xl font-extrabold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+                     {guide.data.title}
+                  </h2>
+                  <p class="text-gray-600 text-lg mb-6">
+                     {guide.data.description}
+                  </p>
+                  <div class="flex items-center text-gray-500 font-medium text-lg group-hover:text-blue-600 transition-colors">
+                     Read Guide
+                     <svg
+                        class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                     >
+                        <path
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                           stroke-width="2"
+                           d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                     </svg>
+                  </div>
+               </div>
+            </a>
+         ))
+      }
+   </div>
+</Layout>

@@ -1,0 +1,104 @@
+---
+import "../styles/global.css";
+
+interface Props {
+   title: string;
+   series: string;
+   maxWidth?: string;
+}
+
+const { title, series, maxWidth = "max-w-4xl" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="description" content={title} />
+      <meta name="viewport" content="width=device-width" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <meta name="generator" content={Astro.generator} />
+      <title>{title}</title>
+   </head>
+   <body
+      class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col"
+   >
+      <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+         <div
+            class={`mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between ${maxWidth}`}
+         >
+            <a
+               href="/"
+               class="font-bold text-xl text-blue-600 tracking-tight hover:text-blue-700 transition-colors"
+            >
+               {series}
+            </a>
+            <nav>
+               <a
+                  href="/"
+                  class="text-sm font-medium text-gray-600 hover:text-gray-900"
+               >
+                  Home
+               </a>
+            </nav>
+         </div>
+      </header>
+
+      <main class={`grow w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 ${maxWidth}`}>
+         <slot />
+      </main>
+
+      <footer class="bg-white border-t border-gray-200 py-12 mt-12">
+         <div class={`mx-auto px-4 text-center text-gray-500 text-sm ${maxWidth}`}>
+            <p>&copy; {new Date().getFullYear()} Quiver Blog Series</p>
+         </div>
+      </footer>
+
+      <script>
+         // Code Copy Functionality
+         document.addEventListener("DOMContentLoaded", () => {
+            const codeBlocks = document.querySelectorAll("pre");
+
+            codeBlocks.forEach((pre) => {
+               // Create wrapper
+               const wrapper = document.createElement("div");
+               wrapper.className = "code-block-wrapper";
+
+               // Insert wrapper before pre
+               pre.parentNode?.insertBefore(wrapper, pre);
+
+               // Move pre into wrapper
+               wrapper.appendChild(pre);
+
+               // Create button
+               const button = document.createElement("button");
+               button.className = "copy-button";
+               button.textContent = "Copy";
+               button.ariaLabel = "Copy code to clipboard";
+
+               // Add click handler
+               button.addEventListener("click", async () => {
+                  const code =
+                     pre.querySelector("code")?.innerText || pre.innerText;
+
+                  try {
+                     await navigator.clipboard.writeText(code);
+                     button.textContent = "Copied!";
+                     button.classList.add("copied");
+
+                     setTimeout(() => {
+                        button.textContent = "Copy";
+                        button.classList.remove("copied");
+                     }, 2000);
+                  } catch (err) {
+                     console.error("Failed to copy:", err);
+                     button.textContent = "Error";
+                  }
+               });
+
+               wrapper.appendChild(button);
+            });
+         });
+      </script>
+   </body>
+</html>

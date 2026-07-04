@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+   const posts = await getCollection("posts");
+   
+   return posts.map((post) => {
+      // Get other posts in the same series
+      const series = post.data.series || 'Other';
+      const seriesPosts = posts.filter(p => (p.data.series || 'Other') === series);
+
+      // Sort by slug/id to ensure correct order
+      seriesPosts.sort((a, b) => {
+         const slugA = a.data.slug || a.id;
+         const slugB = b.data.slug || b.id;
+         return slugA.localeCompare(slugB);
+      });
+
+      const currentIndex = seriesPosts.findIndex(p => p.id === post.id);
+      
+      return {
+         params: { slug: post.data.slug || post.id.replace(/\.md$/, "") },
+         props: { 
+            post,
+            prevPost: currentIndex > 0 ? seriesPosts[currentIndex - 1] : null,
+            nextPost: currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null,
+         },
+      };
+   });
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content } = await render(post);
+
+const seriesTitle = post.data.seriesTitle || post.data.series;
+const slug = post.data.slug || "";
+const series = post.data.series || "";
+const seriesSlug = post.data.series ? post.data.series.toLowerCase() : "";
+---
+
+<Layout title={post.data.title} series={series}>
+   <article
+      class="prose prose-lg prose-blue mx-auto prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-xl prose-pre:bg-gray-900 prose-pre:text-gray-50 shadow-none"
+   >
+      <header class="mb-8 not-prose border-b border-gray-100 pb-8">
+         <nav class="flex items-center text-sm text-gray-500 mb-6 gap-2">
+            <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
+            <span class="text-gray-300">/</span>
+            <a
+               href={`/series/${seriesSlug}`}
+               class="hover:text-blue-600 transition-colors">{seriesTitle}</a
+            >
+         </nav>
+
+         <div class="mb-3">
+            <span class="text-blue-600 font-medium text-lg block mb-1">
+               {seriesTitle}
+            </span>
+         </div>
+         <h1
+            class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight"
+         >
+            {post.data.title}
+         </h1>
+      </header>
+      <Content />
+
+      <div class="mt-16 pt-8 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-8 not-prose">
+         {prevPost ? (
+            <a 
+               href={`/posts/${prevPost.data.slug || prevPost.id.replace(/\.md$/, "")}`}
+               class="group block p-6 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-left"
+            >
+               <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 group-hover:text-blue-500">
+                  &larr; Previous
+               </div>
+               <div class="text-lg font-bold text-gray-900 group-hover:text-blue-700 leading-tight">
+                  {prevPost.data.title}
+               </div>
+            </a>
+         ) : (
+            <div /> 
+         )}
+
+         {nextPost ? (
+            <a 
+               href={`/posts/${nextPost.data.slug || nextPost.id.replace(/\.md$/, "")}`}
+               class="group block p-6 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-right"
+            >
+               <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 group-hover:text-blue-500">
+                  Next &rarr;
+               </div>
+               <div class="text-lg font-bold text-gray-900 group-hover:text-blue-700 leading-tight">
+                  {nextPost.data.title}
+               </div>
+            </a>
+         ) : (
+            <div />
+         )}
+      </div>
+   </article>
+</Layout>
