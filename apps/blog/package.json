@@ -1,5 +1,6 @@
 {
-	"name": "spiffy-singularity",
+	"name": "@quiver/blog",
+	"private": true,
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
@@ -9,11 +10,11 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@tailwindcss/typography": "^0.5.19",
-		"@tailwindcss/vite": "^4.2.2",
-		"astro": "^6.1.1",
+		"@tailwindcss/typography": "0.5.19",
+		"@tailwindcss/vite": "4.2.2",
+		"astro": "6.1.1",
 		"astro-link-validator": "github:rodgtr1/astro-link-validator",
-		"tailwindcss": "^4.2.2"
+		"tailwindcss": "4.2.2"
 	},
 	"devDependencies": {
 		"typescript": "^6.0.2"

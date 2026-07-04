@@ -1,5 +1,5 @@
 {
-	"name": "quiver",
+	"name": "@quiver/web",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",

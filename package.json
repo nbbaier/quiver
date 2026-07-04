@@ -1,0 +1,22 @@
+{
+	"name": "quiver-monorepo",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"workspaces": ["apps/*"],
+	"scripts": {
+		"dev": "bun run dev:web",
+		"dev:web": "bun run --filter '@quiver/web' dev",
+		"dev:blog": "bun run --filter '@quiver/blog' dev",
+		"build": "bun run --filter '*' build",
+		"build:web": "bun run --filter '@quiver/web' build",
+		"build:blog": "bun run --filter '@quiver/blog' build",
+		"lint": "biome lint .",
+		"db:generate": "bun run --filter '@quiver/web' db:generate",
+		"db:migrate": "bun run --filter '@quiver/web' db:migrate",
+		"db:studio": "bun run --filter '@quiver/web' db:studio"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.14"
+	}
+}
